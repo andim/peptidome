@@ -1,0 +1,65 @@
+\documentclass[superscriptaddress,onecolumn,pre]{revtex4}
+\bibliographystyle{apsrev}
+
+\usepackage{ifthen}
+\newboolean{pnas}
+\setboolean{pnas}{false}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\graphicspath{{images/}}
+\usepackage{color}
+\usepackage[pdfstartview=FitH,
+            breaklinks=true,
+            bookmarksopen=false,
+            bookmarksnumbered=true,
+            colorlinks=true,
+            linkcolor=black,
+            citecolor=black,
+            urlcolor=black,
+            pdftitle={Peptidome},
+            pdfauthor={Andreas Mayer},
+            pdfsubject={}
+            ]{hyperref}
+\newcommand{\B}{\boldsymbol}
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\<}{\langle}
+\renewcommand{\>}{\rangle}
+
+\def\(({\left(}
+\def\)){\right)}                       
+\def\[[{\left[}
+\def\]]{\right]}
+
+\newcommand{\AM}[1]{{\color{blue}#1}}
+
+\begin{document}
+
+\title{A statistical ensemble approach to immune discrimination}
+\author{Andreas Mayer}
+\author{Quentin Marcou}
+\author{William Bialek}
+\date{\today}
+
+\begin{abstract}
+    Can we view the self/non-self discrimination problem in a statistical language?
+    We explore whether the self-peptidome and the peptidome of pathogens differ in a statistical manner.
+\end{abstract}
+
+\maketitle
+
+\section{Ideas}
+
+
+
+
+\bibliography{library}
+
+\end{document}
+
+
