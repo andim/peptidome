@@ -31,5 +31,8 @@ def normalize(counter):
     arr /= np.sum(arr)
     return arr
  
-def counter_to_df(counter):
-    return pd.DataFrame(dict(seq=list(counter.keys()), freq=normalize(counter)))
+def counter_to_df(counter, norm=True):
+    if norm:
+        return pd.DataFrame(dict(seq=list(counter.keys()), freq=normalize(counter)))
+    arr = np.array(list(counter.values()), dtype=np.float)
+    return pd.DataFrame(dict(seq=list(counter.keys()), count=arr))
