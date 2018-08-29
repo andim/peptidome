@@ -41,9 +41,9 @@
 \begin{document}
 
 \title{A statistical ensemble approach to immune discrimination}
-\author{Andreas Mayer}
-\author{Quentin Marcou}
-\author{William Bialek}
+%\author{Andreas Mayer}
+%\author{Quentin Marcou}
+%\author{William Bialek}
 \date{\today}
 
 \begin{abstract}
@@ -59,15 +59,15 @@ Are there any features that distinguish foreign antigens from self-antigens? The
 
 If such differences exist they may arise from species-dependent codon biases or differences in the GC content of the DNA. Additionally due to different types of proteins and different types of environments the amino acids needed for proper functioning of a protein might differ between a host and its pathogen. On the other hand, however, coevolution of the pathogens might select that they have a more similar distribution than they would otherwise have. One way to test for this is whether pathogens adapted to a particular host are particularly similar to its peptidome.
 
-Maybe the immunogenicity of an antigen is related to how untypical it is given the normal distribution of the human proteome. One could try and check this by looking at known antigens form IEDB. Are they less typical of the human ensemble? This could be a useful insight for cancer immunotherapy: Are good neoantigens those that represent large perturbations from the normal distribution? This could also be of relevance for autoimmunity, where more uncommon peptides within the self-peptidome might also be more likely to lead to autoimmunity.
+Maybe the immunogenicity of an antigen is related to how untypical it is given the normal distribution of the human proteome. One could try and check this by looking at known antigens from the immuno-epitope database (IEDB). Are they less typical of the human ensemble? This could be a useful insight for cancer immunotherapy: Are good neoantigens those that represent large perturbations from the normal distribution towards the pathogen distribution? Interestingly, for neoantigen prediction Luksza et al. \cite{Luksza2017} have found that how well a neoantigen aligns to known viral/bacterial antigens is a predictor of its immunogenicity. The same idea could also be of relevance for autoimmunity, where more uncommon peptides within the self-peptidome might also be more likely to lead to autoimmunity.
 
-It could be interesting to also consider abundance information (see e.g. \url{https://pax-db.org/}), i.e. weigh a peptide by the abundance of the protein from which it arises. In cancer immunology \cite{Walz2015} it has been argued that immune activation can be achieved not just by neoantigens but also by large changes in protein abundance. One might hypothesize that peripheral tolerance mechanisms can get overwhelmed by large amounts of an antigen.
+It could be interesting to also consider abundance information (see e.g. \url{https://pax-db.org/}), i.e. weigh a peptide by the abundance of the protein from which it arises. In cancer immunology \cite{Walz2015} it has been argued that immune activation can be achieved not just by neoantigens but also by large changes in protein abundance. One might hypothesize that peripheral tolerance mechanisms can get overwhelmed by large amounts of an otherwise untypical antigen.
 
-Another interesting connection to make would be to whether mitochondrial (or mitochondria-associated) proteins show a more similar distribution to foreign antigens than others. Due to their evolutionary relationship to bacteria they might show a different distribution. The immune system might use mitochondrial antigens to bias the repertoire towards the correct regions by positive selection.
+Another interesting connection to make would be to whether mitochondrial (or mitochondria-associated) proteins show a more similar distribution to foreign antigens than others. Due to their evolutionary relationship to bacteria they might show a different distribution. The immune system might use mitochondrial antigens to bias the repertoire towards the relevant regions by positive selection.
 
 There is quite a lot of data in a single proteome. Consider e.g. homo sapiens: 20000 genes times 1000 amino acids per gene on average gives $2 \cdot 10^7$ possible peptides, when not accounting restrictions on what can be presented on MHCs (number of peptides $\approx$ length, as you can start a peptide in any position). This also implies that most 5mers will still be represented in the proteome, as there are only $20^5 = 3.2 \cdot 10^6$ possible 5mers.
 
-Small changes in amino acid usage can lead to larger changes in the relative likelihood of longer stretches of otherwise random sequences: consider a 10\% difference for single amino acids than a random 8mer has a loglikelihood ratio of $1.1^8 \approx 2.15$. Even larger likelihood ratios are expected for long kmers once pairwise or higher-order correlations are considered \cite{Schneidman2006}.
+Small changes in amino acid usage can lead to larger changes in the relative likelihood of longer stretches of otherwise random sequences: consider a 10\% difference for single amino acids than a random 8mer has a loglikelihood ratio of $1.1^8 \approx 2.15$. Even larger likelihood ratios are expected for long kmers once pairwise or higher-order correlations are considered (see \cite{Schneidman2006} for an example of this).
 
 In terms of modeling we could build a maximum entropy distribution constrained to reproduce the amino acid frequencies and the correlations between pairs of amino acids a given distance apart (as we consider random substrings the distribution should only depend on absolute distance). This is quite reminiscent of what was done by Mora et al. \cite{Mora2010} for the distribution of antibodies.
 
@@ -77,7 +77,7 @@ On a more general level the question which structural constraints restrain the e
 
 \section{Prior work}
 
-Karlin and Bucher \cite{Karlin1992} have shown the existence of pairwise correlations in amino acid usage and discuss various structural reasons for these correlations. Peer et al. \cite{Peer2004} have shown that amino acid and oligopeptide compositions differentiate among phyla, which is very encouraging prior work for this project. There has also been follow up work with similar conclusions \cite{Bogatyreva2006}. On the other hand \cite{Lavelle2009} claims that generally 4mers and 5mers do not show large deviations from random models when taking care to remove bias by large protein families.
+Karlin and Bucher \cite{Karlin1992} have shown the existence of pairwise correlations in amino acid usage and discuss various structural reasons for these correlations. Peer et al. \cite{Peer2004} have shown that amino acid and oligopeptide compositions differentiate among phyla, which is a very encouraging finding for the premise of this project. There has also been follow up work with similar conclusions \cite{Bogatyreva2006}. On the other hand \cite{Lavelle2009} claims that generally 4mers and 5mers do not show large deviations from random models when taking care to remove bias by large protein families.
 
 There has also been some early work about peptide similarity in the context of immunology by Burroughs, De Boer, and Kesmir \cite{Burroughs2004}. Interestingly, they demonstrate that the number of shared 9mers decreases with evolutionary distance, and is much lower for e.g. human and bacteria than for human and mouse, or human and drosophila. The paper also discusses some possible slight preference of the antigen processing pathway for non-self antigens.
 
