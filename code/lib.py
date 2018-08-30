@@ -16,6 +16,16 @@ def fasta_iter(fasta_name):
         seq = "".join(s.strip() for s in next(faiter))
         yield header, seq
 
+def unique_amino_acids(proteome):
+    "returns an array of all unique amino acids used within a proteome"
+    return np.unique(list(''.join([seq for h, seq in proteome])))
+
+def count_kmers_proteome(proteome, k):
+    counter = defaultdict(int)
+    for header, sequence in fasta_iter(proteome):
+        count_kmers(sequence, k, counter=counter)
+    return counter
+
 def count_kmers(string, k, counter=None):
     """
     Count number of kmers in a given string.
