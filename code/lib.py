@@ -46,3 +46,30 @@ def counter_to_df(counter, norm=True):
         return pd.DataFrame(dict(seq=list(counter.keys()), freq=normalize(counter)))
     arr = np.array(list(counter.values()), dtype=np.float)
     return pd.DataFrame(dict(seq=list(counter.keys()), count=arr))
+
+def loglikelihood_independent(string, charprobdict, k=None):
+    if k and (len(string) != k):
+        return np.nan
+    logp = 0.0
+    for c in string:
+        try:
+            logp += charprobdict[c]
+        except KeyError:
+            logp = np.nan
+    return logp
+
+def loglikelihood_mc(string, charprobdict, doubletprobdict, k=None):
+    if k and (len(string) != k):
+        return np.nan
+    logp = 0.0
+    cold = None
+    for c in string:
+        try:
+            if not cold:
+                logp += charprobdict[c]
+            else:
+                logp += doubletprobdict[cold][c]
+        except KeyError:
+            logp = np.nan
+        cold = c
+    return logp
