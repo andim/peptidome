@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+aminoacids = 'ACDEFGHIKLMNPQRSTVWY'
 
 datadir = '/home/amayer/data/proteomes/'
 human = datadir+'uniprot-homosapiens-up000005640.fasta'
@@ -154,3 +155,26 @@ def plot_histograms(valuess, labels, nbins=40, ax=None):
         ax.plot(0.5*(bins[:-1]+bins[1:]), counts/len(values), label=label)
     ax.legend()
     return ax
+
+def mcmcsampler(x0, energy, jump, nsteps, nburnin=0, nsample=1):
+    nsteps, nburnin, nsample = int(nsteps), int(nburnin), int(nsample)
+    x = x0
+    Ex = energy(x)
+    states = []
+    for i in range(nsteps):
+        xp = jump(x)
+        Exp = energy(xp)
+        if np.random.rand() < np.exp(-Exp+Ex):
+            x = xp
+            Ex = Exp
+        if (i > nburnin) and (i % nsample == 0):
+            states.append(''.join(x))
+    return np.array(states)
+
+def energy_ising(s, h, Jk):
+    "energy of a translation invariant ising model"
+    energy = sum(h[c] for c in s)
+    for k, J in enumerate(Jk):
+        for i in range(len(s)-1-k):
+            energy += J[s[i]][s[i+k+1]]
+    return -energy
