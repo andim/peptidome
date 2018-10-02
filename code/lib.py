@@ -143,12 +143,16 @@ def loglikelihood_triplet(string, charprobdict, doubletprobdict, tripletprobdict
         cm1 = c
     return logp
 
-def plot_histograms(valuess, labels, nbins=40, ax=None):
+def plot_histograms(valuess, labels, nbins=40, ax=None, xmin=None, xmax=None):
     if not ax:
         ax = plt.gca()
-    mean = np.mean([np.mean(values) for values in valuess])
-    std = np.mean([np.std(values) for values in valuess])
-    xmin, xmax = round(mean-5*std), round(mean+5*std)
+    if (xmin is None) or (xmax is None):
+        mean = np.mean([np.mean(values) for values in valuess])
+        std = np.mean([np.std(values) for values in valuess])
+    if xmin is None:
+        xmin = round(mean-5*std)
+    if xmax is None:
+        xmax  = round(mean+5*std)
     bins = np.linspace(xmin, xmax, nbins)
     for values, label in zip(valuess, labels):
         counts, bins = np.histogram(values, bins=bins)

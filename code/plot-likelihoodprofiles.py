@@ -36,6 +36,9 @@ dfepitopes = dfepitopes.fillna('')
 dfepitopes['length'] = [len(d) for d in dfepitopes['Description']]
 
 loglikelihood = lambda seq, k: loglikelihood_triplet(seq, humanaaprobdict, humandoubletprobdict, humantripletprobdict, k=k)
+likelihoodname = 'triplet'
+#loglikelihood = lambda seq, k: loglikelihood_independent(seq, humanaaprobdict, k=k)
+#likelihoodname = 'independent'
 
 #for k in [9, 15]:
 for k in [9]:
@@ -63,6 +66,9 @@ for k in [9]:
 
         if len(pepitope) > 2:
             fig, ax = plt.subplots()
-            plot_histograms([phuman, ppathogen, pepitope], ['human', 'pathogen', 'epitope'], ax=ax)
+            plot_histograms([phuman, ppathogen, pepitope], ['human', 'pathogen', 'epitope'], xmin=-14, xmax=-9, ax=ax)
+            ax.set_ylabel('frequency')
+            ax.set_xlabel('probability given human proteome statistics')
+            plt.title(name)
             fig.tight_layout()
-            fig.savefig('plots/likelihoodprofile-%s-k%i.png' % (name, k), dpi=300)
+            fig.savefig('plots/likelihoodprofile-%s-%s-k%i.png' % (name, likelihoodname, k), dpi=300)
