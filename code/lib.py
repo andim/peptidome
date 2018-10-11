@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 aminoacids = 'ACDEFGHIKLMNPQRSTVWY'
 
-datadir = '/home/amayer/data/proteomes/'
+datadir = '/home/amayer/data/peptidome/'
 human = datadir+'uniprot-homosapiens-up000005640.fasta'
 mouse = datadir+'uniprot-musmusculus-up000000589.fasta'
 malaria = datadir+'uniprot-PlasmodiumFalciparum-up000001450.fasta'
