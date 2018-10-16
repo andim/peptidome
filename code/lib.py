@@ -97,18 +97,18 @@ def counter_to_df(counter, norm=True):
     arr = np.array(list(counter.values()), dtype=np.float)
     return pd.DataFrame(dict(seq=list(counter.keys()), count=arr))
 
-def loglikelihood_independent(string, charprobdict, k=None):
+def loglikelihood_independent(string, charlogp=None, k=None, **kwargs):
     if k and (len(string) != k):
         return np.nan
     logp = 0.0
     for c in string:
         try:
-            logp += charprobdict[c]
+            logp += charlogp[c]
         except KeyError:
             logp = np.nan
     return logp
 
-def loglikelihood_mc(string, charprobdict, doubletprobdict, k=None):
+def loglikelihood_mc(string, charlogp=None, doubletlogp=None, k=None, **kwargs):
     if k and (len(string) != k):
         return np.nan
     logp = 0.0
@@ -116,15 +116,22 @@ def loglikelihood_mc(string, charprobdict, doubletprobdict, k=None):
     for c in string:
         try:
             if not cold:
-                logp += charprobdict[c]
+                logp += charlogp[c]
             else:
-                logp += doubletprobdict[cold][c]
+                logp += doubletlogp[cold][c]
         except KeyError:
             logp = np.nan
         cold = c
     return logp
 
-def loglikelihood_triplet(string, charprobdict, doubletprobdict, tripletprobdict, k=None):
+def loglikelihood_triplet(string, charlogp=None, doubletlogp=None, tripletlogp=None, k=None):
+    """ Calculate the loglikelihood of a given string given a triplet model.
+
+    charlogp: log probabilities of different characters log P(c)
+    doubletlogp: conditional frequency of character given previous character log P(c_i | c_i-1)
+    tripletlogp: conditional frequency of character given previous two characters log P(c_i | c_i-1, c_i-2)
+    """
+
     if k and (len(string) != k):
         return np.nan
     logp = 0.0
@@ -132,18 +139,19 @@ def loglikelihood_triplet(string, charprobdict, doubletprobdict, tripletprobdict
     for c in string:
         try:
             if (not cm1) and (not cm2):
-                logp += charprobdict[c]
+                logp += charlogp[c]
             elif not cm2:
-                logp += doubletprobdict[cm1][c]
+                logp += doubletlogp[cm1][c]
             else:
-                logp += tripletprobdict[cm2+cm1][c]
+                logp += tripletlogp[cm2+cm1][c]
         except KeyError:
             logp = np.nan
         cm2 = cm1
         cm1 = c
     return logp
 
-def plot_histograms(valuess, labels, nbins=40, ax=None, xmin=None, xmax=None):
+def plot_histograms(valuess, labels, nbins=40, ax=None,
+                    xmin=None, xmax=None, **kwargs):
     if not ax:
         ax = plt.gca()
     if (xmin is None) or (xmax is None):
@@ -156,7 +164,8 @@ def plot_histograms(valuess, labels, nbins=40, ax=None, xmin=None, xmax=None):
     bins = np.linspace(xmin, xmax, nbins)
     for values, label in zip(valuess, labels):
         counts, bins = np.histogram(values, bins=bins)
-        ax.plot(0.5*(bins[:-1]+bins[1:]), counts/len(values), label=label)
+        ax.plot(0.5*(bins[:-1]+bins[1:]), counts/len(values),
+                label=label, **kwargs)
     ax.legend()
     return ax
 

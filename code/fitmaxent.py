@@ -48,7 +48,7 @@ def fit_ising(f1, f2s, niter=1, nmcmc=1e6, epsilon=0.1, Jk=None):
     return h, Jk
 
 print('start fitting')
-h, Jk = fit_ising(df0, [df1, dfgap1, dfgap2], nmcmc=1e7, niter=30, epsilon=0.2)
+h, Jk = fit_ising(df0, [df1, dfgap1, dfgap2], nmcmc=1e6, niter=30, epsilon=0.2)
 
 dfh = pd.DataFrame(index=[key for key in h],
                    data=[h[key] for key in h],

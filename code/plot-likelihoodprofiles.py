@@ -1,3 +1,4 @@
+import json
 import numpy as np
 import pandas as pd
 from scipy.stats import entropy
@@ -8,25 +9,8 @@ import matplotlib.pyplot as plt
 
 from lib import *
 
-df = counter_to_df(count_kmers_proteome(human, 1), norm=True)
-df = df.set_index('seq')
-humanaaprobdict = np.log10(df['freq']).to_dict()
-
-df1 = counter_to_df(count_kmers_proteome(human, 2), norm=False)
-strcolumn_to_charcolumns(df1, 'seq')
-count = df1.pivot(columns='aa1', index='aa2')['count']
-count /= np.sum(count, axis=0)
-count[count.isna()] = 1e-10
-humandoubletprobdict = np.log10(count).to_dict()
-
-df2 = counter_to_df(count_kmers_proteome(human, 3), norm=False)
-df2['aa12'] = [s[:2] for s in df2['seq']]
-df2['aa3'] = [s[2] for s in df2['seq']]
-count = df2.pivot(columns='aa12', index='aa3')['count']
-count /= np.sum(count, axis=0)
-count[count.isna()] = 1e-10
-humantripletprobdict = np.log10(count).to_dict()
-
+with open('../data/triplet-human.json', 'r') as f:
+    tripletparams = json.load(f)
 
 dfproteomes = pd.read_csv('../data/proteomes.csv', sep=',')
 pathogenproteomes = dfproteomes[dfproteomes['type'].isin(['bacterium', 'virus', 'parasite'])]
@@ -35,7 +19,7 @@ dfepitopes = pd.read_csv(datadir+'allhuman-iedb-epitopes.csv', header=1, usecols
 dfepitopes = dfepitopes.fillna('')
 dfepitopes['length'] = [len(d) for d in dfepitopes['Description']]
 
-loglikelihood = lambda seq, k: loglikelihood_triplet(seq, humanaaprobdict, humandoubletprobdict, humantripletprobdict, k=k)
+loglikelihood = lambda seq, k: loglikelihood_triplet(seq, **tripletparams, k=k)
 likelihoodname = 'triplet'
 #loglikelihood = lambda seq, k: loglikelihood_independent(seq, humanaaprobdict, k=k)
 #likelihoodname = 'independent'
