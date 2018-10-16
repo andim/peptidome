@@ -1,15 +1,13 @@
 import numpy as np
 import pandas as pd
 from scipy.stats import entropy
-import sklearn.decomposition
-import sklearn.manifold
 import seaborn as sns
 import matplotlib.pyplot as plt
 
 from lib import *
 
-name = 'mouse'
-proteome = mouse
+name = 'human'
+proteome = human
 
 df1 = counter_to_df(count_kmers_proteome(proteome, k=1))
 df1 = df1[~df1['seq'].str.contains('U|B|X|Z')]
@@ -18,7 +16,7 @@ entropy1 = entropy(df1['freq'], base=2)
 
 meanabsfoldchanges = []
 mutualinformations = []
-gaps = np.arange(0, 101, 1)
+gaps = np.arange(0, 201, 1)
 for gap in gaps:
     df2 = counter_to_df(count_kmers_proteome(proteome, k=2, gap=gap))
     df2 = df2[~df2['seq'].str.contains('U|B|X|Z')]
@@ -49,10 +47,10 @@ plt.ylim(0.0)
 plt.xlabel('Gap')
 plt.ylabel('Mean absolute fold change')
 fig.tight_layout()
-fig.savefig('plots/doublet-meangaps.png', dpi=300)
+fig.savefig('plots/doublet-%s-meangap.png'%name, dpi=300)
 
 df = pd.DataFrame.from_dict(dict(gaps=gaps, mutualinformation=mutualinformations))
-df.to_csv('mutualinformation.csv')
+df.to_csv('mutualinformation-%s.csv'%name)
 fig = plt.figure(figsize=(5, 3))
 plt.plot(gaps, mutualinformations)
 #plt.axhline(mishuffled)
@@ -60,4 +58,4 @@ plt.ylim(0.0)
 plt.xlabel('Gap')
 plt.ylabel('Mutual information in bits')
 fig.tight_layout()
-fig.savefig('plots/doublet-mutualinformation.png', dpi=300)
+fig.savefig('plots/doublet-%s-mutualinformation.png'%name, dpi=300)
