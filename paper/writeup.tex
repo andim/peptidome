@@ -79,9 +79,31 @@ On a more general level the question which structural constraints restrain the e
 
 Karlin and Bucher \cite{Karlin1992} have shown the existence of pairwise correlations in amino acid usage and discuss various structural reasons for these correlations. Peer et al. \cite{Peer2004} have shown that amino acid and oligopeptide compositions differentiate among phyla, which is a very encouraging finding for the premise of this project. There has also been follow up work with similar conclusions \cite{Bogatyreva2006}. On the other hand \cite{Lavelle2009} claims that generally 4mers and 5mers do not show large deviations from random models when taking care to remove bias by large protein families.
 
-There has also been some early work about peptide similarity in the context of immunology by Burroughs, De Boer, and Kesmir \cite{Burroughs2004}. Interestingly, they demonstrate that the number of shared 9mers decreases with evolutionary distance, and is much lower for e.g. human and bacteria than for human and mouse, or human and drosophila. The paper also discusses some possible slight preference of the antigen processing pathway for non-self antigens.
+There has been some early work about peptide similarity in the context of immunology by Burroughs, De Boer, and Kesmir \cite{Burroughs2004}. Interestingly, they demonstrate that the number of shared 9mers decreases with evolutionary distance, and is much lower for e.g. human and bacteria than for human and mouse, or human and drosophila. The paper also discusses some possible slight preference of the antigen processing pathway for non-self antigens.
 
-Under the heading of immunopeptidomics and MHC ligandomics efforts are underway to use mass-spectrometry to identify peptides that might be seen by the adaptive immune system. Two of the labs contributing to this effort are those of S Stefanovic (U Tuebingen) and Ruedi Aebersold (ETH Zuerich).
+Under the heading of immunopeptidomics and MHC ligandomics efforts are underway to use mass-spectrometry to identify peptides that might be seen by the adaptive immune system \cite{Abelin2017,Liepe2016}. Two of the labs contributing to this effort are those of S Stefanovic (U Tuebingen) and Ruedi Aebersold (ETH Zuerich).
+
+\section{Results}
+
+\subsection{Proteins are surprisingly random}
+
+\begin{figure}
+    \includegraphics{mutualinformationdecay}
+    \caption{Mutual information between amino acids a certain distance apart (human proteome).
+    \label{figmutualinformationdecay}
+    }
+\end{figure}
+
+How close to random is the protein distribution? To answer this question we calculate how much information about the amino acid in a certain position is revealed by what its neighbors are. Concretely, we calculate the mutual information between amino acids a certain distance apart. The mutual information can be expressed as $I(X, Y) = H(X) + H(Y) - H(X, Y)$. We use this expression to calulate the mutual information from the single site entropy and the entropy of the joint distribution, which we obtain by a naive calculation based on observed counts. (TODO: Use NSB estimator or Grassberger estimator for entropy, which might remove the artifactual uptick in mutual information at large distances.) The universal constraints on unrelated proteins are surprisingly small as measured by the mutual information (Fig.~\ref{figmutualinformationdecay}, see also \cite{Lavelle2009}). 
+
+We can further dissect which correlations between individual amino acids contribute to the mutual information. To do so we analyze the fold enrichment of amino acid doublets relative to an independent model. Most doublets are only over- or underrepresented moderately (Fig.~\ref{figdoubletentrichment}). An exception is a strong enrichment of Cysteine-Cysteine 3 amino acids apart. This enrichment has been found previously \cite{Greenbaum2014} and is likely due to a particular preference of cysteines to form disulfide bonds at this distance. Another prominent feature of this data are the relatively high enrichments along the diagonal at all distances. This might be attributable to amino acid repeats within some proteins \cite{Turjanski2018}.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{doubletenrichment}
+    \caption{Enrichment of doublets relative to independent amino acid choice. 
+    \label{figdoubletentrichment}
+    }
+\end{figure}
 
 \bibliography{library}
 
