@@ -81,6 +81,8 @@ Karlin and Bucher \cite{Karlin1992} have shown the existence of pairwise correla
 
 There has been some early work about peptide similarity in the context of immunology by Burroughs, De Boer, and Kesmir \cite{Burroughs2004}. Interestingly, they demonstrate that the number of shared 9mers decreases with evolutionary distance, and is much lower for e.g. human and bacteria than for human and mouse, or human and drosophila. The paper also discusses some possible slight preference of the antigen processing pathway for non-self antigens.
 
+Coevolution \cite{Bahir2009}.
+
 Under the heading of immunopeptidomics and MHC ligandomics efforts are underway to use mass-spectrometry to identify peptides that might be seen by the adaptive immune system \cite{Abelin2017,Liepe2016}. Two of the labs contributing to this effort are those of S Stefanovic (U Tuebingen) and Ruedi Aebersold (ETH Zuerich).
 
 \section{Results}
@@ -89,7 +91,7 @@ Under the heading of immunopeptidomics and MHC ligandomics efforts are underway 
 
 \begin{figure}
     \includegraphics{mutualinformationdecay}
-    \caption{Mutual information between amino acids a certain distance apart (human proteome).
+    \caption{Mutual information between amino acids a certain distance apart (human proteome). The peaks at a distance of 28 amino acids are likely due to Zinc-finger repeats, more particularly C2H2 fingers (cf. high fold enrichments of cysteine and histdine at a distance of 28) \cite{Krishna2003}. 
     \label{figmutualinformationdecay}
     }
 \end{figure}
@@ -100,7 +102,7 @@ We can further dissect which correlations between individual amino acids contrib
 
 \begin{figure}
     \includegraphics[width=\textwidth]{doubletenrichment}
-    \caption{Enrichment of doublets relative to independent amino acid choice. 
+    \caption{Doublets are only enriched moderately relative to independent amino acid choice. (Even the small enrichments are significant though. There are $\sim 10^7$ amino acids in the human proteome and thus on the order of $\sim 10^4$ counts per doublet. The relative error on the frequencies is thus on the order of $\sim 1/\sqrt{10^4} = 10^{-2}$.)
     \label{figdoubletentrichment}
     }
 \end{figure}

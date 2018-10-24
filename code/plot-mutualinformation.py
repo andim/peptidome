@@ -4,7 +4,7 @@ from scipy.stats import entropy
 import matplotlib.pyplot as plt
 
 from lib import *
-mishuffled = 0.0014149224105342029
+mishuffled = 0.0012531812133396159
 
 df = pd.read_csv('mutualinformation-human.csv')
 fig = plt.figure(figsize=(5, 3))

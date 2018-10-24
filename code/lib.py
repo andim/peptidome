@@ -3,6 +3,7 @@ from itertools import groupby
 from collections import defaultdict
 import numpy as np
 import pandas as pd
+import scipy.special
 import matplotlib.pyplot as plt
 
 aminoacids = 'ACDEFGHIKLMNPQRSTVWY'
@@ -26,6 +27,13 @@ pathogenfilepaths = [malaria, influenzaB, cmv, hcv, denv, tuberculosis, listeria
 pathogennames = ['Malaria', 'Influenza B', 'CMV', 'HCV', 'Dengue', 'Tuberculosis', 'Listeria', 'HIV', 'Epstein-Barr virus', 'Burkholderia pseudomallei']
 pathogens = dict(zip(pathogennames, pathogenfilepaths))
 
+
+def entropy_grassberger(n, base=None):
+    N = np.sum(n)
+    entropy = np.log(N) - np.sum(n*scipy.special.digamma(n+1e-20))/N
+    if base:
+        entropy /= np.log(base)
+    return entropy
 
 def fasta_iter(fasta_name, returnheader=True):
     """
@@ -52,7 +60,6 @@ def strcolumn_to_charcolumns(df, column):
     for i in range(1, k+1):
         df['aa'+str(i)] = [s[i-1] for s in df[column]]
     return df
-
 
 def scrambled(iterable):
     for s in iterable:

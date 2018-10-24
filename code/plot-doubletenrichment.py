@@ -16,22 +16,28 @@ entropy1 = entropy(df1['freq'], base=2)
 
 meanabsfoldchanges = []
 mutualinformations = []
-gaps = np.arange(0, 5, 1)
+gaps = np.arange(0, 201, 1)
 for gap in gaps:
-    df2 = counter_to_df(count_kmers_proteome(proteome, k=2, gap=gap))
+    #df2 = counter_to_df(count_kmers_proteome(proteome, k=2, gap=gap))
+    df2 = counter_to_df(count_kmers_proteome(proteome, k=2, gap=gap), norm=False)
     df2 = df2[~df2['seq'].str.contains('U|B|X|Z')]
-    entropy2 = entropy(df2['freq'], base=2)
-    mi = 2*entropy1 - entropy2
+    #entropy2 = entropy(df2['freq'], base=2)
+    entropy2 = entropy_grassberger(df2['count'], base=2)
+    #mi = 2*entropy1 - entropy2
+    df = strcolumn_to_charcolumns(df2, 'seq')
+    e1 = entropy(df.groupby('aa1').agg(np.sum)['count'], base=2)
+    e2 = entropy(df.groupby('aa2').agg(np.sum)['count'], base=2)
+    mi = e1 + e2 - entropy2
     print(gap, mi)
     mutualinformations.append(mi)
-    strcolumn_to_charcolumns(df2, 'seq')
-    df2['theory'] = [float(df1.loc[s[0]] * df1.loc[s[1]]) for s in df2['seq']]
-    df2['fold'] = np.log2(df2['freq']/df2['theory'])
-    print(np.abs(df2['fold']).max(), np.abs(df2['fold']).mean(), mi)
-    meanabsfoldchanges.append(np.abs(df2['fold']).mean())
-    dfmat = df2.pivot(columns='aa1', index='aa2')['fold']
-    print(dfmat)
-    dfmat.to_csv('doubletfoldenrichment-%g-%s.csv'%(gap, name))
+#    strcolumn_to_charcolumns(df2, 'seq')
+#    df2['theory'] = [float(df1.loc[s[0]] * df1.loc[s[1]]) for s in df2['seq']]
+#    df2['fold'] = np.log2(df2['freq']/df2['theory'])
+#    print(np.abs(df2['fold']).max(), np.abs(df2['fold']).mean(), mi)
+#    meanabsfoldchanges.append(np.abs(df2['fold']).mean())
+#    dfmat = df2.pivot(columns='aa1', index='aa2')['fold']
+#    print(dfmat)
+#    dfmat.to_csv('doubletfoldenrichment-%g-%s.csv'%(gap, name))
 #    fig = plt.figure(figsize=(5.5, 5))
 #    sns.heatmap(dfmat, vmin=-1.0, vmax=1.0, cmap='RdBu_r', cbar_kws=dict(label='log$_2$ doublet fold enrichment'))
 #    fig.tight_layout()
