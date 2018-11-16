@@ -97,7 +97,9 @@ Under the heading of immunopeptidomics and MHC ligandomics efforts are underway 
     }
 \end{figure}
 
-How close to random is the protein distribution? To answer this question we calculate how much information about the amino acid in a certain position is revealed by what its neighbors are. Concretely, we calculate the mutual information between amino acids a certain distance apart. The mutual information can be expressed as $I(X, Y) = H(X) + H(Y) - H(X, Y)$. We use this expression to calulate the mutual information from the single site entropy and the entropy of the joint distribution, which we obtain by a naive calculation based on observed counts. (TODO: Use NSB estimator or Grassberger estimator for entropy, which might remove the artifactual uptick in mutual information at large distances.) The universal constraints on unrelated proteins are surprisingly small as measured by the mutual information (Fig.~\ref{figmutualinformationdecay}, see also \cite{Lavelle2009}). 
+How close to random is the protein distribution? To answer this question we calculate how much information about the amino acid in a certain position is revealed by knowing its neighbors. Concretely, we calculate the mutual information between amino acid pair a certain distance apart. The mutual information can be expressed as $I(X, Y) = H(X) + H(Y) - H(X, Y)$. We use this expression to calulate the mutual information from the single site entropies and the entropy of the joint distribution, which we calculate using the estimator proposed by Grassberger \cite{Grassberger2003}. (TODO: Use NSB estimator instead?) The universal constraints on unrelated proteins are surprisingly small as measured by the mutual information (Fig.~\ref{figmutualinformationdecay}, see also \cite{Lavelle2009}). 
+
+(TODO: Curiously, it has been important to recalculate the single site entropy for the comparisons to make sense.)
 
 We can further dissect which correlations between individual amino acids contribute to the mutual information. To do so we analyze the fold enrichment of amino acid doublets relative to an independent model. Most doublets are only over- or underrepresented moderately (Fig.~\ref{figdoubletentrichment}). An exception is a strong enrichment of Cysteine-Cysteine 3 amino acids apart. This enrichment has been found previously \cite{Greenbaum2014} and is likely due to a particular preference of cysteines to form disulfide bonds at this distance. Another prominent feature of this data are the relatively high enrichments along the diagonal at all distances. This might be attributable to amino acid repeats within some proteins \cite{Turjanski2018}.
 
@@ -107,6 +109,26 @@ We can further dissect which correlations between individual amino acids contrib
     \label{figdoubletentrichment}
     }
 \end{figure}
+
+\subsection{A shell theory of immunogenicity}
+
+\begin{figure}
+    \includegraphics{shelltheorysketch}
+    \caption{Sketch of the shell theory of immunogenicity: To be immunogenic an antigen needs to fall outside the tolerance region (orange), but within one of the detectable regions surrounding a self-antigen (blue).
+    \label{figshelltheorysketch}
+    }
+\end{figure}
+
+\begin{figure}
+    \includegraphics{shelltheory}
+    \caption{Immunogenicity as a function of the likelihood a peptide in the shell model. The probability of a peptide being immunogenic is defined as the probability of being detectable, but not tolerated. The probability of immunogenicity times the probability of peptides within the pathogen proteome (assumed to be lognormal with $mu = -1.25 k$ and $\sigma = 0.3 k$ with $k=9$) gives a hypothetical expected distribution for the epitopes, which is clipped at both ends.  
+    \label{figshelltheory}
+    }
+\end{figure}
+
+How likely is it that a peptide will be close enough to a self-peptide to be tolerized? How likely to be close enough such that there has been positive selection? To a first approximation neighboring peptides will have similar probabilities. Therefore the probabilities of a peptide relate to the local density and thus to the average distance to the nearest neighbor.
+
+Consider that there is a number $N_T$ neighboring peptides that if they are in the self-peptidome would lead to tolerance, and a number $N_D > N_T$ of neighboring peptides that would lead to positive selection on TCRs recognizing the peptide and are thus needed for detectability. The probability of a peptide of probability $p$ being tolerized is $P_T \sim 1-(1-N_T p)^N$ assuming the $N$ possible self-peptides are sampled statistically independently from the peptidome distribution. As $N_T p \ll 1$ we can approximate $P_T \sim 1-e^{-N_T p N}$. Similarly, the probability of being detectable is $P_D \sim 1-(1-N_D p)^N \approx 1-e^{-N_D p N}$. Setting $N_T$ to the number of first neighbors (171 for 9mers), and $N_D$ to the number of second neighbors (25992 for 9mers) and assuming that $N$ is equal to the total possible number of kmers that can be generated from the full human proteome ($\sim 2 \cdot 10^7$), we can plot how $P_T$ and $P_D$ depends on $p$ (Fig.~\ref{figshelltheory}).
 
 \bibliography{library}
 
