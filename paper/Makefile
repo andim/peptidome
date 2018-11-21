@@ -9,7 +9,7 @@ TEMPFILES = *.log *.lot *.lof *.toc *.out *.aux *.bbl *.blg *.pdf *.glo *.ist *.
 MAKEDIR := $(shell pwd)
 SECTIONSDIR = $(MAKEDIR)
 sections = $(SECTIONSDIR)/*.tex
-additionaldeps = 
+additionaldeps = images/*pdf
 SHAREDREFDIR = 
 
 RM = /bin/rm -f
@@ -24,7 +24,7 @@ RERUNBIB = "No file.*\.bbl|Citation.*undefined"
 s%: %.pdf
 	@evince $< > $(OUT) &
 
-%.pdf: %.tex $(sections) $(additionaldeps) $(makeimages)
+%.pdf: %.tex $(sections) $(additionaldeps)
 	@echo "changes found. regenerating"
 	@pdflatex -file-line-error $<
 	@# run bibtex if needed
