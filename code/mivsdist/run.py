@@ -2,13 +2,13 @@ import sys
 sys.path.append('..')
 import numpy as np
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 from lib import *
 
-name = 'human'
-proteome = human
+#name = 'human'
+#proteome = human
+name = 'mouse'
+proteome = mouse
 
 entropyestimator = entropy_grassberger
 

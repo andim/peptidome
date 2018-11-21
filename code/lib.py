@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import scipy.special
 import matplotlib.pyplot as plt
+from Bio import SeqIO
 
 aminoacids = 'ACDEFGHIKLMNPQRSTVWY'
 
@@ -29,6 +30,12 @@ pathogens = dict(zip(pathogennames, pathogenfilepaths))
 
 
 def entropy_grassberger(n, base=None):
+    """"
+    Estimate the entropy of a discrete distribution from counts per category
+
+    n: array of counts 
+    base: base in which to measure the entropy (default: nats)
+    """
     N = np.sum(n)
     entropy = np.log(N) - np.sum(n*scipy.special.digamma(n+1e-20))/N
     if base:
@@ -39,26 +46,39 @@ def fasta_iter(fasta_name, returnheader=True):
     """
     Given a fasta file return a iterator over tuples of header, complete sequence.
     """
-    f = open(fasta_name)
-    faiter = (x[1] for x in groupby(f, lambda line: line[0] == ">"))
-    for header in faiter:
-        # drop the ">"
-        header = next(header)[1:].strip()
-        # join all sequence lines together
-        seq = "".join(s.strip() for s in next(faiter))
+    fasta_sequences = SeqIO.parse(open(fasta_name),'fasta')
+    for fasta in fasta_sequences:
         if returnheader:
-            yield header, seq
+            yield fasta.id, str(fasta.seq)
         else:
-            yield seq
+            yield str(fasta.seq)
+
+# Alternative code that does not rely on Biopython
+#def fasta_iter(fasta_name, returnheader=True):
+#    """
+#    Given a fasta file return a iterator over tuples of header, complete sequence.
+#    """
+#    f = open(fasta_name)
+#    faiter = (x[1] for x in groupby(f, lambda line: line[0] == ">"))
+#    for header in faiter:
+#        # drop the ">"
+#        header = next(header)[1:].strip()
+#        # join all sequence lines together
+#        seq = "".join(s.strip() for s in next(faiter))
+#        if returnheader:
+#            yield header, seq
+#        else:
+#            yield seq
 
 def unique_amino_acids(proteome):
     "returns an array of all unique amino acids used within a proteome"
     return np.unique(list(''.join([seq for h, seq in proteome])))
 
-def strcolumn_to_charcolumns(df, column):
+def strcolumn_to_charcolumns(df, column, prefix='aa'):
+    """Build columns of chars from a column of strings of fixed length."""
     k = len(df[column][0]) 
     for i in range(1, k+1):
-        df['aa'+str(i)] = [s[i-1] for s in df[column]]
+        df[prefix+str(i)] = [s[i-1] for s in df[column]]
     return df
 
 def scrambled(iterable):
@@ -82,7 +102,7 @@ def count_kmers_iterable(iterable, k, **kwargs):
 
 def count_kmers(string, k, counter=None, gap=0):
     """
-    Count number of kmers in a given string.
+    Count occurrence of kmers in a given string.
     """
     if counter is None:
         counter = defaultdict(int)
@@ -94,11 +114,13 @@ def count_kmers(string, k, counter=None, gap=0):
     return counter
 
 def normalize(counter):
+    "Given a (kmer, count) dict returns a normalized array of frequencies"
     arr = np.array(list(counter.values()), dtype=np.float)
     arr /= np.sum(arr)
     return arr
  
 def counter_to_df(counter, norm=True):
+    "Convert a (kmer, count) dict to a pandas DataFrame"
     if norm:
         return pd.DataFrame(dict(seq=list(counter.keys()), freq=normalize(counter)))
     arr = np.array(list(counter.values()), dtype=np.float)

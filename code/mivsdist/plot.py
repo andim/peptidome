@@ -2,16 +2,17 @@ import sys
 sys.path.append('..')
 import numpy as np
 import pandas as pd
-from scipy.stats import entropy
 import matplotlib.pyplot as plt
 
 from lib import *
 mishuffled = 0.0012531812133396159
 
-df = pd.read_csv('data/mutualinformation-human.csv')
 fig = plt.figure(figsize=(5, 3))
-plt.plot(df['gaps']+1, df['mutualinformation'], label='data')
-plt.axhline(mishuffled, color='k', label='shuffled within proteins')
+df = pd.read_csv('data/mutualinformation-human.csv')
+plt.plot(df['gaps']+1, df['mutualinformation'], label='human')
+df = pd.read_csv('data/mutualinformation-mouse.csv')
+plt.plot(df['gaps']+1, df['mutualinformation'], label='mouse')
+plt.axhline(mishuffled, color='k', label='human shuffled')
 plt.legend()
 plt.ylim(0.0)
 plt.xlim(1.0)
