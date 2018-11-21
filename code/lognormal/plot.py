@@ -7,10 +7,7 @@ import scipy.stats
 
 from lib import *
 
-counter = count_kmers_proteome(human, 1)
-df = counter_to_df(counter, norm=False)
-df = df[~df['seq'].str.contains('U|B|X|Z')]
-df['freq'] = df['count'] / np.sum(df['count'])
+df = pd.read_csv('data/freq1.csv')
 
 xk = np.log10(df['freq'])
 pk = np.asarray(df['freq'])

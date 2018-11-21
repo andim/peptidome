@@ -3,8 +3,8 @@ sys.path.append('..')
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import scipy.stats
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+import scipy.stats
 
 df = pd.read_csv('data/freq1.csv')
 xk = np.log10(df['freq'])
@@ -12,10 +12,12 @@ pk = np.asarray(df['freq'])
 mu = np.sum(pk * xk)
 var = np.sum(pk * (xk-mu)**2)
 
-k = 4
-df = pd.read_csv('data/freq4.csv')
+phuman = np.load('data/loglikelihood-k9-human.npy')
+
+k = 9
 fig, ax = plt.subplots(figsize=(5, 3))
-counts, bins = np.histogram(np.log10(df['freq']), bins=int(2*np.log(len(df['freq']))), weights=df['freq'])
+phuman = phuman[~np.isnan(phuman)]
+counts, bins = np.histogram(phuman, bins=70)
 axinset =  inset_axes(ax, width='30%', height='40%', loc='upper left')
 axinset.tick_params(labelleft=False, labelright=True, left=False, right=True)
 x = 0.5*(bins[:-1]+bins[1:])
@@ -32,6 +34,7 @@ for a in [ax, axinset]:
     a.set_xlim(xmin, xmax)
 ax.set_xlabel('$log_{10}$ likelihood');
 ax.set_ylabel('frequency');
+#ax.set_yscale('log')
 ax.legend()
 fig.tight_layout()
 plt.show()
