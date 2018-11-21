@@ -7,8 +7,12 @@ from lib import *
 
 #name = 'human'
 #proteome = human
-name = 'mouse'
-proteome = mouse
+#name = 'mouse'
+#proteome = mouse
+#name = 'yeast'
+#proteome = yeast
+name = 'malaria'
+proteome = malaria
 
 entropyestimator = entropy_grassberger
 

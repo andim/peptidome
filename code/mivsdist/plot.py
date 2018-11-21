@@ -8,11 +8,10 @@ from lib import *
 mishuffled = 0.0012531812133396159
 
 fig = plt.figure(figsize=(5, 3))
-df = pd.read_csv('data/mutualinformation-human.csv')
-plt.plot(df['gaps']+1, df['mutualinformation'], label='human')
-df = pd.read_csv('data/mutualinformation-mouse.csv')
-plt.plot(df['gaps']+1, df['mutualinformation'], label='mouse')
-plt.axhline(mishuffled, color='k', label='human shuffled')
+for species in ['human', 'mouse', 'yeast']:
+    df = pd.read_csv('data/mutualinformation-%s.csv'%species)
+    plt.plot(df['gaps']+1, df['mutualinformation'], label=species)
+#plt.axhline(mishuffled, color='k', label='human shuffled')
 plt.legend()
 plt.ylim(0.0)
 plt.xlim(1.0)
