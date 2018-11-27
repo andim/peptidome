@@ -1,4 +1,5 @@
 import random
+import os.path
 from itertools import groupby
 from collections import defaultdict
 import numpy as np
@@ -9,9 +10,9 @@ from Bio import SeqIO
 
 aminoacids = 'ACDEFGHIKLMNPQRSTVWY'
 
-datadir = '/home/amayer/data/peptidome/'
-human = datadir+'uniprot-homosapiens-up000005640.fasta'
-mouse = datadir+'uniprot-musmusculus-up000000589.fasta'
+datadir = os.path.join(os.path.dirname(__file__), '../data/')
+human = datadir+'uniprot-homosapiens-UP000005640.fasta'
+mouse = datadir+'uniprot-musmusculus-UP000000589.fasta'
 yeast = datadir+'uniprot-saccharomycescerevisiae-UP000002311.fasta'
 malaria = datadir+'uniprot-PlasmodiumFalciparum-up000001450.fasta'
 influenzaB = datadir+'uniprot-influenzaB-UP000127412.fasta'

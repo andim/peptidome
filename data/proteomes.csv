@@ -1,7 +1,7 @@
 shortname,fullname,iedbname,path,type
-Human,Homo sapiens,Homo sapiens,uniprot-homosapiens-up000005640.fasta,
-Mouse,Mus Musculus,Mus Musculus,uniprot-musmusculus-up000000589.fasta,
-Malaria,Plasmodium falciparum,Plasmodium falciparum,uniprot-PlasmodiumFalciparum-up000001450.fasta,parasite
+Human,Homo sapiens,Homo sapiens,uniprot-homosapiens-UP000005640.fasta,
+Mouse,Mus Musculus,Mus Musculus,uniprot-musmusculus-UP000000589.fasta,
+Malaria,Plasmodium falciparum,Plasmodium falciparum,uniprot-PlasmodiumFalciparum-UP000001450.fasta,parasite
 Influenza B,Influenza B,Influenza B,uniprot-influenzaB-UP000127412.fasta,virus
 CMV,Cytomegalovirus,Human betaherpesvirus 5,uniprot-cmv-UP000008991.fasta,virus
 HCV,Hepacivirus C,Hepacivirus C,uniprot-HCV-UP000000518.fasta,virus
