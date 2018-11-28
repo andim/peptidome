@@ -12,7 +12,7 @@ proteome = human
 df1 = counter_to_df(count_kmers_proteome(proteome, k=1))
 df1 = df1[~df1['seq'].str.contains('U|B|X|Z')]
 df1.set_index('seq', inplace=True)
-entropy1 = entropy(df1['freq'], base=2)
+entropy1 = entropy_grassberger(df1['freq'], base=2)
 
 meanabsfoldchanges = []
 mutualinformations = []
