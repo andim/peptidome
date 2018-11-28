@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from Bio import SeqIO
 
 aminoacids = 'ACDEFGHIKLMNPQRSTVWY'
+aminoacids_set = set(aminoacids)
 
 datadir = os.path.join(os.path.dirname(__file__), '../data/')
 human = datadir+'uniprot-homosapiens-UP000005640.fasta'
@@ -120,9 +121,18 @@ def normalize(counter):
     arr = np.array(list(counter.values()), dtype=np.float)
     arr /= np.sum(arr)
     return arr
- 
-def counter_to_df(counter, norm=True):
-    "Convert a (kmer, count) dict to a pandas DataFrame"
+
+def isvaliddna(string):
+    "returns true if string is valid DNA using the standard amino acid alphabet"
+    return all(c in aminoacids_set for c in string)
+
+def counter_to_df(counter, norm=True, clean=True):
+    """Convert a (kmer, count) dict to a pandas DataFrame
+    
+    clean: only accept counts responding to valid amino acid letters 
+    """
+    if clean:
+        counter = {k:counter[k] for k in counter.keys() if isvaliddna(k)}
     if norm:
         return pd.DataFrame(dict(seq=list(counter.keys()), freq=normalize(counter)))
     arr = np.array(list(counter.values()), dtype=np.float)

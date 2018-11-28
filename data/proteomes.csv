@@ -1,8 +1,9 @@
 shortname,fullname,iedbname,path,type
-Human,Homo sapiens,Homo sapiens,uniprot-homosapiens-UP000005640.fasta,
-Mouse,Mus Musculus,Mus Musculus,uniprot-musmusculus-UP000000589.fasta,
+Human,Homo sapiens,Homo sapiens,uniprot-homosapiens-UP000005640.fasta,vertebrate
+Mouse,Mus Musculus,Mus Musculus,uniprot-musmusculus-UP000000589.fasta,vertebrate
+Yeast,Saccharomyces cerevisiae,,uniprot-saccharomycescerevisiae-UP000002311.fasta,fungus
 Malaria,Plasmodium falciparum,Plasmodium falciparum,uniprot-PlasmodiumFalciparum-UP000001450.fasta,parasite
-Influenza B,Influenza B,Influenza B,uniprot-influenzaB-UP000127412.fasta,virus
+InfluenzaB,Influenza B,Influenza B,uniprot-influenzaB-UP000127412.fasta,virus
 CMV,Cytomegalovirus,Human betaherpesvirus 5,uniprot-cmv-UP000008991.fasta,virus
 HCV,Hepacivirus C,Hepacivirus C,uniprot-HCV-UP000000518.fasta,virus
 DENV,Dengue virus,Dengue virus,uniprot-DENV-UP000002500.fasta,virus

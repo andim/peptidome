@@ -56,6 +56,7 @@ The immune system needs to distinguish molecular signatures of pathogens from th
 
 \section{Ideas}
 
+
 Are there any features that distinguish foreign antigens from self-antigens? There is one view of adaptive immunity in which both self and non-self antigens are random samples from a common (and essentially flat) distribution of peptides of a given length. Discrimination is then achieved solely on the basis of "white-listing": thymic negative selection acts to get rid of those cells that are reactive to self, leaving everything else as potentially foreign. If the two types of antigens are instead drawn from different distributions, than some regions of antigenic space will be much more likely to be self and some much more likely to be non-self. Over evolutionary timescales the recombination machinery might then have evolved to bias the immune repertoire towards recognizing antigens that are more unlikely to arise from the human proteome.
 
 If such differences exist they may arise from species-dependent codon biases or differences in the GC content of the DNA. Additionally due to different types of proteins and different types of environments the amino acids needed for proper functioning of a protein might differ between a host and its pathogen. On the other hand, however, coevolution of the pathogens might select that they have a more similar distribution than they would otherwise have. One way to test for this is whether pathogens adapted to a particular host are particularly similar to its peptidome.
@@ -115,7 +116,7 @@ We can further dissect which correlations between individual amino acids contrib
 \subsection{The distribution of kmer likelihoods is close to being lognormal}
 
 \begin{figure}
-    \includegraphics[width=\columnwidth]{lognormalaa}
+    \includegraphics{lognormalaa}
     \caption{Histogram of amino acid frequencies in the human proteome and lognormal approximation. (A) Probability density of the empirical likelihoods of a randomly drawn single amino acid and lognormal approximation. (B) Probability density of the empirical likelihoods of a randomly drawn 4-mer and lognormal prediction based on an independent model.
     (C) Probabilitiy density of the likelihoods of randomly drawn 9-mers under an independent model and lognormal prediction.
     \label{figlognormalaa}
@@ -135,6 +136,34 @@ Using the central limit theorem we can approximate the distribution of the log-l
 
 
 \subsection{Quantifying differences between human and pathogen proteomes}
+
+As argued above the dominant statistical bias away from a uniform peptide distribution arises from single amino acid biases. Therefore to start unraveling potential differences between human and pathogen proteomes we can quantify how much the distributions of single amino acids differs between proteomes. The overall differences can be quantified using the Kullback-Leibler divergence between the distribution of amino acid usage in a pathogen proteome and the human proteome. It turns out that these differences are small with the notable exception of Malaria (more specifically Plasmodium falciparum) (Table~\ref{tabkldiv}). The Kullback-Leibler divergence is exactly the expected log-likelihood ratio drawing an amino acid from the pathogen distribution versus the human distribution. Under the independent model log-likelihoods are additive and thus the average log-likelihood ratio for a kmer is simply k times the calculated single site $D_{KL}$.
+
+\begin{table}
+    \begin{center}
+        \begin{tabular}{ c c }
+            Organism&$D_{KL}$ in bits\\
+            \hline
+            Mouse&0.00023\\
+            Yeast&0.046\\
+            Malaria&0.36\\
+            InfluenzaB&0.043\\
+            CMV&0.035\\
+            HCV&0.064\\
+            DENV&0.049\\
+            Tuberculosis&0.11\\
+            Listeria&0.071\\
+            HIV&0.043\\
+            EBV&0.043\\
+            Burkholderia&0.1\\
+            Meningococcus&0.039\\
+        \end{tabular}
+    \end{center}
+    \caption{Kullback-Leibler divergence between amino acid frequencies in various proteomes and the human proteome.}
+    \label{tabkldiv}
+\end{table}
+
+
 
 
 \subsection{A shell theory of immunogenicity?}
