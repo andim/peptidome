@@ -15,7 +15,7 @@ datadir = os.path.join(os.path.dirname(__file__), '../data/')
 human = datadir+'uniprot-homosapiens-UP000005640.fasta'
 mouse = datadir+'uniprot-musmusculus-UP000000589.fasta'
 yeast = datadir+'uniprot-saccharomycescerevisiae-UP000002311.fasta'
-malaria = datadir+'uniprot-PlasmodiumFalciparum-up000001450.fasta'
+malaria = datadir+'uniprot-PlasmodiumFalciparum-UP000001450.fasta'
 influenzaB = datadir+'uniprot-influenzaB-UP000127412.fasta'
 cmv = datadir+'uniprot-cmv-UP000008991.fasta'
 hcv = datadir+'uniprot-HCV-UP000000518.fasta'
@@ -115,6 +115,21 @@ def count_kmers(string, k, counter=None, gap=0):
         else:
             counter[string[i:i+k]] += 1
     return counter
+
+def plot_sorted(data, ax=None, normalize=True, scalex=1.0, scaley=1.0, **kwargs):
+    if ax is None:
+        ax = plt.gca()
+    sorted_data = np.sort(data)  # Or data.sort(), if data can be modified
+    # Cumulative counts:
+    if normalize:
+        norm = sorted_data.size
+    else:
+        norm = 1
+    #ax.step(sorted_data, np.arange(sorted_data.size)/norm)  # From 0 to the number of data points-1
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+    return ax.step(sorted_data[::-1]*scalex, scaley*np.arange(sorted_data.size)/norm, **kwargs)
+
 
 def normalize(counter):
     "Given a (kmer, count) dict returns a normalized array of frequencies"
@@ -233,6 +248,15 @@ def energy_ising(s, h, Jk):
             energy += J[s[i]][s[i+k+1]]
     return -energy
 
+
+def map_aatonumber(seq):
+    """
+    Map sequence to array of number
+    """
+    seq = np.array(list(seq))
+    map_ = {c: i for i, c in enumerate(aminoacids)}
+    return np.vectorize(map_.__getitem__)(seq)
+
 # code modified from OpenVax/pepdata project
 # see https://github.com/openvax/pepdata/blob/master/pepdata/iedb/tcell.py
 def load_iedb_tcellepitopes(
@@ -296,25 +320,15 @@ def load_iedb_tcellepitopes(
     epitopes = df[epitope_column_key].str.upper()
 
     null_epitope_seq = epitopes.isnull()
-    n_null = null_epitope_seq.sum()
-
-    if n_null > 0:
-        logging.info("Dropping %d null sequences", n_null)
-
     mask = ~null_epitope_seq
 
     if only_standard_amino_acids:
-        # if have rare or unknown amino acids, drop the sequence
-        bad_epitope_seq = \
-            epitopes.str.contains(bad_amino_acids, na=False).astype("bool")
-        n_bad = bad_epitope_seq.sum()
-        if n_bad > 0:
-            logging.info("Dropping %d bad sequences", n_bad)
-
-        mask &= ~bad_epitope_seq
+        # drop the sequence if it contains unknown amino acids
+        bad_epitope_seq = epitopes.apply(isvaliddna)
+        mask &= bad_epitope_seq
 
     if human_only:
-        organism = df['Host Organism Name']
+        organism = df[('Host', 'Name')]
         mask &= organism.str.startswith('Homo sapiens', na=False).astype('bool')
 
     # Match known alleles such as "HLA-A*02:01",
@@ -358,5 +372,22 @@ def load_iedb_tcellepitopes(
         assert peptide_length > 0
         mask &= df[epitope_column_key].str.len() == peptide_length
 
-    df = df[mask]
-    return df
+    return df[mask]
+
+def load_iedb_bcellepitopes():
+    """
+    Load IEDB B-cell data 
+    """
+    path = datadir + 'iedb-bcell.zip'
+    df = pd.read_csv(
+            path,
+            header=[0, 1],
+            skipinitialspace=True,
+            low_memory=False,
+            error_bad_lines=False,
+            encoding="latin-1")
+
+    mask = df['Epitope', 'Object Type'] == 'Linear peptide'
+    mask &= df['Epitope', 'Description'].apply(isvaliddna)
+    
+    return df[mask]
