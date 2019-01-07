@@ -2,14 +2,17 @@ shortname,fullname,iedbname,path,type
 Human,Homo sapiens,Homo sapiens,uniprot-homosapiens-UP000005640.fasta,vertebrate
 Mouse,Mus Musculus,Mus Musculus,uniprot-musmusculus-UP000000589.fasta,vertebrate
 Yeast,Saccharomyces cerevisiae,,uniprot-saccharomycescerevisiae-UP000002311.fasta,fungus
+Cockroach,Blattella germanica,Blattella germanica,uniprot-cockroach-UP000245037.fasta,invertebrate
 Malaria,Plasmodium falciparum,Plasmodium falciparum,uniprot-PlasmodiumFalciparum-UP000001450.fasta,parasite
+Chagas,Trypanosoma cruzi,Trypanosoma cruzi,uniprot-chagas-UP000002296.fasta,parasite
+Vaccinia,Vaccinia virus,Vaccinia virus,uniprot-vaccinia-UP000000344.fasta,virus
 InfluenzaB,Influenza B,Influenza B,uniprot-influenzaB-UP000127412.fasta,virus
 CMV,Cytomegalovirus,Human betaherpesvirus 5,uniprot-cmv-UP000008991.fasta,virus
 HCV,Hepacivirus C,Hepacivirus C,uniprot-HCV-UP000000518.fasta,virus
 DENV,Dengue virus,Dengue virus,uniprot-DENV-UP000002500.fasta,virus
-Tuberculosis,Mycobacterium tuberculosis,Mycobacterium tuberculosis,uniprot-mycobacteriumtuberculosis-UP000001584.fasta,bacterium
-Listeria,Listeria monocytogenes,Listeria monocytogenes,uniprot-listeriamonocytogenes-UP000000817.fasta,bacterium
 HIV,Human immunodeficiency virus,Human immunodeficiency virus,uniprot-HIV1-UP000002241.fasta,virus
 EBV,Epstein-Barr virus,Human gammaherpesvirus 4,uniprot-EBV-UP000153037.fasta,virus
+Tuberculosis,Mycobacterium tuberculosis,Mycobacterium tuberculosis,uniprot-mycobacteriumtuberculosis-UP000001584.fasta,bacterium
+Listeria,Listeria monocytogenes,Listeria monocytogenes,uniprot-listeriamonocytogenes-UP000000817.fasta,bacterium
 Burkholderia,Burkholderia pseudomallei,Burkholderia pseudomallei,uniprot-burkholderiapseudomallei-UP000000605.fasta,bacterium
 Meningococcus,Neisseria meningitidis,Neisseria meningitidis,uniprot-neisseriameningitidis-UP000000425.fasta,bacterium

@@ -1,17 +1,15 @@
+import sys
+sys.path.append('..')
 import numpy as np
 import pandas as pd
-from scipy.stats import entropy
-import sklearn.decomposition
-import sklearn.manifold
-import seaborn as sns
 import matplotlib.pyplot as plt
 
 from lib import *
 
 df = counter_to_df(count_kmers_proteome(human, 1), norm=True)
 
-dfproteomes = pd.read_csv('../data/proteomes.csv', sep=',')
-pathogenproteomes = dfproteomes[dfproteomes['type'].isin(['bacterium', 'virus', 'parasite'])]
+dfproteomes = pd.read_csv(datadir+'proteomes.csv', sep=',')
+pathogenproteomes = dfproteomes[~(dfproteomes['shortname']=='Human')]
 
 for idx, row in pathogenproteomes.iterrows():
     name = row['shortname']
@@ -20,6 +18,7 @@ for idx, row in pathogenproteomes.iterrows():
     dfp = counter_to_df(count_kmers_proteome(datadir+path, 1), norm=True)
     dfmerged = pd.merge(df, dfp, on='seq', suffixes=['_human', '_pathogen'])
 
+    print(name, dfmerged)
     fig, ax = plt.subplots(figsize=(4, 4))
     xmin, xmax = 0.25*np.amin(dfmerged['freq_human']), 2*np.amax(dfmerged['freq_human'])
     x = np.logspace(np.log10(xmin), np.log10(xmax))
