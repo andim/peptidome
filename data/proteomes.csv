@@ -1,18 +1,31 @@
-shortname,fullname,iedbname,path,type
-Human,Homo sapiens,Homo sapiens,uniprot-homosapiens-UP000005640.fasta,vertebrate
-Mouse,Mus Musculus,Mus Musculus,uniprot-musmusculus-UP000000589.fasta,vertebrate
-Yeast,Saccharomyces cerevisiae,,uniprot-saccharomycescerevisiae-UP000002311.fasta,fungus
-Cockroach,Blattella germanica,Blattella germanica,uniprot-cockroach-UP000245037.fasta,invertebrate
-Malaria,Plasmodium falciparum,Plasmodium falciparum,uniprot-PlasmodiumFalciparum-UP000001450.fasta,parasite
-Chagas,Trypanosoma cruzi,Trypanosoma cruzi,uniprot-chagas-UP000002296.fasta,parasite
-Vaccinia,Vaccinia virus,Vaccinia virus,uniprot-vaccinia-UP000000344.fasta,virus
-InfluenzaB,Influenza B,Influenza B,uniprot-influenzaB-UP000127412.fasta,virus
-CMV,Cytomegalovirus,Human betaherpesvirus 5,uniprot-cmv-UP000008991.fasta,virus
-HCV,Hepacivirus C,Hepacivirus C,uniprot-HCV-UP000000518.fasta,virus
-DENV,Dengue virus,Dengue virus,uniprot-DENV-UP000002500.fasta,virus
-HIV,Human immunodeficiency virus,Human immunodeficiency virus,uniprot-HIV1-UP000002241.fasta,virus
-EBV,Epstein-Barr virus,Human gammaherpesvirus 4,uniprot-EBV-UP000153037.fasta,virus
-Tuberculosis,Mycobacterium tuberculosis,Mycobacterium tuberculosis,uniprot-mycobacteriumtuberculosis-UP000001584.fasta,bacterium
-Listeria,Listeria monocytogenes,Listeria monocytogenes,uniprot-listeriamonocytogenes-UP000000817.fasta,bacterium
-Burkholderia,Burkholderia pseudomallei,Burkholderia pseudomallei,uniprot-burkholderiapseudomallei-UP000000605.fasta,bacterium
-Meningococcus,Neisseria meningitidis,Neisseria meningitidis,uniprot-neisseriameningitidis-UP000000425.fasta,bacterium
+shortname,fullname,iedbname,path,type,comment
+Human,Homo sapiens,Homo sapiens,uniprot-homosapiens-UP000005640.fasta,vertebrate,
+Mouse,Mus Musculus,Mus Musculus,uniprot-musmusculus-UP000000589.fasta,vertebrate,
+Yeast,Saccharomyces cerevisiae,,uniprot-saccharomycescerevisiae-UP000002311.fasta,fungus,
+Cockroach,Blattella germanica,Blattella germanica,uniprot-cockroach-UP000245037.fasta,invertebrate,
+Malaria,Plasmodium falciparum,Plasmodium falciparum,uniprot-PlasmodiumFalciparum-UP000001450.fasta,parasite,
+Chagas,Trypanosoma cruzi,Trypanosoma cruzi,uniprot-chagas-UP000002296.fasta,parasite,
+Vaccinia,Vaccinia virus,Vaccinia virus,uniprot-vaccinia-UP000000344.fasta,virus,
+InfluenzaB,Influenza B,Influenza B,uniprot-influenzaB-UP000127412.fasta,virus,
+InfluenzaA,Influenza A,Influenza A virus,uniprot-influenzaA-UP000116233.fasta,virus,A/Mexico City/INER13/2009(H1N1))
+CMV,Cytomegalovirus,Human betaherpesvirus 5,uniprot-cmv-UP000008991.fasta,virus,
+HCV,Hepacivirus C,Hepacivirus C,uniprot-HCV-UP000000518.fasta,virus,
+HBV,Hepatitis B virus,Hepatitis B virus,uniprot-HBV-UP000008591.fasta,virus,genotype C subtype ayr (isolate Human/Japan/Okamoto/-)
+DENV,Dengue virus,Dengue virus,uniprot-DENV-UP000002500.fasta,virus,
+HIV,Human immunodeficiency virus,Human immunodeficiency virus,uniprot-HIV1-UP000002241.fasta,virus,
+EBV,Epstein-Barr virus,Human gammaherpesvirus 4,uniprot-EBV-UP000153037.fasta,virus,
+Ebola,Ebolavirus,Ebolavirus,uniprot-ebola-UP000007209.fasta,virus,Zaire ebolavirus (strain Mayinga-76)
+Tuberculosis,Mycobacterium tuberculosis,Mycobacterium tuberculosis,uniprot-mycobacteriumtuberculosis-UP000001584.fasta,bacterium,
+Listeria,Listeria monocytogenes,Listeria monocytogenes,uniprot-listeriamonocytogenes-UP000000817.fasta,bacterium,
+Burkholderia,Burkholderia pseudomallei,Burkholderia pseudomallei,uniprot-burkholderiapseudomallei-UP000000605.fasta,bacterium,
+Meningococcus,Neisseria meningitidis,Neisseria meningitidis,uniprot-neisseriameningitidis-UP000000425.fasta,bacterium,
+OnchocercaVolvulus,Onchocerca volvulus,Onchocerca volvulus,uniprot-onchocercavolvulus-UP000024404.fasta,parasite,causes river blindness
+StreptococcusPyogenes,Streptococcus pyogenes,Streptococcus pyogenes,uniprot-streptococcuspyogenes-UP000000750.fasta,bacterium,
+Hpylori,Helicobacter pylori,Helicobacter pylori,uniprot-Hpylori-UP000000429.fasta,bacterium,causing chronic gastritis
+Lyme,Borreliella burgdorferi,Borreliella burgdorferi,uniprot-lyme-UP000001807.fasta,bacterium,
+Cattle,Bos taurus,Bos taurus,uniprot-cattle-UP000009136.fasta,vertebrate,
+Chicken,Gallus gallus,Gallus gallus,uniprot-chicken-UP000000539.fasta,vertebrate,
+Wheat,Triticum aestivum,Triticum aestivum,uniprot-wheat-UP000019116.fasta,plant,
+Soybean,Glycine max,Glycine max,uniprot-soybean-UP000008827.fasta,plant,
+Tetanus,Clostridium tetani,Clostridium tetani,uniprot-tetanus-UP000001412.fasta,bacterium,
+Leprosy,Mycobacterium leprae,Mycobacterium leprae,uniprot-leprosy-UP000000806.fasta,bacterium
