@@ -324,8 +324,7 @@ def load_iedb_tcellepitopes(
 
     if only_standard_amino_acids:
         # drop the sequence if it contains unknown amino acids
-        bad_epitope_seq = epitopes.apply(isvaliddna)
-        mask &= bad_epitope_seq
+        mask &= epitopes.apply(isvaliddna)
 
     if human_only:
         organism = df[('Host', 'Name')]
@@ -374,9 +373,15 @@ def load_iedb_tcellepitopes(
 
     return df[mask]
 
-def load_iedb_bcellepitopes():
+def load_iedb_bcellepitopes(human_only=False, only_standard_amino_acids=True):
     """
     Load IEDB B-cell data 
+
+    human_only: bool
+        Restrict to human samples (default False)
+    only_standard_amino_acids : bool, optional
+        Drop sequences which use non-standard amino acids, anything outside
+        the core 20, such as X or U (default = True)
     """
     path = datadir + 'iedb-bcell.zip'
     df = pd.read_csv(
@@ -387,7 +392,20 @@ def load_iedb_bcellepitopes():
             error_bad_lines=False,
             encoding="latin-1")
 
+    epitope_column_key = 'Epitope', 'Description'
+
     mask = df['Epitope', 'Object Type'] == 'Linear peptide'
-    mask &= df['Epitope', 'Description'].apply(isvaliddna)
-    
+
+    epitopes = df[epitope_column_key].str.upper()
+    null_epitope_seq = epitopes.isnull()
+    mask &= ~null_epitope_seq
+
+    if only_standard_amino_acids:
+        # drop the sequence if it contains unknown amino acids
+        mask &= epitopes.apply(isvaliddna)
+
+    if human_only:
+        organism = df[('Host', 'Name')]
+        mask &= organism.str.startswith('Homo sapiens', na=False).astype('bool')
+
     return df[mask]

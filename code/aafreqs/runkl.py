@@ -8,6 +8,7 @@ import scipy.stats
 from lib import *
 
 df = counter_to_df(count_kmers_proteome(human, 1), norm=True)
+df2 = counter_to_df(count_kmers_proteome(human, 2), norm=True)
 
 dfproteomes = pd.read_csv(datadir+'proteomes.csv', sep=',')
 pathogenproteomes = dfproteomes[~dfproteomes['shortname'].isin(['Human'])]
@@ -25,5 +26,15 @@ for idx, row in pathogenproteomes.iterrows():
     p = np.asarray(dfmerged['freq_pathogen'])
 
     dkl = scipy.stats.entropy(p, qk=h, base=2)
-    print('%s&%s\\\\'%(name, round_to_n(dkl, 2)))
+
+    # calculate dkl between twomers
+    dfp = counter_to_df(count_kmers_proteome(datadir+path, 2), norm=True)
+    dfmerged = pd.merge(df2, dfp, on='seq', suffixes=['_human', '_pathogen'])
+
+    h = np.asarray(dfmerged['freq_human'])
+    p = np.asarray(dfmerged['freq_pathogen'])
+
+    dkl2 = scipy.stats.entropy(p, qk=h, base=2)
+
+    print('%s&%s&%s\\\\'%(name, round_to_n(dkl, 2), round_to_n(dkl2, 2)))
 
