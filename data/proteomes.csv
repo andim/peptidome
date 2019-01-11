@@ -1,31 +1,31 @@
-shortname,fullname,iedbname,path,type,comment
-Human,Homo sapiens,Homo sapiens,uniprot-homosapiens-UP000005640.fasta,vertebrate,
-Mouse,Mus Musculus,Mus Musculus,uniprot-musmusculus-UP000000589.fasta,vertebrate,
-Yeast,Saccharomyces cerevisiae,,uniprot-saccharomycescerevisiae-UP000002311.fasta,fungus,
-Cockroach,Blattella germanica,Blattella germanica,uniprot-cockroach-UP000245037.fasta,invertebrate,
-Malaria,Plasmodium falciparum,Plasmodium falciparum,uniprot-PlasmodiumFalciparum-UP000001450.fasta,parasite,
-Chagas,Trypanosoma cruzi,Trypanosoma cruzi,uniprot-chagas-UP000002296.fasta,parasite,
-Vaccinia,Vaccinia virus,Vaccinia virus,uniprot-vaccinia-UP000000344.fasta,virus,
-InfluenzaB,Influenza B,Influenza B,uniprot-influenzaB-UP000127412.fasta,virus,
-InfluenzaA,Influenza A,Influenza A virus,uniprot-influenzaA-UP000116233.fasta,virus,A/Mexico City/INER13/2009(H1N1))
-CMV,Cytomegalovirus,Human betaherpesvirus 5,uniprot-cmv-UP000008991.fasta,virus,
-HCV,Hepacivirus C,Hepacivirus C,uniprot-HCV-UP000000518.fasta,virus,
-HBV,Hepatitis B virus,Hepatitis B virus,uniprot-HBV-UP000008591.fasta,virus,genotype C subtype ayr (isolate Human/Japan/Okamoto/-)
-DENV,Dengue virus,Dengue virus,uniprot-DENV-UP000002500.fasta,virus,
-HIV,Human immunodeficiency virus,Human immunodeficiency virus,uniprot-HIV1-UP000002241.fasta,virus,
-EBV,Epstein-Barr virus,Human gammaherpesvirus 4,uniprot-EBV-UP000153037.fasta,virus,
-Ebola,Ebolavirus,Ebolavirus,uniprot-ebola-UP000007209.fasta,virus,Zaire ebolavirus (strain Mayinga-76)
-Tuberculosis,Mycobacterium tuberculosis,Mycobacterium tuberculosis,uniprot-mycobacteriumtuberculosis-UP000001584.fasta,bacterium,
-Listeria,Listeria monocytogenes,Listeria monocytogenes,uniprot-listeriamonocytogenes-UP000000817.fasta,bacterium,
-Burkholderia,Burkholderia pseudomallei,Burkholderia pseudomallei,uniprot-burkholderiapseudomallei-UP000000605.fasta,bacterium,
-Meningococcus,Neisseria meningitidis,Neisseria meningitidis,uniprot-neisseriameningitidis-UP000000425.fasta,bacterium,
-OnchocercaVolvulus,Onchocerca volvulus,Onchocerca volvulus,uniprot-onchocercavolvulus-UP000024404.fasta,parasite,causes river blindness
-StreptococcusPyogenes,Streptococcus pyogenes,Streptococcus pyogenes,uniprot-streptococcuspyogenes-UP000000750.fasta,bacterium,
-Hpylori,Helicobacter pylori,Helicobacter pylori,uniprot-Hpylori-UP000000429.fasta,bacterium,causing chronic gastritis
-Lyme,Borreliella burgdorferi,Borreliella burgdorferi,uniprot-lyme-UP000001807.fasta,bacterium,
-Cattle,Bos taurus,Bos taurus,uniprot-cattle-UP000009136.fasta,vertebrate,
-Chicken,Gallus gallus,Gallus gallus,uniprot-chicken-UP000000539.fasta,vertebrate,
-Wheat,Triticum aestivum,Triticum aestivum,uniprot-wheat-UP000019116.fasta,plant,
-Soybean,Glycine max,Glycine max,uniprot-soybean-UP000008827.fasta,plant,
-Tetanus,Clostridium tetani,Clostridium tetani,uniprot-tetanus-UP000001412.fasta,bacterium,
-Leprosy,Mycobacterium leprae,Mycobacterium leprae,uniprot-leprosy-UP000000806.fasta,bacterium
+shortname,fullname,iedbname,speciesid,proteomeid,type,comment
+Human,Homo sapiens,Homo sapiens,9606,UP000005640,vertebrate,
+Mouse,Mus Musculus,Mus Musculus,10090,UP000000589,vertebrate,
+Yeast,Saccharomyces cerevisiae,,,UP000002311,fungus,
+Cockroach,Blattella germanica,Blattella germanica,6973,UP000245037,invertebrate,
+Malaria,Plasmodium falciparum,Plasmodium falciparum,36329,UP000001450,parasite,
+Chagas,Trypanosoma cruzi,Trypanosoma cruzi,353153,UP000002296,parasite,
+Vaccinia,Vaccinia virus,Vaccinia virus,,UP000000344,virus,
+InfluenzaB,Influenza B,Influenza B,,UP000127412,virus,
+InfluenzaA,Influenza A,Influenza A virus,,UP000116233,virus,A/Mexico City/INER13/2009(H1N1))
+CMV,Cytomegalovirus,Human betaherpesvirus 5,,UP000008991,virus,
+HCV,Hepacivirus C,Hepacivirus C,,UP000000518,virus,
+HBV,Hepatitis B virus,Hepatitis B virus,,UP000008591,virus,genotype C subtype ayr (isolate Human/Japan/Okamoto/-)
+DENV,Dengue virus,Dengue virus,,UP000002500,virus,
+HIV,Human immunodeficiency virus,Human immunodeficiency virus,,UP000002241,virus,
+EBV,Epstein-Barr virus,Human gammaherpesvirus 4,,UP000153037,virus,
+Ebola,Ebolavirus,Ebolavirus,,UP000007209,virus,Zaire ebolavirus (strain Mayinga-76)
+Tuberculosis,Mycobacterium tuberculosis,Mycobacterium tuberculosis,,UP000001584,bacterium,
+Listeria,Listeria monocytogenes,Listeria monocytogenes,,UP000000817,bacterium,
+Burkholderia,Burkholderia pseudomallei,Burkholderia pseudomallei,,UP000000605,bacterium,
+Meningococcus,Neisseria meningitidis,Neisseria meningitidis,,UP000000425,bacterium,
+OnchocercaVolvulus,Onchocerca volvulus,Onchocerca volvulus,6282,UP000024404,parasite,causes river blindness
+StreptococcusPyogenes,Streptococcus pyogenes,Streptococcus pyogenes,,UP000000750,bacterium,
+Hpylori,Helicobacter pylori,Helicobacter pylori,,UP000000429,bacterium,causing chronic gastritis
+Lyme,Borreliella burgdorferi,Borreliella burgdorferi,,UP000001807,bacterium,
+Cattle,Bos taurus,Bos taurus,9913,UP000009136,vertebrate,
+Chicken,Gallus gallus,Gallus gallus,9031,UP000000539,vertebrate,
+Wheat,Triticum aestivum,Triticum aestivum,4565,UP000019116,plant,
+Soybean,Glycine max,Glycine max,3847,UP000008827,plant,
+Tetanus,Clostridium tetani,Clostridium tetani,,UP000001412,bacterium,
+Leprosy,Mycobacterium leprae,Mycobacterium leprae,,UP000000806,bacterium,
