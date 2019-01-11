@@ -1,10 +1,6 @@
 import json
 import numpy as np
 import pandas as pd
-from scipy.stats import entropy
-import sklearn.decomposition
-import sklearn.manifold
-import seaborn as sns
 import matplotlib.pyplot as plt
 
 import sys
@@ -15,8 +11,7 @@ from lib import *
 with open(datadir+ 'triplet-human.json', 'r') as f:
     tripletparams = json.load(f)
 
-dfproteomes = pd.read_csv(datadir+ 'proteomes.csv', sep=',')
-pathogenproteomes = dfproteomes[dfproteomes['type'].isin(['bacterium', 'virus', 'parasite'])]
+pathogenproteomes = load_proteomes(only_pathogens=True)
 
 df_ts = load_iedb_tcellepitopes(human_only=True)
 df_ts['length'] = [len(d) for d in df_ts['Epitope', 'Description']]
@@ -32,8 +27,7 @@ likelihoodname = 'triplet'
 for k in [9]:
     phuman = np.array([loglikelihood(seq[i:i+k], k) for h, seq in fasta_iter(human) for i in range(len(seq)-k+1) ])
 
-    for idx, row in pathogenproteomes.iterrows():
-        name = row['shortname']
+    for name, row in pathogenproteomes.iterrows():
         iedbname = row['iedbname']
         path = datadir + row['path']
         print(name)

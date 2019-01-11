@@ -8,14 +8,13 @@ from lib import *
 
 df = counter_to_df(count_kmers_proteome(human, 1), norm=True)
 
-dfproteomes = pd.read_csv(datadir+'proteomes.csv', sep=',')
-pathogenproteomes = dfproteomes[~(dfproteomes['shortname']=='Human')]
+proteomes = load_proteomes()
+proteomes = proteomes[~(proteomes.index == 'Human')]
 
-for idx, row in pathogenproteomes.iterrows():
-    name = row['shortname']
-    path = row['path']
+for name, row in proteomes.iterrows():
+    path = datadir+row['path']
 
-    dfp = counter_to_df(count_kmers_proteome(datadir+path, 1), norm=True)
+    dfp = counter_to_df(count_kmers_proteome(path, 1), norm=True)
     dfmerged = pd.merge(df, dfp, on='seq', suffixes=['_human', '_pathogen'])
 
     print(name, dfmerged)

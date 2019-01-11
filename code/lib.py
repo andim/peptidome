@@ -1,4 +1,7 @@
 import random
+import gzip
+from mimetypes import guess_type
+from functools import partial
 import os.path
 from itertools import groupby
 from collections import defaultdict
@@ -11,26 +14,29 @@ from Bio import SeqIO
 aminoacids = 'ACDEFGHIKLMNPQRSTVWY'
 aminoacids_set = set(aminoacids)
 
+def make_path(row):
+    "Return path based on a row from the proteome file"
+    path = row['proteomeid'] + row['shortname'] + '.fasta'
+    path += '.gz' if row['speciesid'] else ''
+    return path
+
+def load_proteomes(only_pathogens=False):
+    """
+    Load metadata of proteomes.
+    """
+    proteomes = pd.read_csv(datadir + 'proteomes.csv', dtype=str, na_filter=False)
+    proteomes['path'] = proteomes.apply(make_path, axis=1)
+    proteomes.set_index('shortname', inplace=True)
+    if only_pathogens:
+        mask = proteomes['type'].isin(['bacterium', 'virus', 'parasite'])
+        proteomes = proteomes[mask] 
+    return proteomes
+
+
 datadir = os.path.join(os.path.dirname(__file__), '../data/')
-human = datadir+'uniprot-homosapiens-UP000005640.fasta'
-mouse = datadir+'uniprot-musmusculus-UP000000589.fasta'
-yeast = datadir+'uniprot-saccharomycescerevisiae-UP000002311.fasta'
-malaria = datadir+'uniprot-PlasmodiumFalciparum-UP000001450.fasta'
-influenzaB = datadir+'uniprot-influenzaB-UP000127412.fasta'
-cmv = datadir+'uniprot-cmv-UP000008991.fasta'
-hcv = datadir+'uniprot-HCV-UP000000518.fasta'
-denv = datadir+'uniprot-DENV-UP000002500.fasta'
-tuberculosis = datadir+'uniprot-mycobacteriumtuberculosis-UP000001584.fasta'
-listeria = datadir+'uniprot-listeriamonocytogenes-UP000000817.fasta'
-hiv = datadir+'uniprot-HIV1-UP000002241.fasta'
-ebv = datadir+'uniprot-EBV-UP000153037.fasta'
-pseudoburk = datadir+'uniprot-burkholderiapseudomallei-UP000000605.fasta'
-
-
-pathogenfilepaths = [malaria, influenzaB, cmv, hcv, denv, tuberculosis, listeria, hiv, ebv, pseudoburk]
-pathogennames = ['Malaria', 'Influenza B', 'CMV', 'HCV', 'Dengue', 'Tuberculosis', 'Listeria', 'HIV', 'Epstein-Barr virus', 'Burkholderia pseudomallei']
-pathogens = dict(zip(pathogennames, pathogenfilepaths))
-
+proteomes = load_proteomes()
+human = datadir + proteomes.ix['Human']['path']
+yeast = datadir + proteomes.ix['Yeast']['path']
 
 def entropy_grassberger(n, base=None):
     """"
@@ -49,12 +55,17 @@ def fasta_iter(fasta_name, returnheader=True):
     """
     Given a fasta file return a iterator over tuples of header, complete sequence.
     """
-    fasta_sequences = SeqIO.parse(open(fasta_name),'fasta')
-    for fasta in fasta_sequences:
-        if returnheader:
-            yield fasta.id, str(fasta.seq)
-        else:
-            yield str(fasta.seq)
+    if guess_type(fasta_name)[1] =='gzip':
+        _open = partial(gzip.open, mode='rt')
+    else:
+        _open = open
+    with _open(fasta_name) as f:
+        fasta_sequences = SeqIO.parse(f, 'fasta')
+        for fasta in fasta_sequences:
+            if returnheader:
+                yield fasta.id, str(fasta.seq)
+            else:
+                yield str(fasta.seq)
 
 # Alternative code that does not rely on Biopython
 #def fasta_iter(fasta_name, returnheader=True):
@@ -409,3 +420,4 @@ def load_iedb_bcellepitopes(human_only=False, only_standard_amino_acids=True):
         mask &= organism.str.startswith('Homo sapiens', na=False).astype('bool')
 
     return df[mask]
+
