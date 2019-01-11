@@ -217,7 +217,7 @@ def loglikelihood_triplet(string, charlogp=None, doubletlogp=None, tripletlogp=N
         cm1 = c
     return logp
 
-def plot_histograms(valuess, labels, nbins=40, ax=None,
+def plot_histograms(valuess, labels, weights=None, nbins=40, ax=None,
                     xmin=None, xmax=None, **kwargs):
     if not ax:
         ax = plt.gca()
@@ -229,9 +229,14 @@ def plot_histograms(valuess, labels, nbins=40, ax=None,
     if xmax is None:
         xmax  = round(mean+5*std)
     bins = np.linspace(xmin, xmax, nbins)
-    for values, label in zip(valuess, labels):
-        counts, bins = np.histogram(values, bins=bins)
-        ax.plot(0.5*(bins[:-1]+bins[1:]), counts/len(values),
+    for i, (values, label) in enumerate(zip(valuess, labels)):
+        if weights:
+            counts, bins = np.histogram(values, bins=bins, weights=weights[i])
+            counts /= np.sum(weights[i])
+        else:
+            counts, bins = np.histogram(values, bins=bins)
+            counts /= len(values)
+        ax.plot(0.5*(bins[:-1]+bins[1:]), counts,
                 label=label, **kwargs)
     ax.legend()
     return ax
