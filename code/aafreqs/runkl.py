@@ -39,9 +39,10 @@ def dkl(path, name):
     print('%s&%s&%s\\\\'%(name, round_to_n(dkl, 2), round_to_n(dkl2, 2)))
 
 
+dkl(datadir+'human-viruses-uniref90_nohiv.fasta', 'viruses')
+
 for name, row in pathogenproteomes.iterrows():
     path = datadir + row['path']
     dkl(path, name)
 
-dkl(datadir+'human-viruses-uniref90.fasta', 'viruses')
 

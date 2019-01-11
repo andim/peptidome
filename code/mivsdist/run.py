@@ -11,8 +11,10 @@ from lib import *
 #proteome = mouse
 #name = 'yeast'
 #proteome = yeast
-name = 'malaria'
-proteome = malaria
+#name = 'malaria'
+#proteome = malaria
+name = 'viruses'
+proteome = datadir + 'human-viruses-uniref90_nohiv.fasta'
 
 entropyestimator = entropy_grassberger
 
@@ -32,6 +34,7 @@ for gap in gaps:
     e1 = entropyestimator(df.groupby('aa1').agg(np.sum)['count'], base=2)
     e2 = entropyestimator(df.groupby('aa2').agg(np.sum)['count'], base=2)
     mi = e1 + e2 - entropy2
+    print(gap, mi)
     mutualinformations.append(mi)
 
 df = pd.DataFrame.from_dict(dict(gaps=gaps, mutualinformation=mutualinformations))

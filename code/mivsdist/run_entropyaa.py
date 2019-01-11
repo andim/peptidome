@@ -5,14 +5,16 @@ import pandas as pd
 
 from lib import *
 
-name = 'human'
-proteome = human
+#name = 'human'
+#proteome = human
 #name = 'mouse'
 #proteome = mouse
 #name = 'yeast'
 #proteome = yeast
 #name = 'malaria'
 #proteome = malaria
+name = 'viruses'
+proteome = datadir + 'human-viruses-uniref90_nohiv.fasta'
 
 entropyestimator = entropy_grassberger
 
@@ -24,6 +26,8 @@ for seq in fasta_iter(proteome, returnheader=False):
         continue
     for pos, number in enumerate(seq):
         aa_counts[number, pos] += 1
+
+print(aa_counts)
 
 entropies = [entropyestimator(aa_counts[:, i], base=2) for i in range(aa_counts.shape[1])]
 df = pd.DataFrame.from_dict(dict(entropy=entropies,
