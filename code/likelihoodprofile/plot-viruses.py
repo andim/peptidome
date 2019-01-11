@@ -25,13 +25,13 @@ mask = ~df_ts['Epitope', 'Parent Species'].str.contains('Homo sapiens', na=False
 mask &= df_ts['Epitope', 'Parent Species'].str.contains('virus', case=False, na=False)
 mask &= ~df_ts['Epitope', 'Parent Species'].str.contains('Human immunodeficiency virus 1', case=False, na=False)
 df_t = df_ts[mask]
-likelihoods_t, weights_t = likelihoods_epitopes(df_t['Epitope', 'Description'], loglikelihood, k)
+likelihoods_t, weights_t = likelihoods_epitopes(df_t['Epitope', 'Description'].unique(), loglikelihood, k)
 df_bs = load_iedb_bcellepitopes(human_only=True)
 mask = ~df_bs['Epitope', 'Parent Species'].str.contains('Homo sapiens', na=False)
 mask &= df_bs['Epitope', 'Parent Species'].str.contains('virus', case=False, na=False)
 mask &= ~df_bs['Epitope', 'Parent Species'].str.contains('Human immunodeficiency virus 1', case=False, na=False)
 df_b = df_bs[mask]
-likelihoods_b, weights_b = likelihoods_epitopes(df_b['Epitope', 'Description'], loglikelihood, k)
+likelihoods_b, weights_b = likelihoods_epitopes(df_b['Epitope', 'Description'].unique(), loglikelihood, k)
 
 print(len(likelihood_human), len(likelihood_virus), len(likelihoods_t), len(likelihoods_b))
 

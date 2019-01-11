@@ -83,7 +83,7 @@ Karlin and Bucher \cite{Karlin1992} have shown the existence of pairwise correla
 
 Another interesting line of work has involved low-complexity sequences within proteins (see \cite{Cascarina2018} and references therein).
 
-There has been some early work about peptide similarity in the context of immunology by Burroughs, De Boer, and Kesmir \cite{Burroughs2004}. Interestingly, they demonstrate that the number of shared 9mers decreases with evolutionary distance, and is much lower for e.g. human and bacteria than for human and mouse, or human and drosophila. The paper also discusses some possible slight preference of the antigen processing pathway for non-self antigens. A more recent follow up by Wortel et al. \cite{Wortel2018} shows that self and foreign peptides are largely similar (much more similar then words from different languages). They then argue that under these conditions thymic selection should minimizie the co-occurrence of similar self-peptides for efficient self/non-self discrimination based on negative selection.
+There has been some early work about peptide similarity in the context of immunology by Burroughs, De Boer, and Kesmir \cite{Burroughs2004}. Interestingly, they demonstrate that the number of shared 9mers decreases with evolutionary distance, and is much lower for e.g. human and bacteria than for human and mouse, or human and drosophila. The paper also discusses some possible slight preference of the antigen processing pathway for non-self antigens. In a follow up work an overlapping set of authors build a tool for immunogenicity prediction based on small differences in amino acid usage in recognized epitopes \cite{Calis2013}. A more recent follow up by Wortel et al. \cite{Wortel2018} shows that self and foreign peptides are largely similar (much more similar then words from different languages). They then argue that under these conditions thymic selection should minimizie the co-occurrence of similar self-peptides for efficient self/non-self discrimination based on negative selection. 
 
 Coevolution \cite{Bahir2009}.
 
@@ -117,7 +117,7 @@ We can further dissect which correlations between individual amino acids contrib
 \begin{figure}
     \includegraphics{lognormalaa}
     \caption{Histogram of amino acid frequencies in the human proteome and lognormal approximation. (A) Probability density of the empirical likelihoods of a randomly drawn single amino acid and lognormal approximation. (B) Probability density of the empirical likelihoods of a randomly drawn 4-mer and lognormal prediction based on an independent model.
-    (C) Probabilitiy density of the likelihoods of randomly drawn 9-mers under an independent model and lognormal prediction.
+    (C) Probability density of the likelihoods of randomly drawn 9-mers under an independent model and lognormal prediction.
     \label{figlognormalaa}
     }
 \end{figure}
@@ -136,35 +136,60 @@ Using the central limit theorem we can approximate the distribution of the log-l
 
 \subsection{Quantifying differences between human and pathogen proteomes}
 
-As argued above the dominant statistical bias away from a uniform peptide distribution arises from single amino acid biases. Therefore to start unraveling potential differences between human and pathogen proteomes we can quantify how much the distributions of single amino acids differs between proteomes. The overall differences can be quantified using the Kullback-Leibler divergence between the distribution of amino acid usage in a pathogen proteome and the human proteome. It turns out that these differences are small with the notable exception of Malaria (more specifically Plasmodium falciparum) (Table~\ref{tabkldiv}). The Kullback-Leibler divergence is exactly the expected log-likelihood ratio drawing an amino acid from the pathogen distribution versus the human distribution. Under the independent model log-likelihoods are additive and thus the average log-likelihood ratio for a kmer is simply k times the calculated single site $D_{KL}$. In the limit of large $k$ 
-Chernoff-Stein Lemma!
+As argued above the dominant statistical bias away from a uniform peptide distribution arises from single amino acid biases. Therefore to start unraveling potential differences between human and pathogen proteomes we can quantify how much the distributions of single amino acids differs between proteomes. The overall differences can be quantified using the Kullback-Leibler divergence between the distribution of amino acid usage in a pathogen proteome and the human proteome. It turns out that these differences are small with some notable exceptions (Table~\ref{tabkldiv}). Interestingly, the parasite Plasmodium falciparum has the largest observed divergence from the human amino acid usage, which might be a result of the known AT bias of its genome \cite{Hamilton2017}. Vaccinia is higher than other viruses, which might attributable to it replicating outside the nucleus of the host cell using its own set of proteins for DNA replication and gene transcription \cite{Tolonen2001}. Mostly the Kullback-Leibler divergences between the doublet distributions are about twice the single site divergences. Notable exceptions are some of the viral proteomes, but this might be due to finite sampling effects biasing the entropy estimates for these small proteomes.
+
+The Kullback-Leibler divergence is exactly the expected log-likelihood ratio drawing an amino acid from the pathogen distribution versus the human distribution. Under the independent model log-likelihoods are additive and thus the average log-likelihood ratio for a kmer is simply k times the calculated single site $D_{KL}$.
+%In the limit of large $k$ 
+%Chernoff-Stein Lemma!
 
 \begin{table}
     \begin{center}
-        \begin{tabular}{ c c }
-            Organism&$D_{KL}$ in bits\\
+        \begin{tabular}{ c c c }
+            Organism&site $D_{KL}$&doublet $D_{KL}$\\
             \hline
-            Mouse&0.00023\\
-            Yeast&0.046\\
-            Malaria&0.36\\
-            Vaccinia&0.13\\
-            InfluenzaB&0.043\\
-            CMV&0.035\\
-            HCV&0.064\\
-            DENV&0.049\\
-            Tuberculosis&0.11\\
-            Listeria&0.071\\
-            HIV&0.043\\
-            EBV&0.043\\
-            Burkholderia&0.1\\
-            Meningococcus&0.039\\
+Mouse&0.00023&0.00089\\
+Yeast&0.046&0.097\\
+Cockroach&0.015&0.033\\
+Cattle&0.00031&0.0011\\
+Chicken&0.0011&0.0038\\
+Wheat&0.012&0.029\\
+Soybean&0.013&0.033\\\hline
+Vaccinia&0.13&0.27\\
+InfluenzaB&0.043&0.17\\
+InfluenzaA&0.042&0.17\\
+CMV&0.035&0.085\\
+HCV&0.064&0.2\\
+HBV&0.078&0.28\\
+DENV&0.049&0.19\\
+HIV&0.043&0.19\\
+EBV&0.043&0.1\\ \hline
+Human viruses&0.015&0.038\\\hline
+Ebola&0.023&0.12\\
+Tuberculosis&0.11&0.23\\
+Listeria&0.071&0.15\\
+Burkholderia&0.1&0.23\\
+Meningococcus&0.039&0.1\\
+StreptococcusPyogenes&0.06&0.14\\
+Hpylori&0.077&0.19\\
+Lyme&0.19&0.38\\
+Tetanus&0.15&0.3\\ 
+Leprosy&0.077&0.17\\ \hline
+Malaria&0.36&0.71\\
+Chagas&0.017&0.051\\
+OnchocercaVolvulus&0.03&0.069\\
         \end{tabular}
     \end{center}
-    \caption{Kullback-Leibler divergence between amino acid frequencies in various proteomes and the human proteome. Interestingly the parasite Plasmodium falciparum has the largest observed divergence from the human amino acid usage. Vaccinia is higher than other viruses, which might attributable to it replicating outside the nucleus of the host cell using its own set of proteins for DNA replication and gene transcription \cite{Tolonen2001}.}
+    \caption{Kullback-Leibler divergence between amino acid frequencies (and doublet frequencies) in various proteomes and the human proteome (in bits). Human viruses: all viruses with human host from uniprot filtered for duplicates using the Uniref 90 criteria.}
     \label{tabkldiv}
 \end{table}
 
 
+\begin{figure}
+    \includegraphics{viruses}
+    \caption{Likelihood of randomly drawn viral 9mers given a triplet model based on the human proteome statistics. B cell and T cell epitope likelihoods. Interestingly the B cell epitopes are more similar to the human proteome than if they where drawn at random.
+    \label{figviruses}
+    }
+\end{figure}
 
 
 \subsection{A shell theory of immunogenicity?}

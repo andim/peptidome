@@ -25,3 +25,11 @@ From http://chemlabs.princeton.edu/hecht/research/ :
 
 - chop up viral quasispecies data into kmers: Is there any correlation between the degree of conservation vs. how close the kmer is to the closest self-peptide? Databases: Los Alamos HIV, GISAID flu
 
+# 2019-01-11: Interesting groups: Bjoern Peters and Alessandro Sette @ La Jolla Institute
+
+Both groups are involved in curating IEDB and they have also worked extensively on various bioinformatics analysis and predictions tools build on top of the database. Bjoern Peters is e.g. one of the authors of netMHC. See https://www.lji.org/faculty-research/labs/peters/ and https://www.lji.org/faculty-research/labs/sette
+
+# 2019-01-11: Notes on data analysis
+
+One can export all viruses with a human host from uniprot by searching for host:9606. The majority of these proteins are many duplicates of proteins of HIV1, which creates various issues with the down stream analysis. I have thus also generated a version of the viral proteome excluding HIV1.
+

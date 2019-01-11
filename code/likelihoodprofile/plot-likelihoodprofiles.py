@@ -21,9 +21,9 @@ likelihoodname = 'triplet'
 pathogenproteomes = load_proteomes(only_pathogens=True)
 
 df_ts = load_iedb_tcellepitopes(human_only=True)
-df_ts['length'] = [len(d) for d in df_ts['Epitope', 'Description']]
+#df_ts['length'] = [len(d) for d in df_ts['Epitope', 'Description']]
 df_bs = load_iedb_bcellepitopes(human_only=True)
-df_bs['length'] = [len(d) for d in df_bs['Epitope', 'Description']]
+#df_bs['length'] = [len(d) for d in df_bs['Epitope', 'Description']]
 
 
 for name, row in pathogenproteomes.iterrows():
@@ -34,9 +34,9 @@ for name, row in pathogenproteomes.iterrows():
     likelihoods_pathogen = pd.read_csv('data/proteome-ref%s-k%i-%s.zip'%(ref, k, name))['likelihoods']
 
     df_t = df_ts[df_ts['Epitope', 'Parent Species'].str.contains(iedbname, na=False)]
-    likelihoods_t, weights_t = likelihoods_epitopes(df_t['Epitope', 'Description'], loglikelihood, k)
+    likelihoods_t, weights_t = likelihoods_epitopes(df_t['Epitope', 'Description'].unique(), loglikelihood, k)
     df_b = df_bs[df_bs['Epitope', 'Parent Species'].str.contains(iedbname, na=False)]
-    likelihoods_b, weights_b = likelihoods_epitopes(df_b['Epitope', 'Description'], loglikelihood, k)
+    likelihoods_b, weights_b = likelihoods_epitopes(df_b['Epitope', 'Description'].unique(), loglikelihood, k)
 
     if (len(likelihoods_t) > 100) or (len(likelihoods_b) > 100):
         fig, ax = plt.subplots()
@@ -51,9 +51,11 @@ for name, row in pathogenproteomes.iterrows():
             ps.append(likelihoods_b)
             labels.append('B epitopes')
             weights.append(weights_b)
-        plot_histograms(ps, labels, weights=weights, xmin=-14, xmax=-9, ax=ax)
-        ax.set_ylabel('frequency')
-        ax.set_xlabel('probability given human proteome statistics')
+        plot_histograms(ps, labels, weights=weights, xmin=-14.1, xmax=-8.9, ax=ax, nbins=35)
+        ax.set_xlim(-14, -9)
+        ax.set_ylabel('probability density')
+        ax.set_xlabel('$log_2$ likelihood')
         plt.title(name)
         fig.tight_layout()
         fig.savefig('plots/likelihoodprofile-%s-%s-k%i.png' % (name, likelihoodname, k), dpi=300)
+        plt.close()
