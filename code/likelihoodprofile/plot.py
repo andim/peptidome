@@ -7,7 +7,7 @@ sys.path.append('..')
 
 from lib import *
 
-df = pd.read_csv('data/proteome-Human.zip')
+df = pd.read_csv('data/proteome-refhuman-k9-Human.zip')
 print(df)
 
 phuman = df['likelihoods']

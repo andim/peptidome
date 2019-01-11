@@ -217,6 +217,12 @@ def loglikelihood_triplet(string, charlogp=None, doubletlogp=None, tripletlogp=N
         cm1 = c
     return logp
 
+def likelihoods_epitopes(epitopes, likelihood, k):
+    epitopes = list(epitopes)
+    likelihoods = np.array([likelihood(seq[i:i+k], k) for seq in epitopes for i in range(len(seq)-k+1)])
+    weights = np.array([1.0/(len(seq)-k+1) for seq in epitopes for i in range(len(seq)-k+1)])
+    return likelihoods, weights
+
 def plot_histograms(valuess, labels, weights=None, nbins=40, ax=None,
                     xmin=None, xmax=None, **kwargs):
     if not ax:
@@ -235,7 +241,7 @@ def plot_histograms(valuess, labels, weights=None, nbins=40, ax=None,
             counts /= np.sum(weights[i])
         else:
             counts, bins = np.histogram(values, bins=bins)
-            counts /= len(values)
+            counts = counts/len(values)
         ax.plot(0.5*(bins[:-1]+bins[1:]), counts,
                 label=label, **kwargs)
     ax.legend()
