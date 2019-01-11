@@ -18,9 +18,7 @@ pathogenproteomes = proteomes[~proteomes.index.isin(['Human'])]
 
 round_to_n = lambda x, n: round(x, -int(np.floor(np.log10(x))) + (n - 1))
 
-for name, row in pathogenproteomes.iterrows():
-    path = datadir + row['path']
-
+def dkl(path, name): 
     dfp = counter_to_df(count_kmers_proteome(path, 1), norm=True)
     dfmerged = pd.merge(df, dfp, on='seq', suffixes=['_human', '_pathogen'])
 
@@ -39,4 +37,11 @@ for name, row in pathogenproteomes.iterrows():
     dkl2 = scipy.stats.entropy(p, qk=h, base=2)
 
     print('%s&%s&%s\\\\'%(name, round_to_n(dkl, 2), round_to_n(dkl2, 2)))
+
+
+for name, row in pathogenproteomes.iterrows():
+    path = datadir + row['path']
+    dkl(path, name)
+
+dkl(datadir+'human-viruses-uniref90.fasta', 'viruses')
 

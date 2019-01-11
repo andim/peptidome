@@ -17,6 +17,13 @@ for ind, row in proteomes.iterrows():
         print(url)
         urllib.request.urlretrieve(url, datadir+row['path'])
 
+
+path = datadir+'human-viruses-uniref90.fasta'
+if not os.path.exists(path):
+    url = r"https://www.uniprot.org/uniref/?query=uniprot%3A(host%3A%22Homo+sapiens+(Human)+[9606]%22)+AND+identity%3A0.9&sort=score&format=fasta"
+    print(url)
+    urllib.request.urlretrieve(url, path)
+
 # download immune epitopes from iedb
 path_urls = [('iedb-tcell.zip', r'http://www.iedb.org/downloader.php?file_name=doc/tcell_full_v3.zip'),
              ('iedb-bcell.zip', r'http://www.iedb.org/downloader.php?file_name=doc/bcell_full_v3.zip') 

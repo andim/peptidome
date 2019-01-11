@@ -11,13 +11,11 @@ df = counter_to_df(count_kmers_proteome(human, 1), norm=True)
 proteomes = load_proteomes()
 proteomes = proteomes[~(proteomes.index == 'Human')]
 
-for name, row in proteomes.iterrows():
-    path = datadir+row['path']
-
+def compare(path, name):
     dfp = counter_to_df(count_kmers_proteome(path, 1), norm=True)
     dfmerged = pd.merge(df, dfp, on='seq', suffixes=['_human', '_pathogen'])
 
-    print(name, dfmerged)
+    print(name)
     fig, ax = plt.subplots(figsize=(4, 4))
     xmin, xmax = 0.25*np.amin(dfmerged['freq_human']), 2*np.amax(dfmerged['freq_human'])
     x = np.logspace(np.log10(xmin), np.log10(xmax))
@@ -31,3 +29,10 @@ for name, row in proteomes.iterrows():
     ax.set_ylabel('frequency ' + name)
     fig.tight_layout()
     fig.savefig('plots/aafreqs%s.png' % name, dpi=300)
+
+compare(datadir+'human-viruses-uniref90.fasta', 'viruses')
+
+for name, row in proteomes.iterrows():
+    path = datadir+row['path']
+
+    compare(path, name)
