@@ -94,6 +94,14 @@ Under the heading of immunopeptidomics and MHC ligandomics efforts are underway 
 \subsection{Proteins are surprisingly random}
 
 \begin{figure}
+    \includegraphics{entropykmer}
+    \caption{Entropy of the kmer distribution of the human and yeast proteome. The solid black line shows the maximal entropy of the flat distribution over the 20 possible amino acids $\log_2 20$. Note how the biggest reduction in entropy comes from amino acid biases with only a small further reduction by correlations in amino acid usage.
+    \label{figentropykmer}
+    }
+\end{figure}
+
+
+\begin{figure}
     \includegraphics[width=\columnwidth]{mutualinformationdecay}
     \caption{Mutual information between amino acids a certain distance apart in the human and mouse proteome. The mutual information is small as compared to the entropy of the single site $\sim 4$ bits, but extends to long distances. The prominent peaks at a distance that is a multiple of 28 amino acids in the human proteome are likely due to Zinc-finger repeats, more particularly C2H2 fingers (cf. high fold enrichments of cysteine and histdine at a distance of 28) \cite{Krishna2003}. 
     \label{figmutualinformationdecay}
@@ -184,12 +192,12 @@ OnchocercaVolvulus&0.03&0.069\\
 \end{table}
 
 
-\begin{figure}
-    \includegraphics{viruses}
-    \caption{Likelihood of randomly drawn viral 9mers given a triplet model based on the human proteome statistics. B cell and T cell epitope likelihoods. Interestingly the B cell epitopes are more similar to the human proteome than if they where drawn at random.
-    \label{figviruses}
-    }
-\end{figure}
+%\begin{figure}
+%    \includegraphics[width=\columnwidth]{viruses}
+%    \caption{Likelihood of randomly drawn viral 9mers given a triplet model based on the human proteome statistics. B cell and T cell epitope likelihoods. Interestingly the B cell epitopes are more similar to the human proteome than if they where drawn at random.
+%    \label{figviruses}
+%    }
+%\end{figure}
 
 
 \subsection{A shell theory of immunogenicity?}

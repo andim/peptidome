@@ -14,7 +14,6 @@ human = datadir + proteomes.ix['Human']['path']
 df = counter_to_df(count_kmers_proteome(human, 1), norm=True)
 df2 = counter_to_df(count_kmers_proteome(human, 2), norm=True)
 
-pathogenproteomes = proteomes[~proteomes.index.isin(['Human'])]
 
 round_to_n = lambda x, n: round(x, -int(np.floor(np.log10(x))) + (n - 1))
 
@@ -41,6 +40,7 @@ def dkl(path, name):
 
 dkl(datadir+'human-viruses-uniref90_nohiv.fasta', 'viruses')
 
+pathogenproteomes = proteomes[~proteomes.index.isin(['Human'])]
 for name, row in pathogenproteomes.iterrows():
     path = datadir + row['path']
     dkl(path, name)

@@ -1,3 +1,6 @@
+import sys
+sys.path.append('..')
+
 import itertools, copy
 import numpy as np
 import scipy.misc

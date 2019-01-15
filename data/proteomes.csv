@@ -17,6 +17,7 @@ DENV,Dengue virus,Dengue virus,,UP000002500,virus,
 HIV,Human immunodeficiency virus,Human immunodeficiency virus,,UP000002241,virus,
 EBV,Epstein-Barr virus,Human gammaherpesvirus 4,,UP000153037,virus,
 Ebola,Ebolavirus,Ebolavirus,,UP000007209,virus,Zaire ebolavirus (strain Mayinga-76)
+Ecoli,Escherichia coli,Escherichia coli,,UP000000558,bacterium,Escherichia coli O157:H7
 Tuberculosis,Mycobacterium tuberculosis,Mycobacterium tuberculosis,,UP000001584,bacterium,
 Listeria,Listeria monocytogenes,Listeria monocytogenes,,UP000000817,bacterium,
 Burkholderia,Burkholderia pseudomallei,Burkholderia pseudomallei,,UP000000605,bacterium,
