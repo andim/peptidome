@@ -2,9 +2,9 @@ import random
 import gzip
 from mimetypes import guess_type
 from functools import partial
+from collections import defaultdict
 import os.path
 from itertools import groupby
-from collections import defaultdict
 import numpy as np
 import pandas as pd
 import scipy.special
@@ -114,18 +114,21 @@ def count_kmers_iterable(iterable, k, **kwargs):
         count_kmers(seq, k, counter=counter, **kwargs)
     return counter
 
-def count_kmers(string, k, counter=None, gap=0):
-    """
-    Count occurrence of kmers in a given string.
-    """
-    if counter is None:
-        counter = defaultdict(int)
-    for i in range(len(string)-k-gap+1):
-        if gap:
-            counter[string[i]+string[i+gap+1:i+k+gap]] += 1
-        else:
-            counter[string[i:i+k]] += 1
-    return counter
+try:
+    from clib import count_kmers
+except ImportError:
+    def count_kmers(string, k, counter=None, gap=0):
+        """
+        Count occurrence of kmers in a given string.
+        """
+        if counter is None:
+            counter = defaultdict(int)
+        for i in range(len(string)-k-gap+1):
+            if gap:
+                counter[string[i]+string[i+gap+1:i+k+gap]] += 1
+            else:
+                counter[string[i:i+k]] += 1
+        return counter
 
 def plot_sorted(data, ax=None, normalize=True, scalex=1.0, scaley=1.0, **kwargs):
     if ax is None:
@@ -247,7 +250,10 @@ def plot_histograms(valuess, labels, weights=None, nbins=40, ax=None,
     ax.legend()
     return ax
 
-def mcmcsampler(x0, energy, jump, nsteps, nburnin=0, nsample=1):
+def mcmcsampler(x0, energy, jump, nsteps, nburnin=0, nsample=1, prng=None):
+    "Markov chain Monte carlo sampler"
+    if prng is None:
+        prng = np.random
     nsteps, nburnin, nsample = int(nsteps), int(nburnin), int(nsample)
     x = x0
     Ex = energy(x)
@@ -255,7 +261,7 @@ def mcmcsampler(x0, energy, jump, nsteps, nburnin=0, nsample=1):
     for i in range(nsteps):
         xp = jump(x)
         Exp = energy(xp)
-        if np.random.rand() < np.exp(-Exp+Ex):
+        if prng.rand() < np.exp(-Exp+Ex):
             x = xp
             Ex = Exp
         if (i > nburnin) and (i % nsample == 0):
@@ -271,13 +277,17 @@ def energy_ising(s, h, Jk):
     return -energy
 
 
+_aatonumber = {c: i for i, c in enumerate(aminoacids)}
+
 def map_aatonumber(seq):
     """
     Map sequence to array of number
     """
     seq = np.array(list(seq))
-    map_ = {c: i for i, c in enumerate(aminoacids)}
-    return np.vectorize(map_.__getitem__)(seq)
+    return np.vectorize(_aatonumber.__getitem__)(seq)
+
+def aatonumber(char):
+    return _aatonumber[char]
 
 # code modified from OpenVax/pepdata project
 # see https://github.com/openvax/pepdata/blob/master/pepdata/iedb/tcell.py
