@@ -39,6 +39,7 @@ def fit_ising(f1, f2s, niter=1, nmcmc=1e6, epsilon=0.1, Jk=None):
         jump = lambda x: ''.join(np.random.choice(aas_arr, size=6))
         x0 = jump(None)
         samples = mcmcsampler(x0, lambda x: energy_ising(x, h, Jk), jump, nmcmc)
+        samples = [''.join(sample) for sample in samples]
         for gap in range(len(f2s)):
             m = f2s[gap].merge(counter_to_df(count_kmers_iterable(samples, 2, gap=gap)), left_index=True, right_on='seq')
             m['logfold'] = np.log(m['freq_x']/m['freq_y'])
@@ -51,7 +52,7 @@ def fit_ising(f1, f2s, niter=1, nmcmc=1e6, epsilon=0.1, Jk=None):
     return h, Jk
 
 print('start fitting')
-h, Jk = fit_ising(df0, [df1, dfgap1, dfgap2], nmcmc=1e6, niter=30, epsilon=0.2)
+h, Jk = fit_ising(df0, [df1, dfgap1, dfgap2], nmcmc=1e6, niter=3, epsilon=0.2)
 
 dfh = pd.DataFrame(index=[key for key in h],
                    data=[h[key] for key in h],

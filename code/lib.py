@@ -259,7 +259,7 @@ def mcmcsampler(x0, energy, jump, nsteps, nburnin=0, nsample=1):
             x = xp
             Ex = Exp
         if (i > nburnin) and (i % nsample == 0):
-            states.append(''.join(x))
+            states.append(x)
     return np.array(states)
 
 def energy_ising(s, h, Jk):
