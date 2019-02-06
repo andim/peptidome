@@ -110,6 +110,20 @@ Under the heading of immunopeptidomics and MHC ligandomics efforts are underway 
 
 How close to random is the protein distribution? To answer this question we calculate how much information about the amino acid in a certain position is revealed by knowing its neighbors. Concretely, we calculate the mutual information between amino acid pair a certain distance apart. The mutual information can be expressed as $I(X, Y) = H(X) + H(Y) - H(X, Y)$. We use this expression to calulate the mutual information from the single site entropies and the entropy of the joint distribution, which we calculate using the estimator proposed by Grassberger \cite{Grassberger2003}. (TODO: Use NSB estimator instead?) Note that one cannot assume uniform single site entropies across all comparions stemming most notably from differences in amino acid composition for the first few amino acids within a protein (Fig.~\ref{figentropyaa}). The universal constraints on unrelated proteins are surprisingly small as measured by the mutual information (Fig.~\ref{figmutualinformationdecay}, see also \cite{Lavelle2009}). 
 
+\begin{table}
+    \begin{center}
+        \begin{tabular}{ c c }
+            distribution & 4mer DKL\\ \hline
+            uniform & 0.1115\\
+            independent & 0.0195\\
+            1st order Markov chain & 0.0132\\
+            Pairwise Maxent & 0.0092\\
+            2nd order Markov chain & 0.0087\\
+            test & 0.0076\\
+        \end{tabular}
+    \end{center}
+    \caption{Comparison of models based on 4mer frequencies}
+\end{table}
 
 We can further dissect which correlations between individual amino acids contribute to the mutual information. To do so we analyze the fold enrichment of amino acid doublets relative to an independent model. Most doublets are only over- or underrepresented moderately (Fig.~\ref{figdoubletentrichment}). An exception is a strong enrichment of Cysteine-Cysteine 3 amino acids apart. This enrichment has been found previously \cite{Greenbaum2014} and is likely due to a particular preference of cysteines to form disulfide bonds at this distance. Another prominent feature of this data are the relatively high enrichments along the diagonal at all distances. This might be attributable to amino acid repeats within some proteins \cite{Turjanski2018}.
 

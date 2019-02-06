@@ -43,10 +43,10 @@ I was thinking that maybe soon it will be the time to switch from this explorato
 
 I am still a bit unsure about how to best think about what these analyses tell us and thus also about how to tell the story eventually. On the one hand the analyses show that proteins are very highly random and that the small deviations from randomness are mostly conserved across species. On the other hand the differences between peptides from different proteomes while small are often statistically significant, including the differences between random peptides from an organism and those in IEDB.
 
-# 2019-01-15: Questions for chatting with Bill
+# 2019-01-15: Questions
 
 - How should one quantify the degree to which constraints on the proteome statistics are universal vs. phyla specific? What should we expect physically?
 
 - Which type of Max ent model is most appropriate? A model with translation invariant pairwise couplings? Constraining the number of cooccurrences of amino acids (which could account for the fact that the proteome distribution is a mixture of distributions for different classes of proteins)?  
 
-- What does it all mean for immunology?
+- What does it all mean for immunology? Despite the statistical significance of differences between proteomes the effect sizes seem small.

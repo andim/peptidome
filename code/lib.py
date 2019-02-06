@@ -286,6 +286,7 @@ def energy_ising(s, h, Jk):
 
 
 _aatonumber = {c: i for i, c in enumerate(aminoacids)}
+_numbertoaa = {i: c for i, c in enumerate(aminoacids)}
 
 def map_aatonumber(seq):
     """
@@ -293,6 +294,14 @@ def map_aatonumber(seq):
     """
     seq = np.array(list(seq))
     return np.vectorize(_aatonumber.__getitem__)(seq)
+
+def map_numbertoaa(seq):
+    """
+    Map integer to amino acid sequence
+    """
+    seq = list(seq)
+    return np.vectorize(_numbertoaa.__getitem__)(seq)
+
 
 def aatonumber(char):
     return _aatonumber[char]

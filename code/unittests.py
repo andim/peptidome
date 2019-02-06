@@ -37,8 +37,9 @@ def test_energy():
         s = np.array([0, 1])
         assert energy(s, h, Jk) == 0.0
 
+def test_mapping():
+    npt.assert_array_equal(map_aatonumber('AAAA'), np.zeros(4))
 
 
 if __name__ == '__main__':
-    test_energy()
     npt.run_module_suite()
