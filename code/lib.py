@@ -113,13 +113,15 @@ def scrambled(iterable):
 def count_kmers_proteome(proteome, k, **kwargs):
     return count_kmers_iterable(fasta_iter(proteome, returnheader=False), k, **kwargs)
 
-def count_kmers_iterable(iterable, k, **kwargs):
+def count_kmers_iterable(iterable, k, clean=False, **kwargs):
     """
     Count number of kmers in all strings of an iterable
     """
     counter = defaultdict(int)
     for seq in iterable:
         count_kmers(seq, k, counter=counter, **kwargs)
+    if clean:
+        counter = {k:counter[k] for k in counter.keys() if isvaliddna(k)}
     return counter
 
 try:

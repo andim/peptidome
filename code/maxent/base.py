@@ -64,12 +64,12 @@ def fit_ising(f1, f2s, niter=1, nmcmc=1e6, epsilon=0.1, Jk=None, prng=None, outp
 def save(h, Jk):
     aas_arr = np.array(list(aminoacids))
     dfh = pd.DataFrame(index=aas_arr, data=h, columns=['h'])
-    doublets = [''.join(s) for s in itertools.product(list(aminoacids), repeat=2)]
-    dfJk = pd.DataFrame(index=doublets,
-                        data=[Jk[0,aatonumber(s[0]),aatonumber(s[1])] for s in doublets],
-                        columns=['J0'])
-    for i in range(1, len(Jk)):
-        dfJk['J%g'%i] = [Jk[i,aatonumber(s[0]),aatonumber(s[1])] for s in doublets]
+    dfJk = pd.DataFrame(data=Jk, columns=range(len(Jk)))
+    #dfJk = pd.DataFrame(index=doublets,
+    #                    data=[Jk[0,aatonumber(s[0]),aatonumber(s[1])] for s in doublets],
+    #                    columns=['J0'])
+    #for i in range(1, len(Jk)):
+    #    dfJk['J%g'%i] = [Jk[i,aatonumber(s[0]),aatonumber(s[1])] for s in doublets]
 
     dfh.to_csv('data/h.csv')
     dfJk.to_csv('data/Jk.csv')

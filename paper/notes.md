@@ -43,10 +43,24 @@ I was thinking that maybe soon it will be the time to switch from this explorato
 
 I am still a bit unsure about how to best think about what these analyses tell us and thus also about how to tell the story eventually. On the one hand the analyses show that proteins are very highly random and that the small deviations from randomness are mostly conserved across species. On the other hand the differences between peptides from different proteomes while small are often statistically significant, including the differences between random peptides from an organism and those in IEDB.
 
-# 2019-01-15: Questions
+# 2019-01-15: Some of the open questions
 
 - How should one quantify the degree to which constraints on the proteome statistics are universal vs. phyla specific? What should we expect physically?
 
 - Which type of Max ent model is most appropriate? A model with translation invariant pairwise couplings? Constraining the number of cooccurrences of amino acids (which could account for the fact that the proteome distribution is a mixture of distributions for different classes of proteins)?  
 
 - What does it all mean for immunology? Despite the statistical significance of differences between proteomes the effect sizes seem small.
+
+# 2019-02-06: Reading notes on technicalities of maxent fitting
+
+Some interesting technical ideas can be found in a Nonnenmacher et al. Plos Comp Bio paper 2017 entitled "Signatures of criticality arise from random subsampling in simple population models". They are implemented in an open source Matlab package https://github.com/mackelab/CorBinian.
+
+# 2019-02-12: Skype w/ Ben Greenbaum
+
+Group at Penn Oncology also looked at alignment of neoantigens with self/IEDB and also found evidence that this tells you something
+
+Use deduplicated set of proteins for the mutual information calculation, talk with Sasha about how to do this.
+
+Can we learn something about viruses by looking at how they deviate from the different kind of models that we are fitting?
+
+Interaction of the peptidome distribution with population-level HLA distribution? How do things get filtered?

@@ -43,7 +43,7 @@
 \title{A statistical ensemble approach to immune discrimination}
 %\author{Andreas Mayer}
 %\author{Quentin Marcou}
-%\author{Marta Luksza}
+%%\author{Marta Luksza}
 %\author{Ben D Greenbaum}
 %\author{William Bialek}
 \date{\today}
@@ -83,7 +83,7 @@ Karlin and Bucher \cite{Karlin1992} have shown the existence of pairwise correla
 
 Another interesting line of work has involved low-complexity sequences within proteins (see \cite{Cascarina2018} and references therein).
 
-There has been some early work about peptide similarity in the context of immunology by Burroughs, De Boer, and Kesmir \cite{Burroughs2004}. Interestingly, they demonstrate that the number of shared 9mers decreases with evolutionary distance, and is much lower for e.g. human and bacteria than for human and mouse, or human and drosophila. The paper also discusses some possible slight preference of the antigen processing pathway for non-self antigens. In a follow up work an overlapping set of authors build a tool for immunogenicity prediction based on small differences in amino acid usage in recognized epitopes \cite{Calis2013}. A more recent follow up by Wortel et al. \cite{Wortel2018} shows that self and foreign peptides are largely similar (much more similar then words from different languages). They then argue that under these conditions thymic selection should minimizie the co-occurrence of similar self-peptides for efficient self/non-self discrimination based on negative selection. 
+There has been some early work about peptide similarity in the context of immunology. Starting with work by Claverie and co-workers \cite{Claverie1988} and later by Burroughs, De Boer, and Kesmir \cite{Burroughs2004}. Interestingly, they demonstrate that the number of shared 9mers decreases with evolutionary distance, and is much lower for e.g. human and bacteria than for human and mouse, or human and drosophila. The paper also discusses some possible slight preference of the antigen processing pathway for non-self antigens. In a follow up work an overlapping set of authors build a tool for immunogenicity prediction based on small differences in amino acid usage in recognized epitopes \cite{Calis2013}. A more recent follow up by Wortel et al. \cite{Wortel2018} shows that self and foreign peptides are largely similar (much more similar then words from different languages). They then argue that under these conditions thymic selection should minimizie the co-occurrence of similar self-peptides for efficient self/non-self discrimination based on negative selection. 
 
 Coevolution \cite{Bahir2009}.
 
@@ -109,6 +109,13 @@ Under the heading of immunopeptidomics and MHC ligandomics efforts are underway 
 \end{figure}
 
 How close to random is the protein distribution? To answer this question we calculate how much information about the amino acid in a certain position is revealed by knowing its neighbors. Concretely, we calculate the mutual information between amino acid pair a certain distance apart. The mutual information can be expressed as $I(X, Y) = H(X) + H(Y) - H(X, Y)$. We use this expression to calulate the mutual information from the single site entropies and the entropy of the joint distribution, which we calculate using the estimator proposed by Grassberger \cite{Grassberger2003}. (TODO: Use NSB estimator instead?) Note that one cannot assume uniform single site entropies across all comparions stemming most notably from differences in amino acid composition for the first few amino acids within a protein (Fig.~\ref{figentropyaa}). The universal constraints on unrelated proteins are surprisingly small as measured by the mutual information (Fig.~\ref{figmutualinformationdecay}, see also \cite{Lavelle2009}). 
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{4mer-comparison}
+    \caption{Performance of the Maxent model for predicting the 4mer frequencies. Using an even split of the data into a test and a training set we compare predictions on the test set with the reproducibility of the frequencies between the training and test set.
+    \label{fig4mermaxent}
+    }
+\end{figure}
 
 \begin{table}
     \begin{center}
