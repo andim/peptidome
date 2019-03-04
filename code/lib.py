@@ -52,12 +52,13 @@ def entropy_grassberger(n, base=None):
     return entropy
 
 def calc_jsd(p, q, base=np.e):
-    "Jensen Shannon Divergence"
+    "Calculate Jensen Shannon Divergence"
     p, q = np.asarray(p), np.asarray(q)
     p /= np.sum(p)
     q /= np.sum(q)
     m = 0.5*(p + q)
-    return 0.5*(scipy.stats.entropy(p,m, base=base) + scipy.stats.entropy(q, m, base=base))
+    return 0.5*(scipy.stats.entropy(p, m, base=base)
+                + scipy.stats.entropy(q, m, base=base))
 
 def fasta_iter(fasta_name, returnheader=True):
     """
