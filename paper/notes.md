@@ -64,3 +64,31 @@ Use deduplicated set of proteins for the mutual information calculation, talk wi
 Can we learn something about viruses by looking at how they deviate from the different kind of models that we are fitting?
 
 Interaction of the peptidome distribution with population-level HLA distribution? How do things get filtered?
+
+# 2019-02-14: Meeting w/ Bill Bialek
+
+Big picture question to ask: What would a satisfactory answer look like?
+
+How does discrimination work? Framing: Finiteness of self proteome or distributional differences?
+
+To test how much the finiteness plays a role consider not just where epitopes fall into the distribution but how far they are from the discrete self-peptides
+
+# 2019-03-05: Emails with Ben Greenbaum
+
+Thanks for these great questions. I am also excited about these results - I did not expect that there would be so much interesting structure in the data. As a general caveat these are all quick and dirty analyses I mostly did over two long flights, so we will need to see how things come out once everything is cleaned up, but the final results will probably be globally similar.
+
+> 1) The attached figure is interesting - for instance the chronic viruses seem closer to human that the acute ones - is that real?
+
+CMV definitely is very close to human and much closer than the acute viruses. The other chronic viruses are close to each other, but it's less clear whether they are significantly closer to human than the acute ones.
+
+> 2) Can you try even more pathogens - for instance I see HCMV but not HSV?
+
+I curated the list of pathogens by looking at the pathogens with the highest number of IEDB peptides, but we can easily add more. I just added HSV1, which does cluster with the other chronic viruses (HCV, EBV). This addition also gives some feel for the stability of the clustering (see attached): now CMV clusters outside of the other chronic viruses.
+
+> 3) Do like things really cluster? I see influenza A and B together - would that work with multiple influenza strains? what about HIV? or HIV2 or SIV?
+
+I would expect that different strains of the same virus will cluster. Given that even similar viruses such as influenza A and B cluster, the strains should be even more similar.
+
+> 4) On slide 17 it creates the impression that viruses are closer to uniform than bacteria - is that an accurate reading of this visualization?
+
+Yes that's an accurate reading. The attached figure shows the distance to uniform along the diagonal, which also shows that on average the viruses are closer to uniform than bacteria. There is a possible technical artifact that might affect this conclusion, which arises from the fact that the viral proteomes are smaller than the bacterial ones. I am using pseudocounts to regularize the inferred distributions, so when data is limiting the distributions will appear closer to uniform. I can try and check how much of an issue this is, but I would expect the general conclusion to be robust.
