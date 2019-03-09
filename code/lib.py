@@ -8,6 +8,7 @@ from itertools import groupby
 import numpy as np
 import pandas as pd
 import scipy.special
+import scipy.stats
 import matplotlib.pyplot as plt
 from Bio import SeqIO
 
@@ -37,6 +38,7 @@ datadir = os.path.join(os.path.dirname(__file__), '../data/')
 proteomes = load_proteomes()
 human = datadir + proteomes.ix['Human']['path']
 yeast = datadir + proteomes.ix['Yeast']['path']
+malaria = datadir + proteomes.ix['Malaria']['path']
 
 def entropy_grassberger(n, base=None):
     """"
