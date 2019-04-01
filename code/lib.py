@@ -11,6 +11,8 @@ import scipy.special
 import scipy.stats
 import matplotlib.pyplot as plt
 from Bio import SeqIO
+import nsb_entropy
+
 
 aminoacids = 'ACDEFGHIKLMNPQRSTVWY'
 aminoacids_set = set(aminoacids)
@@ -39,6 +41,21 @@ proteomes = load_proteomes()
 human = datadir + proteomes.ix['Human']['path']
 yeast = datadir + proteomes.ix['Yeast']['path']
 malaria = datadir + proteomes.ix['Malaria']['path']
+
+def entropy_nsb(n, base=None):
+    """"
+    Estimate the entropy of a discrete distribution from counts per category
+
+    n: array of counts 
+    base: base in which to measure the entropy (default: nats)
+    """
+    N = np.sum(n)
+    K = len(n)
+    nxkx = nsb_entropy.make_nxkx(n, K)
+    entropy = nsb_entropy.S(nxkx, N, K)
+    if base:
+        entropy /= np.log(base)
+    return entropy
 
 def entropy_grassberger(n, base=None):
     """"
@@ -126,6 +143,29 @@ def count_kmers_iterable(iterable, k, clean=False, **kwargs):
     if clean:
         counter = {k:counter[k] for k in counter.keys() if isvaliddna(k)}
     return counter
+
+def calc_tripletmodelparams(proteome):
+    df = counter_to_df(count_kmers_proteome(proteome, 1), norm=True)
+    df = df.set_index('seq')
+    charlogp = np.log10(df['freq']).to_dict()
+
+    df1 = counter_to_df(count_kmers_proteome(proteome, 2), norm=False)
+    strcolumn_to_charcolumns(df1, 'seq')
+    count = df1.pivot(columns='aa1', index='aa2')['count']
+    count /= np.sum(count, axis=0)
+    count[count.isna()] = 1e-10
+    doubletlogp = np.log10(count).to_dict()
+
+    df2 = counter_to_df(count_kmers_proteome(proteome, 3), norm=False)
+    df2['aa12'] = [s[:2] for s in df2['seq']]
+    df2['aa3'] = [s[2] for s in df2['seq']]
+    count = df2.pivot(columns='aa12', index='aa3')['count']
+    count /= np.sum(count, axis=0)
+    count[count.isna()] = 1e-10
+    tripletlogp = np.log10(count).to_dict()
+
+    modelparams = dict(charlogp=charlogp, doubletlogp=doubletlogp, tripletlogp=tripletlogp)
+    return modelparams
 
 try:
     from clib import count_kmers
