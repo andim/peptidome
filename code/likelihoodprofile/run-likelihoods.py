@@ -1,3 +1,4 @@
+import os.path
 import json
 import numpy as np
 import pandas as pd
@@ -24,9 +25,14 @@ def run(name, path, proteinname=True):
     df = pd.DataFrame.from_dict(dict(likelihoods=likelihoods, protein=protein))
     df.to_csv('data/proteome-ref%s-k%i-%s.zip'%(ref, k, name), compression='zip', index=False, float_format='%.4f')
 
-run('Viruses', datadir+'human-viruses-uniref90_nohiv.fasta', proteinname=False)
+path = datadir+'human-viruses-uniref90_nohiv.fasta'
+pathout = 'data/proteome-ref%s-k%i-%s.zip'%(ref, k, 'Viruses')
+if not os.path.exists(pathout):
+    run('Viruses', pathin, proteinname=False)
 
 proteomes = load_proteomes()
 for name, row in proteomes.iterrows():
     path = datadir + row['path']
-    run(name, path)
+    pathout = 'data/proteome-ref%s-k%i-%s.zip'%(ref, k, name)
+    if not os.path.exists(pathout):
+        run(name, path)

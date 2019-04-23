@@ -167,6 +167,14 @@ def calc_tripletmodelparams(proteome):
     modelparams = dict(charlogp=charlogp, doubletlogp=doubletlogp, tripletlogp=tripletlogp)
     return modelparams
 
+
+def iscontained(string, strings):
+    "Is one of the strings contained in string?"
+    for s in strings:
+        if s in string:
+            return True
+    return False
+
 try:
     from clib import count_kmers
 except ImportError:
