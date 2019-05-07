@@ -14,7 +14,7 @@ def energy(np.ndarray[long, ndim=1] s, np.ndarray[double, ndim=1] h, np.ndarray[
             energy += J[j-i-1, s[i], s[j]]
     return -energy
 
-def count_kmers(string, int k, counter=None, int gap=0):
+def count_kmers(str string, int k, counter=None, int gap=0):
     """
     Count occurrence of kmers in a given string.
     """

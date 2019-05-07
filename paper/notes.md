@@ -1,77 +1,48 @@
-# 2018-11-07: Meeting with Ben Greenbaum
+# 2019-04-09: Reading on Chargaff's rule
 
-- Compare bird flu with human flu in terms of peptide distribution (also need to compare human and bird proteome to see what the self distribution looks like)
+This relates to the comment by Richard Neher about %A = %T and %G = %C in double-stranded DNA organisms. This is known as Chargaff's rule (https://en.wikipedia.org/wiki/Chargaff%27s_rules): 
 
-- General point: general evolutionary pressure on viruses to stay close to human proteome due to physical constraints. Therefore immunity should not create big holes around self. This contrasts with classic Perelson et al. view of shape space coverage.
+"The first rule holds that a double-stranded DNA molecule globally has percentage base pair equality: %A = %T and %G = %C. The rigorous validation of the rule constitutes the basis of Watson-Crick pairs in the DNA double helix model.
 
-# 2018-11-12: Meeting with Bill Bialek 
+The second rule holds that both %A = %T and %G = %C are valid for each of the two DNA strands. This describes only a global feature of the base composition in a single DNA strand."
 
-- Given that departures from independence are small, one could try and use the analytical results from perturbation theory to invert C <-> J relationship. How well does this do?
-- The decay of the mutual information with distance is slower than the growth in the number of interactions at that distance -> the overall ensemble is constrained.
-- physics language: log p propto energy, density of states = distribution of log p over all possible sequences
-- It might be worthwhile to analytically understand the convergence of log p to a normal distribution using the convergence of the cumulants of the distribution.
-- Using ideas from large deviation theory one might also obtain analytical results about the tails of the distribution.
+The first rule needs to be true given the base-pairing that we now know about. The second rule is of a statistical nature and indeed as one might expect can be violated.
 
-# 2018-11-13: Meeting with Warren James
+"In most bacterial genomes (which are generally 80-90% coding) genes are arranged in such a fashion that approximately 50% of the coding sequence lies on either strand. Wacław Szybalski, in the 1960s, showed that in bacteriophage coding sequences purines (A and G) exceed pyrimidines (C and T). This rule has since been confirmed in other organisms and should probably be now termed "Szybalski's rule". While Szybalski's rule generally holds, exceptions are known to exist. The biological basis for Szybalski's rule, like Chargaff's, is not yet known."
 
-Interested in the project, previous programming experience in Python, --> send him some references/code to get started
+There are some ideas that the second rule might hold because of inversions and inverted transpositions (see G Albrecht Buehler, PNAS 2006). 
 
-# 2018-11-14: Interesting group: Michael Hecht @ Princeton chemistry
 
-From http://chemlabs.princeton.edu/hecht/research/ :
-"We have developed methods enabling the design and construction of vast combinatorial libraries of novel amino acid sequences. Most of these sequences fold into stable protein structures (see graphic at right), and many of them display biochemical activities. With the availability of millions of novel proteins, one can begin to go beyond “Protein Design” and consider of “Proteome Design.” This enables the exploration of new questions at the interface of chemistry and biology: Are natural proteins special? Or is it possible to produce new sequences that fold and function? (We think that latter is true). Since our collections of designed proteins are expressed from synthetic genes in living cells, we can now construct artificial “genomes” comprising sequences that never before existed in biology, but nonetheless provide functions necessary to sustain the growth of living cells."
+# 2019-04-01: Skype w/ Ben G
 
-# 2018-11-16: Meeting with Ben Greenbaum
+HIV/HCV database: search in the database for different subtypes and choose complete genome. Than download amino acid fasta files (or first reading frame fasta files).
 
-- chop up viral quasispecies data into kmers: Is there any correlation between the degree of conservation vs. how close the kmer is to the closest self-peptide? Databases: Los Alamos HIV, GISAID flu
+For HIV/SIV compare HIV-1, HIV-2 and SIV for Chimpanzee and Sooty Mangabee
 
-# 2019-01-11: Interesting groups: Bjoern Peters and Alessandro Sette @ La Jolla Institute
+Flu database at https://www.gisaid.org/ -> Sign up for account (done: andim / LangesPasswort)
 
-Both groups are involved in curating IEDB and they have also worked extensively on various bioinformatics analysis and predictions tools build on top of the database. Bjoern Peters is e.g. one of the authors of netMHC. See https://www.lji.org/faculty-research/labs/peters/ and https://www.lji.org/faculty-research/labs/sette
 
-# 2019-01-11: Notes on data analysis
+# Estimating entropy of discrete distributions
 
-One can export all viruses with a human host from uniprot by searching for host:9606. The majority of these proteins are many duplicates of proteins of HIV1, which creates various issues with the down stream analysis. I have thus also generated a version of the viral proteome excluding HIV1.
+Overview of different methods on https://memming.wordpress.com/2014/02/09/a-guide-to-discrete-entropy-estimators/
 
-# 2019-01-14: Email to Ben Greenbaum:
+# 2019-03-23: Interesting lab @ Princeton: Ileana Cristea
 
-Among other things I've now also looked at B cell epitopes and interestingly for Malaria they are also more similar to the human proteome than random peptides.
+See https://scholar.princeton.edu/cristealab
 
-As viruses have such short proteomes it is hard to get good statistics on a single virus. I've thus started analyzing also more global statistics across the human virome (by downloading all uniprot proteins with host = human). These analyses again show how remarkably universal the constraints on proteins are: again most of the statistics are very similar to the human proteome.
+# 2019-03-18: Meeting w/ Bill
 
-I was thinking that maybe soon it will be the time to switch from this exploratory phase to making up our mind on what we think the key takeaways are.
+Given that the distributions are so close, we can say that to a large extent the immune system cannot "generalize". The immune system instead relies on overfitting: It memorizes the precise nature of the finite number of self peptides to avoid recognizing.
 
-I am still a bit unsure about how to best think about what these analyses tell us and thus also about how to tell the story eventually. On the one hand the analyses show that proteins are very highly random and that the small deviations from randomness are mostly conserved across species. On the other hand the differences between peptides from different proteomes while small are often statistically significant, including the differences between random peptides from an organism and those in IEDB.
+We can get a lower bound on the entropy by looking at coincidence probabilities. We have `p_c = \sum_i p_i^2 = <p_i> = <e^{log p_i}> >= e^{<log p>}`. From there it follows `-log p_c <= - <log p> = S`. How do estimates of the entropy compare to this lower bound and the upper bound $k log 20$?
 
-# 2019-01-15: Some of the open questions
+What sets the optimal level of crossreactivity? Maybe we can use a simple model for the crossreactivity of different receptors to get some insights. Idea: Additive model of interaction energy of position-weight-matrix type with tunable variance of entries. What fraction of receptors is self-reactive? How close is any receptor to being self-reactive?
 
-- How should one quantify the degree to which constraints on the proteome statistics are universal vs. phyla specific? What should we expect physically?
+# 2019-03-09: Meeting w/ Ben G
 
-- Which type of Max ent model is most appropriate? A model with translation invariant pairwise couplings? Constraining the number of cooccurrences of amino acids (which could account for the fact that the proteome distribution is a mixture of distributions for different classes of proteins)?  
+Look at HIV and flu databases to see how far proteomes of different strains spread out. Is HIV more spread out more because it is a retrovirus? What about other retroviruses?
 
-- What does it all mean for immunology? Despite the statistical significance of differences between proteomes the effect sizes seem small.
-
-# 2019-02-06: Reading notes on technicalities of maxent fitting
-
-Some interesting technical ideas can be found in a Nonnenmacher et al. Plos Comp Bio paper 2017 entitled "Signatures of criticality arise from random subsampling in simple population models". They are implemented in an open source Matlab package https://github.com/mackelab/CorBinian.
-
-# 2019-02-12: Skype w/ Ben Greenbaum
-
-Group at Penn Oncology also looked at alignment of neoantigens with self/IEDB and also found evidence that this tells you something
-
-Use deduplicated set of proteins for the mutual information calculation, talk with Sasha about how to do this.
-
-Can we learn something about viruses by looking at how they deviate from the different kind of models that we are fitting?
-
-Interaction of the peptidome distribution with population-level HLA distribution? How do things get filtered?
-
-# 2019-02-14: Meeting w/ Bill Bialek
-
-Big picture question to ask: What would a satisfactory answer look like?
-
-How does discrimination work? Framing: Finiteness of self proteome or distributional differences?
-
-To test how much the finiteness plays a role consider not just where epitopes fall into the distribution but how far they are from the discrete self-peptides
+Clean up distance calculations. Make shell theory argument more precise. Visualize degree of shared vs. private biases in different proteomes.
 
 # 2019-03-05: Emails with Ben Greenbaum
 
@@ -92,3 +63,80 @@ I would expect that different strains of the same virus will cluster. Given that
 > 4) On slide 17 it creates the impression that viruses are closer to uniform than bacteria - is that an accurate reading of this visualization?
 
 Yes that's an accurate reading. The attached figure shows the distance to uniform along the diagonal, which also shows that on average the viruses are closer to uniform than bacteria. There is a possible technical artifact that might affect this conclusion, which arises from the fact that the viral proteomes are smaller than the bacterial ones. I am using pseudocounts to regularize the inferred distributions, so when data is limiting the distributions will appear closer to uniform. I can try and check how much of an issue this is, but I would expect the general conclusion to be robust.
+
+# 2019-02-14: Meeting w/ Bill Bialek
+
+Big picture question to ask: What would a satisfactory answer look like?
+
+How does discrimination work? Framing: Finiteness of self proteome or distributional differences?
+
+To test how much the finiteness plays a role consider not just where epitopes fall into the distribution but how far they are from the discrete self-peptides
+
+# 2019-02-12: Skype w/ Ben Greenbaum
+
+Group at Penn Oncology also looked at alignment of neoantigens with self/IEDB and also found evidence that this tells you something
+
+Use deduplicated set of proteins for the mutual information calculation, talk with Sasha about how to do this.
+
+Can we learn something about viruses by looking at how they deviate from the different kind of models that we are fitting?
+
+Interaction of the peptidome distribution with population-level HLA distribution? How do things get filtered?
+
+
+# 2019-02-06: Reading notes on technicalities of maxent fitting
+
+Some interesting technical ideas can be found in a Nonnenmacher et al. Plos Comp Bio paper 2017 entitled "Signatures of criticality arise from random subsampling in simple population models". They are implemented in an open source Matlab package https://github.com/mackelab/CorBinian.
+
+
+# 2019-01-15: Some of the open questions
+
+- How should one quantify the degree to which constraints on the proteome statistics are universal vs. phyla specific? What should we expect physically?
+
+- Which type of Max ent model is most appropriate? A model with translation invariant pairwise couplings? Constraining the number of cooccurrences of amino acids (which could account for the fact that the proteome distribution is a mixture of distributions for different classes of proteins)?  
+
+- What does it all mean for immunology? Despite the statistical significance of differences between proteomes the effect sizes seem small.
+
+# 2019-01-14: Email to Ben Greenbaum:
+
+Among other things I've now also looked at B cell epitopes and interestingly for Malaria they are also more similar to the human proteome than random peptides.
+
+As viruses have such short proteomes it is hard to get good statistics on a single virus. I've thus started analyzing also more global statistics across the human virome (by downloading all uniprot proteins with host = human). These analyses again show how remarkably universal the constraints on proteins are: again most of the statistics are very similar to the human proteome.
+
+I was thinking that maybe soon it will be the time to switch from this exploratory phase to making up our mind on what we think the key takeaways are.
+
+I am still a bit unsure about how to best think about what these analyses tell us and thus also about how to tell the story eventually. On the one hand the analyses show that proteins are very highly random and that the small deviations from randomness are mostly conserved across species. On the other hand the differences between peptides from different proteomes while small are often statistically significant, including the differences between random peptides from an organism and those in IEDB.
+
+# 2019-01-11: Interesting groups: Bjoern Peters and Alessandro Sette @ La Jolla Institute
+
+Both groups are involved in curating IEDB and they have also worked extensively on various bioinformatics analysis and predictions tools build on top of the database. Bjoern Peters is e.g. one of the authors of netMHC. See https://www.lji.org/faculty-research/labs/peters/ and https://www.lji.org/faculty-research/labs/sette
+
+# 2019-01-11: Notes on data analysis
+
+One can export all viruses with a human host from uniprot by searching for host:9606. The majority of these proteins are many duplicates of proteins of HIV1, which creates various issues with the down stream analysis. I have thus also generated a version of the viral proteome excluding HIV1.
+
+# 2018-11-16: Meeting with Ben Greenbaum
+
+- chop up viral quasispecies data into kmers: Is there any correlation between the degree of conservation vs. how close the kmer is to the closest self-peptide? Databases: Los Alamos HIV, GISAID flu
+
+# 2018-11-14: Interesting group: Michael Hecht @ Princeton chemistry
+
+From http://chemlabs.princeton.edu/hecht/research/ :
+"We have developed methods enabling the design and construction of vast combinatorial libraries of novel amino acid sequences. Most of these sequences fold into stable protein structures (see graphic at right), and many of them display biochemical activities. With the availability of millions of novel proteins, one can begin to go beyond “Protein Design” and consider of “Proteome Design.” This enables the exploration of new questions at the interface of chemistry and biology: Are natural proteins special? Or is it possible to produce new sequences that fold and function? (We think that latter is true). Since our collections of designed proteins are expressed from synthetic genes in living cells, we can now construct artificial “genomes” comprising sequences that never before existed in biology, but nonetheless provide functions necessary to sustain the growth of living cells."
+
+# 2018-11-13: Meeting with Warren James
+
+Interested in the project, previous programming experience in Python, --> send him some references/code to get started
+
+# 2018-11-12: Meeting with Bill Bialek 
+
+- Given that departures from independence are small, one could try and use the analytical results from perturbation theory to invert C <-> J relationship. How well does this do?
+- The decay of the mutual information with distance is slower than the growth in the number of interactions at that distance -> the overall ensemble is constrained.
+- physics language: log p propto energy, density of states = distribution of log p over all possible sequences
+- It might be worthwhile to analytically understand the convergence of log p to a normal distribution using the convergence of the cumulants of the distribution.
+- Using ideas from large deviation theory one might also obtain analytical results about the tails of the distribution.
+
+# 2018-11-07: Meeting with Ben Greenbaum
+
+- Compare bird flu with human flu in terms of peptide distribution (also need to compare human and bird proteome to see what the self distribution looks like)
+
+- General point: general evolutionary pressure on viruses to stay close to human proteome due to physical constraints. Therefore immunity should not create big holes around self. This contrasts with classic Perelson et al. view of shape space coverage.

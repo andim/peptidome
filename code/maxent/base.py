@@ -15,7 +15,28 @@ def calc_logfold(df1, df2, **kwargs):
     m['logfold'] = np.log(m['freq_x']/m['freq_y'])
     jsd = calc_jsd(m['freq_x'], m['freq_y'])
     return m, jsd
-     
+ 
+def pseudocount_f1(iterable, factor=1.0):
+    df = pd.DataFrame.from_dict(dict(seq=list(aminoacids), count=np.ones(len(aminoacids))*factor))
+    df.set_index('seq', inplace=True)
+    df_count = counter_to_df(count_kmers_iterable(iterable, 1), norm=False)
+    df_count.set_index('seq', inplace=True)
+    df = df.add(df_count, fill_value=0.0)
+    df['freq'] = df['count'] / np.sum(df['count'])
+    return df[['freq']]
+
+def pseudocount_f2(iterable, k, gap, f1):
+    "Use pseudocounts to regularize pair frequencies"
+    kmers = [''.join(s) for s in itertools.product(aminoacids, repeat=k)]
+    ind = np.array([float(f1.loc[s[0]] * f1.loc[s[1]]) for s in kmers])
+    df = pd.DataFrame.from_dict(dict(seq=kmers, count=ind*len(aminoacids)**2))
+    df.set_index('seq', inplace=True)
+    df_count = counter_to_df(count_kmers_iterable(iterable, k, gap), norm=False)
+    df_count.set_index('seq', inplace=True)
+    df = df.add(df_count, fill_value=0.0)
+    df['freq'] = df['count'] / np.sum(df['count'])
+    return df[['freq']]
+
 def count(seqs, *args, **kwargs):
     df = counter_to_df(count_kmers_iterable(seqs, *args, **kwargs))
     df = df.set_index('seq')
@@ -61,15 +82,16 @@ def fit_ising(f1, f2s, niter=1, nmcmc=1e6, epsilon=0.1, Jk=None, prng=None, outp
                 Jk[gap, aa1, aa2] += logfold * epsilon
     return h, Jk
 
-def save(h, Jk):
+def save(name, h, Jk):
     aas_arr = np.array(list(aminoacids))
     dfh = pd.DataFrame(index=aas_arr, data=h, columns=['h'])
-    dfJk = pd.DataFrame(data=Jk, columns=range(len(Jk)))
-    #dfJk = pd.DataFrame(index=doublets,
-    #                    data=[Jk[0,aatonumber(s[0]),aatonumber(s[1])] for s in doublets],
-    #                    columns=['J0'])
-    #for i in range(1, len(Jk)):
-    #    dfJk['J%g'%i] = [Jk[i,aatonumber(s[0]),aatonumber(s[1])] for s in doublets]
+    #dfJk = pd.DataFrame(data=Jk, columns=range(len(Jk)))
+    doublets = [''.join(s) for s in itertools.product(list(aminoacids), repeat=2)]
+    dfJk = pd.DataFrame(index=doublets,
+                        data=[Jk[0,aatonumber(s[0]),aatonumber(s[1])] for s in doublets],
+                        columns=['J0'])
+    for i in range(1, len(Jk)):
+        dfJk['J%g'%i] = [Jk[i,aatonumber(s[0]),aatonumber(s[1])] for s in doublets]
 
-    dfh.to_csv('data/h.csv')
-    dfJk.to_csv('data/Jk.csv')
+    dfh.to_csv('data/%s_h.csv' % name)
+    dfJk.to_csv('data/%s_Jk.csv' % name)

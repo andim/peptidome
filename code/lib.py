@@ -366,6 +366,7 @@ def load_iedb_tcellepitopes(
         hla=None,
         exclude_hla=None,
         human_only=False,
+        positive_only=False,
         peptide_length=None,
         assay_method=None,
         assay_group=None,
@@ -384,6 +385,8 @@ def load_iedb_tcellepitopes(
         Exclude certain HLA types
     human_only: bool
         Restrict to human samples (default False)
+    positive_only: bool
+        Restrict to epitopes with positive Assay Qualitative Measure
     peptide_length: int, optional
         Restrict epitopes to amino acid strings of given length
     assay_method string, optional
@@ -405,6 +408,7 @@ def load_iedb_tcellepitopes(
             skipinitialspace=True,
             nrows=nrows,
             low_memory=False,
+            na_values=['unidentified'],
             error_bad_lines=False,
             encoding="latin-1")
 
@@ -431,6 +435,11 @@ def load_iedb_tcellepitopes(
     if human_only:
         organism = df[('Host', 'Name')]
         mask &= organism.str.startswith('Homo sapiens', na=False).astype('bool')
+
+    if positive_only:
+        # there are several types of positive assays (Positive, Positive-High etc.)
+        # we thus invert from the negative ones
+        mask &= ~(df['Assay', 'Qualitative Measure'] == 'Negative')
 
     # Match known alleles such as "HLA-A*02:01",
     # broader groupings such as "HLA-A2"
