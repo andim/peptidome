@@ -35,12 +35,19 @@ def load_proteomes(only_pathogens=False):
         proteomes = proteomes[mask] 
     return proteomes
 
-
+# Define path variables
 datadir = os.path.join(os.path.dirname(__file__), '../data/')
+plotsdir = os.path.join(os.path.dirname(__file__), '../plots/')
+
 proteomes = load_proteomes()
 human = datadir + proteomes.ix['Human']['path']
 yeast = datadir + proteomes.ix['Yeast']['path']
 malaria = datadir + proteomes.ix['Malaria']['path']
+influenzaB = datadir + proteomes.ix['InfluenzaB']['path']
+cmv = datadir + proteomes.ix['CMV']['path']
+listeria = datadir + proteomes.ix['Listeria']['path']
+hiv = datadir + proteomes.ix['HIV']['path']
+
 
 def entropy_nsb(n, base=None):
     """"
