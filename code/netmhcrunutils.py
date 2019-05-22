@@ -8,7 +8,7 @@ def run_netMHC(fastapath,outname,hla):
     fullout = '%s-%s.csv' % (outname, hla)
     if not os.path.exists(fullout):
         #netMHC fasta -xls -xlsfile out.csv -a HLA-A0101
-        subprocess.run(['netMHC', '-f', fastapath+".fasta",
+        subprocess.run(['netMHC', '-f', fastapath,
                         '-xls',
                         '-xlsfile %s' % fullout,
                         '-a %s'%hla],
