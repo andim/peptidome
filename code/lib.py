@@ -521,3 +521,29 @@ def load_iedb_bcellepitopes(human_only=False, only_standard_amino_acids=True):
 
     return df[mask]
 
+def falling_factorial(x, n):
+    "returns x (x-1) ... (x-n+1)"
+    return scipy.special.factorial(x)/scipy.special.factorial(x-n+1)
+
+def dist1(x, reference):
+    """ Is the kmer x a Hamming distance 1 away from any of the kmers in the reference set"""
+    for i in range(len(x)):
+        for aa in aminoacids:
+            if aa == x[i]:
+                continue
+            if x[:i]+aa+x[i+1:] in reference:
+                return True
+    return False
+
+def dist2(x, reference):
+    """ Is the string x a Hamming distance 1 away from any of the kmers in the reference set"""
+    for i in range(len(x)):
+        for j in range(i+1, len(x)):
+            for aai in aminoacids:
+                si = x[:i]+aai+x[i+1:]
+                for aaj in aminoacids:
+                    if (aai == x[i]) and (aaj == x[j]):
+                        continue
+                    if si[:j]+aaj+si[j+1:] in human9:
+                        return True
+    return False

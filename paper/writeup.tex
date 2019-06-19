@@ -213,12 +213,29 @@ OnchocercaVolvulus&0.03&0.069\\
 \end{table}
 
 
+
+
 %\begin{figure}
 %    \includegraphics[width=\columnwidth]{viruses}
 %    \caption{Likelihood of randomly drawn viral 9mers given a triplet model based on the human proteome statistics. B cell and T cell epitope likelihoods. Interestingly the B cell epitopes are more similar to the human proteome than if they where drawn at random.
 %    \label{figviruses}
 %    }
 %\end{figure}
+
+
+\subsection{Features of immune epitopes}
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{likelihoodprofile-iedb-tcell}
+    \caption{Likelihood of IEDB T cell epitopes given a triplet model based on the human proteome statistics compared to random self peptides. The three distributions are largely indistinguishable except for a slight depletion of epitopes at the highest likelihoods.
+    \label{figtcelliedb}
+    }
+\end{figure}
+
+Which of the possible peptides do eventually get recognized by the immune system? To answer this question we score known immune epitopes from the Immune Epitope Database (IEDB) against a model for the likeliehood of self peptides (Fig.~\ref{figtcelliedb}). There are few epitopes that are very likely under the self statistics, but overall the distributions are largely indistinguishable. There are also no statistical differences between IEDB entries with positive vs. negative assays.
+
+We can zoom into epitopes from particular pathogens to see whether this finding is due to the similarity of the pathogen proteomes or to immune selection.
+
 
 
 \subsection{A shell theory of immunogenicity?}
