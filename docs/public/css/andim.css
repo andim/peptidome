@@ -1,0 +1,75 @@
+/* New theme for hyde.css */
+
+html {
+  font-size: 14px;
+  line-height: 1.25;
+}
+@media (min-width: 48em) {
+  html {
+    font-size: 18px;
+  }
+  .content {
+    max-width: 60rem;
+  }
+}
+p {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+ul {
+    list-style-type: square;
+}
+
+.theme-andim .content {
+  padding-top:    1.5rem;
+  padding-bottom: 1.5rem;
+}
+.theme-andim .content a,
+.theme-andim .related-posts li a:hover {
+  color: #6a9fb5;
+}
+
+/* Sidebar nav */
+.theme-andim .sidebar {
+  background-color: #2d314d;
+  padding: 0.25rem 0.5rem;
+  color: #ccddcc;
+}
+@media (min-width: 48em) {
+  .theme-andim .sidebar {
+    padding: 2rem 1rem;
+  }
+}
+.sidebar-about h1 {
+    font-size: 1.5rem;
+    font-family: "PT Sans", serif;
+}
+.sidebar-about .lead {
+    font-size: 0.75rem;
+}
+.sidebar-nav-item {
+  display: inline-flex;
+  padding: 0.1em 0.1em;
+}
+@media (min-width: 48em) {
+  .sidebar-nav-item {
+    display: block;
+    padding: 0em 0em;
+  }
+}
+
+figure {
+  width: 40%;
+  text-align: center;
+  font-style: italic;
+  font-size: smaller;
+  text-indent: 0;
+  border: thin silver solid;
+  margin: 0.5em;
+  padding: 0.5em;
+}
+
+.post {
+  margin-bottom: 1em;
+}

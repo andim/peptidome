@@ -1,0 +1,26 @@
+# Dependencies
+markdown:         kramdown
+highlighter:      rouge
+
+# Permalinks
+permalink:        pretty
+
+# Setup
+title:            Statistical physics of peptidomes 
+tagline:          'A statistical ensemble approach to self/non-self discrimination'
+description:      ''
+url: 
+baseurl: 
+
+author:
+  name:           'Andreas Mayer'
+  url:            https://twitter.com/andimscience
+
+exclude:
+  - "*.zip"
+  - "*.csv"
+  - "*.npy"
+  - code/build/
+
+plugins:
+  - jekyll-jupyter-notebook
