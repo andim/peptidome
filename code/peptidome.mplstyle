@@ -1,6 +1,7 @@
 figure.facecolor: white
-figure.figsize: 3.42, 2.0
+figure.figsize: 3.42, 2.3
 figure.titlesize: medium
+figure.dpi: 300
 
 text.color: .0
 text.usetex: False
@@ -23,8 +24,8 @@ axes.linewidth: 1.0
 axes.axisbelow: True
 axes.labelsize: small
 axes.titlesize: medium
-#axes.spines.top    : False
-#axes.spines.right  : False
+axes.spines.top    : False
+axes.spines.right  : False
 
 # ticks
 xtick.direction: inout
@@ -50,11 +51,11 @@ legend.frameon: False
 legend.numpoints: 1
 legend.scatterpoints: 1
 legend.markerscale: 0.75
-legend.columnspacing: 0.25
+legend.columnspacing: 0.75
 legend.labelspacing  : 0.75
 legend.handletextpad: 0.5
 legend.handlelength: 1.25
-legend.borderaxespad: 0.1
+legend.borderaxespad: 0.5
 
 
 # grid
@@ -70,3 +71,8 @@ lines.solid_capstyle: round
 
 # patches
 patch.linewidth: 0.8
+
+# savefig
+savefig.pad_inches  : 0.1
+savefig.bbox        : standard
+savefig.dpi         : figure
