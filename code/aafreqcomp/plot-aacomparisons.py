@@ -17,7 +17,7 @@ def compare(path, name):
 
     print(name)
     fig, ax = plt.subplots(figsize=(4, 4))
-    xmin, xmax = 0.25*np.amin(dfmerged['freq_human']), 2*np.amax(dfmerged['freq_human'])
+    xmin, xmax = 0.5*np.amin(dfmerged['freq_human']), 2*np.amax(dfmerged['freq_human'])
     x = np.logspace(np.log10(xmin), np.log10(xmax))
     ax.plot(x, x, 'k', lw=3)
     ax.plot(x, x*2, '--k', lw=3)
@@ -28,7 +28,7 @@ def compare(path, name):
     ax.set_xlabel('frequency human')
     ax.set_ylabel('frequency ' + name)
     fig.tight_layout()
-    fig.savefig('plots/aafreqs%s.png' % name, dpi=300)
+    fig.savefig('aafreqs%s.png' % name, dpi=300)
 
 compare(datadir+'human-viruses-uniref90.fasta', 'viruses')
 
