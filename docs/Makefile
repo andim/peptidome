@@ -1,6 +1,8 @@
 
 copycode:
 	cp ../code . -r
+	rm code/*/*.md
+	rm code/*.md
 	rm code/*/data/ -r
 	rm code/*/.ipynb_checkpoints/ -r
 	rm code/*/.gitignore
