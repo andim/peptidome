@@ -11,7 +11,8 @@ import scipy.special
 import scipy.stats
 import matplotlib.pyplot as plt
 from Bio import SeqIO
-import nsb_entropy
+
+from . import nsb
 
 
 aminoacids = 'ACDEFGHIKLMNPQRSTVWY'
@@ -35,9 +36,11 @@ def load_proteomes(only_pathogens=False):
         proteomes = proteomes[mask] 
     return proteomes
 
+repopath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+
 # Define path variables
-datadir = os.path.join(os.path.dirname(__file__), '../data/')
-plotsdir = os.path.join(os.path.dirname(__file__), '../plots/')
+datadir = os.path.join(repopath, 'data/')
+plotsdir = os.path.join(repopath,  'plots/')
 
 proteomes = load_proteomes()
 human = datadir + proteomes.ix['Human']['path']
@@ -58,8 +61,8 @@ def entropy_nsb(n, base=None):
     """
     N = np.sum(n)
     K = len(n)
-    nxkx = nsb_entropy.make_nxkx(n, K)
-    entropy = nsb_entropy.S(nxkx, N, K)
+    nxkx = nsb.make_nxkx(n, K)
+    entropy = nsb.S(nxkx, N, K)
     if base:
         entropy /= np.log(base)
     return entropy

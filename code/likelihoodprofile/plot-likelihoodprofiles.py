@@ -7,7 +7,7 @@ import sys
 sys.path.append('..')
 
 from lib import *
-plt.style.use('../custom.mplstyle')
+plt.style.use('../peptidome.mplstyle')
 
 k = 9
 ref = 'human'

@@ -36,7 +36,7 @@ if not os.path.exists(path_nohiv):
     with open(path_nohiv, "w") as fastaout:
         SeqIO.write(list(load(path)), fastaout, "fasta")
 
-# download immune epitopes from iedb
+# download immune epitope data from IEDB
 path_urls = [('iedb-tcell.zip', r'http://www.iedb.org/downloader.php?file_name=doc/tcell_full_v3.zip'),
              ('iedb-bcell.zip', r'http://www.iedb.org/downloader.php?file_name=doc/bcell_full_v3.zip') 
             ]
