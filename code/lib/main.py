@@ -18,6 +18,11 @@ from . import nsb
 aminoacids = 'ACDEFGHIKLMNPQRSTVWY'
 aminoacids_set = set(aminoacids)
 
+repopath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+# Define path variables
+datadir = os.path.join(repopath, 'data/')
+plotsdir = os.path.join(repopath,  'plots/')
+
 def make_path(row):
     "Return path based on a row from the proteome file"
     path = row['proteomeid'] + row['shortname'] + '.fasta'
@@ -36,11 +41,6 @@ def load_proteomes(only_pathogens=False):
         proteomes = proteomes[mask] 
     return proteomes
 
-repopath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
-
-# Define path variables
-datadir = os.path.join(repopath, 'data/')
-plotsdir = os.path.join(repopath,  'plots/')
 
 proteomes = load_proteomes()
 human = datadir + proteomes.ix['Human']['path']
