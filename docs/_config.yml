@@ -10,7 +10,7 @@ title:            Statistical physics of peptidomes
 tagline:          'A statistical ensemble approach to self/non-self discrimination'
 description:      ''
 url:              'http://andim.github.io/peptidome/'
-baseurl:          
+baseurl:          / 
 
 author:
   name:           'Andreas Mayer'
