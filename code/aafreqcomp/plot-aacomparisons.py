@@ -1,5 +1,6 @@
 import sys
 sys.path.append('..')
+import shutil
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -30,9 +31,11 @@ def compare(path, name):
     fig.tight_layout()
     fig.savefig('aafreqs%s.png' % name, dpi=300)
 
-compare(datadir+'human-viruses-uniref90.fasta', 'viruses')
+compare(datadir+'human-viruses-uniref90.fasta', 'Viruses')
 
 for name, row in proteomes.iterrows():
     path = datadir+row['path']
 
     compare(path, name)
+
+shutil.move('aafreqsViruses.png', 'main.png')

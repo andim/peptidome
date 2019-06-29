@@ -37,9 +37,9 @@ for f in glob.iglob('../code/*/*.md'):
         data = data.replace('_path_', '/code/{reldir}'.format(reldir=reldir))
     with open(fout, 'w') as modified:
         modified.write(header.format(title=title) + data)
-
     with open(fout, "a") as foutobj:
-        foutobj.write('\n### Code \n')
+        foutobj.write('\n{% include image-gallery.html filter="' + reldir + '/" %}\n\n')
+        foutobj.write('### Code \n')
         for nb in glob.iglob('{}/*.ipynb'.format(fdir)):
             name = os.path.splitext(os.path.basename(nb))[0]
             foutobj.write('#### {name}.ipynb\n\n'.format(name=name))
@@ -51,5 +51,3 @@ for f in glob.iglob('../code/*/*.md'):
             with open(py, 'r') as pycodeobj:
                 pycode = pycodeobj.read()
                 foutobj.write(code.format(code=pycode))
-        
-    

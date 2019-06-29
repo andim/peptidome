@@ -3,9 +3,9 @@ import pandas as pd
 import scipy.stats
 import matplotlib.pyplot as plt
 
-plt.style.use('custom.mplstyle')
+plt.style.use('../peptidome.mplstyle')
 
-fig, ax = plt.subplots()#figsize=(4.5, 3.5))
+fig, ax = plt.subplots()
 xmin, xmax = -13.5, -9.5
 p = np.logspace(xmin, xmax)
 N = 2e7
@@ -26,5 +26,4 @@ ax.set_ylabel('Probability')
 ax.set_xlim(10**xmin, 10**xmax)
 fig.tight_layout()
 plt.show()
-fig.savefig('plots/shelltheory.png', dpi=300)
-fig.savefig('plots/shelltheory.svg')
+fig.savefig('main.png')

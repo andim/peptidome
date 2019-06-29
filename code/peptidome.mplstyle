@@ -47,6 +47,7 @@ ytick.labelsize: small
 
 # legend
 legend.fontsize: small
+legend.title_fontsize: small
 legend.frameon: False
 legend.numpoints: 1
 legend.scatterpoints: 1
@@ -74,5 +75,5 @@ patch.linewidth: 0.8
 
 # savefig
 savefig.pad_inches  : 0.1
-savefig.bbox        : standard
+savefig.bbox        : tight
 savefig.dpi         : figure
