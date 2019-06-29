@@ -3,6 +3,7 @@ copycode:
 	cp ../code . -r
 	rm code/*/data/ -r
 	rm code/*/.ipynb_checkpoints/ -r
+	rm code/*/.gitignore
 	rm code/.ipynb_checkpoints/ -r
 	rm code/lib/ -r
 	rm code/*.py -r

@@ -8,12 +8,6 @@ No statistical modeling, only direct sampling. Are there clusters?
 {% include image-gallery.html filter="jsd_doublet/" %}
 
 ### Code 
-#### dkls-comparison.ipynb
-
-
-{::nomarkdown}
-{% jupyter_notebook "/code/jsd_doublet/dkls-comparison.ipynb"%}
-{:/nomarkdown}
 #### runkl.py
 
 ```python

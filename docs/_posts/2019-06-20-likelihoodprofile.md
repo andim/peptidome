@@ -14,12 +14,6 @@ Likelihoods of peptides under different models.
 {% include image-gallery.html filter="likelihoodprofile/" %}
 
 ### Code 
-#### resample.ipynb
-
-
-{::nomarkdown}
-{% jupyter_notebook "/code/likelihoodprofile/resample.ipynb"%}
-{:/nomarkdown}
 #### __init__.py
 
 ```python
