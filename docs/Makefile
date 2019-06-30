@@ -1,17 +1,22 @@
-
 copycode:
 	cp ../code . -r
-	rm code/*/*.md
-	rm code/*.md
-	rm code/*/data/ -r
-	rm code/*/.ipynb_checkpoints/ -r
-	rm code/.gitignore
-	rm code/*/.gitignore
-	rm code/.ipynb_checkpoints/ -r
-	rm code/lib/ -r
-	rm code/*.py -r
-	rm code/*/__pycache__/ -r
-	rm code/plots/ -r
+	rm -f code/*/*.md
+	rm -f code/*.md
+	rm -f code/*/data/ -r
+	rm -f code/*/.ipynb_checkpoints/ -r
+	rm -f code/.gitignore
+	rm -f code/*/.gitignore
+	rm -f code/.ipynb_checkpoints/ -r
+	rm -f code/lib/ -r
+	rm -f code/*.py -r
+	rm -f code/*.ipynb -r
+	rm -f code/*/*.ipynb -r
+	rm -f code/*/__pycache__/ -r
+	rm -f code/plots/ -r
+
+nbconvert:
+	jupyter nbconvert --to markdown ../code/*/*.ipynb --output-dir notebooks
+	mv notebooks/*/*png notebook_files/
 
 posts:
 	python code_to_posts.py

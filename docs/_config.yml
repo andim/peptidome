@@ -21,6 +21,3 @@ exclude:
   - "*.csv"
   - "*.npy"
   - code/build/
-
-plugins:
-  - jekyll-jupyter-notebook

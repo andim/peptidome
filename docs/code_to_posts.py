@@ -43,8 +43,13 @@ for f in glob.iglob('../code/*/*.md'):
         for nb in glob.iglob('{}/*.ipynb'.format(fdir)):
             name = os.path.splitext(os.path.basename(nb))[0]
             foutobj.write('#### {name}.ipynb\n\n'.format(name=name))
-            #foutobj.write('- [{nbname}.ipynb](/code/{reldir}/{nbname}.ipynb)\n'.format(nbname=nbname,reldir=reldir))
-            foutobj.write(jnb_1 + '"/code/{reldir}/'.format(reldir=reldir) + os.path.basename(nb) + '"' + jnb_2)
+            with open('notebooks/{name}.md'.format(name=name) , 'r') as nbmd:
+                nbtext = nbmd.read()
+                nbtext = nbtext.replace('({name}_files'.format(name=name),
+                                        '(notebook_files')
+                foutobj.write(nbtext)
+#            #foutobj.write('- [{nbname}.ipynb](/code/{reldir}/{nbname}.ipynb)\n'.format(nbname=nbname,reldir=reldir))
+#            foutobj.write(jnb_1 + '"/code/{reldir}/'.format(reldir=reldir) + os.path.basename(nb) + '"' + jnb_2)
         for py in glob.iglob('{}/*.py'.format(fdir)):
             pyname = os.path.splitext(os.path.basename(py))[0]
             foutobj.write('#### {pyname}.py\n\n'.format(pyname=pyname))
