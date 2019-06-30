@@ -1,3 +1,6 @@
+serve: copycode posts
+	jekyll serve -w --config _config.yml,_config_dev.yml
+
 copycode:
 	cp ../code . -r
 	rm -f code/*/*.md
@@ -14,12 +17,13 @@ copycode:
 	rm -f code/*/__pycache__/ -r
 	rm -f code/plots/ -r
 
+posts: nbconvert
+	python code_to_posts.py
+
 nbconvert:
 	jupyter nbconvert --to markdown ../code/*/*.ipynb --output-dir notebooks
 	mv notebooks/*/*png notebook_files/
 
-posts:
-	python code_to_posts.py
 
 clean:
 	rm -rf build *.c *.so *.pyc
