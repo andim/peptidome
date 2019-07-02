@@ -41,15 +41,11 @@ def load_proteomes(only_pathogens=False):
         proteomes = proteomes[mask] 
     return proteomes
 
+def proteome_path(name):
+    proteomes = load_proteomes()
+    return datadir + proteomes.loc[name]['path']
 
-proteomes = load_proteomes()
-human = datadir + proteomes.ix['Human']['path']
-yeast = datadir + proteomes.ix['Yeast']['path']
-malaria = datadir + proteomes.ix['Malaria']['path']
-influenzaB = datadir + proteomes.ix['InfluenzaB']['path']
-cmv = datadir + proteomes.ix['CMV']['path']
-listeria = datadir + proteomes.ix['Listeria']['path']
-hiv = datadir + proteomes.ix['HIV']['path']
+human = proteome_path('Human')
 
 
 def entropy_nsb(n, base=None):
@@ -140,6 +136,46 @@ def scrambled(iterable):
         shuffled = ''.join(l)
         yield shuffled
 
+class Counter(defaultdict):
+
+    def __init__(self, iterable, k, gap=0, **kwargs):
+        """
+        Counter class
+
+        iterable: sequences or proteome filename
+        k: int, kmer length
+        gap: int, gap between first and subsequent letters
+        """
+        super(Counter, self).__init__(int)
+        self.k = k
+        self.gap = gap
+        if isinstance(iterable, str):
+            iterable = fasta_iter(iterable, returnheader=False)
+        self.count(iterable, **kwargs)
+
+    def count(self, iterable, **kwargs):
+        for seq in iterable:
+            count_kmers(seq, self.k, gap=self.gap, counter=self, **kwargs)
+
+    def clean(self):
+        "keep only kmers composed of standard amino acids"
+        keys = list(self.keys())
+        for key in keys:
+            if not isvalidaa(key):
+                del self[key]
+
+    def to_df(self, norm=True, clean=True):
+        """Convert a (kmer, count) dict to a pandas DataFrame
+        
+        clean: only accept counts responding to valid amino acid letters 
+        """
+        if clean:
+            self.clean()
+        if norm:
+            return pd.DataFrame(dict(seq=list(self.keys()), freq=normalize(self)))
+        arr = np.array(list(self.values()), dtype=np.float)
+        return pd.DataFrame(dict(seq=list(self.keys()), count=arr))
+
 def count_kmers_proteome(proteome, k, **kwargs):
     return count_kmers_iterable(fasta_iter(proteome, returnheader=False), k, **kwargs)
 
@@ -151,7 +187,7 @@ def count_kmers_iterable(iterable, k, clean=False, **kwargs):
     for seq in iterable:
         count_kmers(seq, k, counter=counter, **kwargs)
     if clean:
-        counter = {k:counter[k] for k in counter.keys() if isvaliddna(k)}
+        counter = {k:counter[k] for k in counter.keys() if isvalidaa(k)}
     return counter
 
 def calc_tripletmodelparams(proteome):
@@ -222,8 +258,8 @@ def normalize(counter):
     arr /= np.sum(arr)
     return arr
 
-def isvaliddna(string):
-    "returns true if string is valid DNA using the standard amino acid alphabet"
+def isvalidaa(string):
+    "returns true if string is composed only of characters from the standard amino acid alphabet"
     return all(c in aminoacids_set for c in string)
 
 def counter_to_df(counter, norm=True, clean=True):
@@ -232,7 +268,7 @@ def counter_to_df(counter, norm=True, clean=True):
     clean: only accept counts responding to valid amino acid letters 
     """
     if clean:
-        counter = {k:counter[k] for k in counter.keys() if isvaliddna(k)}
+        counter = {k:counter[k] for k in counter.keys() if isvalidaa(k)}
     if norm:
         return pd.DataFrame(dict(seq=list(counter.keys()), freq=normalize(counter)))
     arr = np.array(list(counter.values()), dtype=np.float)
@@ -440,7 +476,7 @@ def load_iedb_tcellepitopes(
 
     if only_standard_amino_acids:
         # drop the sequence if it contains unknown amino acids
-        mask &= epitopes.apply(isvaliddna)
+        mask &= epitopes.apply(isvalidaa)
 
     if human_only:
         organism = df[('Host', 'Name')]
@@ -523,7 +559,7 @@ def load_iedb_bcellepitopes(human_only=False, only_standard_amino_acids=True):
 
     if only_standard_amino_acids:
         # drop the sequence if it contains unknown amino acids
-        mask &= epitopes.apply(isvaliddna)
+        mask &= epitopes.apply(isvalidaa)
 
     if human_only:
         organism = df[('Host', 'Name')]
