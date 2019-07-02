@@ -13,9 +13,7 @@ for ind, row in proteomes.iterrows():
         if row['speciesid']:
             url = r"ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/%s_%s.fasta.gz"%(row['proteomeid'], row['speciesid'])
         else:
-         
             url = r"http://www.uniprot.org/uniprot/?query=proteome%3A"+row['proteomeid']+r"&format=fasta&include=no"
-        print(url)
         urllib.request.urlretrieve(url, datadir+row['path'])
 
 # Download proteome of all viruses with human host
