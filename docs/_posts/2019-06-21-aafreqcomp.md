@@ -5,7 +5,7 @@ title: Comparisons between amino acid frequencies
 
 How do the amino acid frequencies vary across individuals
 
-{% include image-gallery.html filter="aafreqcomp/" %}
+{% include post-image-gallery.html filter="aafreqcomp/" %}
 
 ### Code 
 #### plot-aacomparisons.py

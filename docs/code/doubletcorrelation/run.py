@@ -11,7 +11,7 @@ proteome = proteome_path(name)
 df1 = Counter(proteome, k=1).to_df(norm=True, clean=True)
 df1.set_index('seq', inplace=True)
 
-gaps = np.arange(0, 201, 1)
+gaps = np.arange(0, 4, 1)
 for gap in gaps:
     df2 = counter_to_df(count_kmers_proteome(proteome, k=2, gap=gap), norm=True, clean=True)
     strcolumn_to_charcolumns(df2, 'seq')

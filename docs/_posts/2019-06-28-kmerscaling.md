@@ -5,7 +5,7 @@ title: Scaling of the number of kmers
 
 How many distinct kmers are their in the human proteome?
 
-{% include image-gallery.html filter="kmerscaling/" %}
+{% include post-image-gallery.html filter="kmerscaling/" %}
 
 ### Code 
 #### plot.py

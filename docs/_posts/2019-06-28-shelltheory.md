@@ -5,7 +5,7 @@ title: Immunogenicity only within a shell of likelihoods?
 
 An exploration of a shell model of immunogenicity.
 
-{% include image-gallery.html filter="shelltheory/" %}
+{% include post-image-gallery.html filter="shelltheory/" %}
 
 ### Code 
 #### plot.py

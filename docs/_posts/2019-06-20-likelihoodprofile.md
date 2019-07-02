@@ -11,7 +11,7 @@ Likelihoods of peptides under different models.
    description="Distribution of likelihoods under a triplet model learned on the human proteomes for random peptides (9-mers) from the human proteome and IEDB T cell epitopes."
 %}
 
-{% include image-gallery.html filter="likelihoodprofile/" %}
+{% include post-image-gallery.html filter="likelihoodprofile/" %}
 
 ### Code 
 #### resample.ipynb

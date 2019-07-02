@@ -6,7 +6,7 @@ title: kmer frequencies are (close to) lognormally distributed
 kmer frequencies compared with lognormal fits
 
 
-{% include image-gallery.html filter="lognormal/" %}
+{% include post-image-gallery.html filter="lognormal/" %}
 
 ### Code 
 #### run-likelihoodprofile.py

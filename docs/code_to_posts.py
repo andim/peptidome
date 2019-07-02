@@ -38,7 +38,7 @@ for f in glob.iglob('../code/*/*.md'):
     with open(fout, 'w') as modified:
         modified.write(header.format(title=title) + data)
     with open(fout, "a") as foutobj:
-        foutobj.write('\n{% include image-gallery.html filter="' + reldir + '/" %}\n\n')
+        foutobj.write('\n{% include post-image-gallery.html filter="' + reldir + '/" %}\n\n')
         foutobj.write('### Code \n')
         for nb in glob.iglob('{}/*.ipynb'.format(fdir)):
             name = os.path.splitext(os.path.basename(nb))[0]

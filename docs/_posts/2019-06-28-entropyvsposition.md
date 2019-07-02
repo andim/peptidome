@@ -6,7 +6,7 @@ title: Entropy as a function of position
 The entropy of the amino acids is more restricted for the first few amino acids within a protein.
 
 
-{% include image-gallery.html filter="entropyvsposition/" %}
+{% include post-image-gallery.html filter="entropyvsposition/" %}
 
 ### Code 
 #### run.py

@@ -2,13 +2,14 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+plt.style.use('../peptidome.mplstyle')
 
 import sys
 sys.path.append('..')
 from lib import *
 
-dfs = {gap: pd.read_csv('doubletfoldenrichment-%g-human.csv' %gap, index_col=0) for gap in range(0, 5)}
-
+name = sys.argv[1]
+dfs = {gap: pd.read_csv('data/doubletfoldenrichment-%g-%s.csv'%(gap, name), index_col=0) for gap in range(0, 4)}
 print(dfs[0])
 
 fig, axes = plt.subplots(figsize=(10.0, 9), nrows=2, ncols=2,
@@ -17,7 +18,7 @@ fig, axes = plt.subplots(figsize=(10.0, 9), nrows=2, ncols=2,
 for gap, ax in zip(list(dfs), axes.flatten()):
     ax.set_title('distance '+str(gap+1))
     im = sns.heatmap(dfs[gap], ax=ax, cbar=False,
-            vmin=-1.5, vmax=1.5, cmap='RdBu_r')
+            vmin=-1.0, vmax=1.0, cmap='RdBu_r')
             #cbar_kws=dict(label='log$_2$ doublet fold enrichment'))
 print(im)
 cax = fig.add_axes((0.91, 0.3, 0.01, 0.4))
@@ -29,6 +30,6 @@ for ax in axes[:, 0]:
 for ax in axes[:, 1]:
     ax.set_ylabel('')
 fig.tight_layout(rect=[0, 0, 0.9, 1.0])
-fig.savefig('../paper/images/doubletenrichment.pdf')
+fig.savefig('main.png' if name == 'Human' else name+'.png')
 
 plt.show()

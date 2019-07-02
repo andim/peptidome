@@ -4,6 +4,7 @@ serve: copycode posts
 copycode:
 	cp ../code . -r
 	rm -f code/*/*.md
+	rm -f code/*/*.pdf
 	rm -f code/*.md
 	rm -f code/*/data/ -r
 	rm -f code/*/.ipynb_checkpoints/ -r

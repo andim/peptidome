@@ -1,25 +1,25 @@
-import sys
-sys.path.append('..')
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+plt.style.use('../peptidome.mplstyle')
 
+import sys
+sys.path.append('..')
 from lib import *
-mishuffled = 0.0012531812133396159
 
-fig = plt.figure(figsize=(5, 3))
-for species in ['human', 'mouse', 'yeast', 'viruses']:#, 'malaria', 'virus']:
+fig, ax = plt.subplots()
+for species in ['Human', 'Mouse', 'Yeast']:
     df = pd.read_csv('data/mutualinformation-%s.csv'%species)
-    plt.plot(df['gaps']+1, df['mutualinformation'], label=species)
+    ax.plot(df['gaps']+1, df['mutualinformation'], label=species)
+#mishuffled = 0.0012531812133396159
 #plt.axhline(mishuffled, color='k', label='human shuffled')
-plt.legend()
-plt.ylim(0.0)
-plt.xlim(1.0, 200.0)
-plt.xscale('log')
-plt.xlabel('Distance')
-plt.ylabel('Mutual information in bits')
+ax.legend()
+ax.set_ylim(0.0)
+ax.set_xlim(1.0, 200.0)
+ax.set_xscale('log')
+ax.set_xlabel('Distance')
+ax.set_ylabel('Mutual information in bits')
 fig.tight_layout()
-fig.savefig('../plots/doublet-mutualinformation.png', dpi=300)
-fig.savefig('../../paper/images/mutualinformationdecay.pdf')
+fig.savefig('mivsdist.pdf')
 fig.savefig('main.png')
 plt.show()

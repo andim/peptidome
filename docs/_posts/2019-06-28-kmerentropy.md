@@ -12,7 +12,7 @@ Entropy of the kmer distributions for different proteomes.
 
 
 
-{% include image-gallery.html filter="kmerentropy/" %}
+{% include post-image-gallery.html filter="kmerentropy/" %}
 
 ### Code 
 #### kmerentropy.ipynb

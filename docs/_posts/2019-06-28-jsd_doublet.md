@@ -5,7 +5,7 @@ title: Jensen-Shannon divergence between doublet frequencies in different proteo
 
 No statistical modeling, only direct sampling. Are there clusters?
 
-{% include image-gallery.html filter="jsd_doublet/" %}
+{% include post-image-gallery.html filter="jsd_doublet/" %}
 
 ### Code 
 #### dkls-comparison.ipynb
