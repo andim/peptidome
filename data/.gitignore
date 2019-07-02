@@ -1,4 +1,6 @@
-iedb-tcell.zip
-iedb-bcell.zip
 *.fasta
 *.fasta.gz
+*.fa.gz
+*.xml.gz
+*.zip
+

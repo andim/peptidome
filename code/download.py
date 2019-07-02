@@ -34,9 +34,16 @@ if not os.path.exists(path_nohiv):
     with open(path_nohiv, "w") as fastaout:
         SeqIO.write(list(load(path)), fastaout, "fasta")
 
-# download immune epitope data from IEDB
-path_urls = [('iedb-tcell.zip', r'http://www.iedb.org/downloader.php?file_name=doc/tcell_full_v3.zip'),
-             ('iedb-bcell.zip', r'http://www.iedb.org/downloader.php?file_name=doc/bcell_full_v3.zip') 
+
+path_urls = [
+             # immune epitope data from IEDB
+             ('iedb-tcell.zip', r'http://www.iedb.org/downloader.php?file_name=doc/tcell_full_v3.zip'),
+             ('iedb-bcell.zip', r'http://www.iedb.org/downloader.php?file_name=doc/bcell_full_v3.zip'),
+             # Human protein atlas (tissue restriction, subcellular location)
+             ('proteinatlas.tsv.zip', r'https://www.proteinatlas.org/download/proteinatlas.tsv.zip'),
+             ('proteinatlas.xml.gz', r'https://www.proteinatlas.org/download/proteinatlas.xml.gz'),
+             # DNA sequence data
+             ('dna_chr21.fa.gz', r'ftp://ftp.ensembl.org/pub/release-96/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.21.fa.gz')
             ]
 for path, url in path_urls:
     if not os.path.exists(datadir+path):
