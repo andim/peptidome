@@ -18,8 +18,8 @@ from . import nsb
 aminoacids = 'ACDEFGHIKLMNPQRSTVWY'
 aminoacids_set = set(aminoacids)
 
-repopath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
 # Define path variables
+repopath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
 datadir = os.path.join(repopath, 'data/')
 plotsdir = os.path.join(repopath,  'plots/')
 
