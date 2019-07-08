@@ -267,6 +267,56 @@ Consider that there is a number $N_T$ neighboring peptides that if they are in t
     }
 \end{figure}
 
+\section{Linking likelihood and neighbor density}
+
+\begin{figure}
+    \includegraphics{nnproblikelihood}
+    \caption{The nearest neighbor probability and the likelihood of a sequence are closely related. The likelihood of a 9mer drawn from an independent site model based on the human amino acid frequencies is closely related to the sum of the likelihoods of all its neighboring sequences. The deviation from a linear scaling is well desribed by the theory developed in the text. 
+    \label{fignnproblikelihood}
+    }
+\end{figure}
+
+We expect sequences that are highly likely under a particular model to also have more neighbors in a set of sequences drawn from that same model. Can we make this link quantitative? It turns out we can as we show in the following. For mathematically tractability we focus on an independent site model (a first order model, which as discussed before actually does a rather good job at describing peptide statistics). As before we denote $k$ the length of the sequences $\sigma$ we will consider and $S$ the number of possible choices per site. For peptides we have of course $S=20$ amino acids. For generality we do not impose that the model is translation invariant, i.e. the probability of an amino acid can depend on position,
+\begin{equation} \label{eqpsigma}
+    p(\B \sigma) = \prod_{i=1}^k p_i(\sigma_i).
+\end{equation}
+Let us define the probability that a randomly drawn sequence is a neighbor of sequence $\sigma$ as
+\begin{equation}
+    n(\B \sigma) = \sum_{\B \sigma' \sim \B \sigma} p(\B \sigma').
+\end{equation}
+We have 
+\begin{align*}
+    n(\B \sigma) &= \sum_{i=1}^k \sum_{s / \sigma_i} p(\B \sigma) \frac{p_i(s)}{p_i(\sigma_i)} \\
+              &= p(\B \sigma) \sum_i \frac{1-p_i(\sigma_i)}{p_i(\sigma_i)}
+\end{align*}
+from which we finally obtain
+\begin{equation}
+    n(\B \sigma) = p(\B \sigma) \left[\sum_i \frac{1}{p_i(\sigma_i)} - k\right].
+\end{equation}
+Expanding $p_i(\sigma_i) = 1/S + \delta p_i(\sigma_i)$ around its mean value $1/S$ we obtain at first order
+\begin{equation} \label{eqnsigmadeltas}
+    n(\B \sigma) \approx p(\B \sigma) \left[ k (S-1) - S^2 \sum_i \delta p_i(\sigma_i)\right].
+\end{equation}
+We can rewrite Eq.~\ref{eqpsigma} as
+\begin{align}
+    p(\B \sigma) &= \prod_{i=1}^k \left(\frac{1}{S} + \delta p_i(\sigma_i) \right)
+                 &= \frac{1}{S^k} e^{\sum_{i=1}^k \ln(1+ S \delta p_i(\sigma_i))}
+\end{align}
+and then expand similarly for small $\delta p_i$ to obtain
+\begin{equation}
+    p(\B \sigma) \approx \frac{1}{S^k} e^{S \sum_{i=1}^k \delta p_i(\sigma_i)}.
+\end{equation}
+The previous equation can be rewritten as
+\begin{equation*}
+    S \sum_{i=1}^k \delta p_i(\sigma_i) \approx \ln\left(p(\B \sigma)/p_0\right),
+\end{equation*}
+where $p_0 = 1/S^k$ is the average probability of a sequence.
+Plugging this into Eq.~\ref{eqnsigmadeltas} yields
+\begin{equation} \label{eqnsigmadeltas}
+    n(\B \sigma) \approx p(\B \sigma) \left[ k (S-1) - S \ln\left(p(\B \sigma)/p_0\right)\right].
+\end{equation}
+
+
 \end{document}
 
 
