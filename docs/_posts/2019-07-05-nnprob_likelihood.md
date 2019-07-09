@@ -53,7 +53,7 @@ nsigma_sum = np.sum(np.fromiter((np.prod(pi[sigmap]) for sigmap in neighbors(sig
 print(nsigma, nsigma_sum)
 ```
 
-    0.5961995584857569 0.596199558485757
+    0.43379441914720135 0.4337944191472014
 
 
 ## correlation between probabilities
@@ -115,7 +115,7 @@ rhop, np.corrcoef(np.log(psigmaps), np.log(psigmas))[0, 1]
 
 
 
-    (0.8794155515495672, 0.8973915310674747)
+    (0.8491838235254919, 0.8955826296953464)
 
 
 
@@ -168,7 +168,7 @@ rho = np.corrcoef(psigmas, nsigmas)[1, 0]
 print(r'$\rho_{p(\sigma), n(\sigma)}$:', rho)
 ```
 
-    $\rho_{p(\sigma), n(\sigma)}$: 0.9904111764408798
+    $\rho_{p(\sigma), n(\sigma)}$: 0.9906201713914548
 
 
 
@@ -179,7 +179,7 @@ np.var(np.log(psigmas))/k, np.var(np.log(pi))
 
 
 
-    (0.26489179882187436, 0.2637393500109682)
+    (0.2650286172753722, 0.2637393500109682)
 
 
 
@@ -192,7 +192,7 @@ np.var(psigmas), (np.exp(sigmasq)-1)/N**2
 
 
 
-    (1.5518235808418035e-23, 3.714200465543339e-23)
+    (1.5312729094932873e-23, 3.714200465543339e-23)
 
 
 
@@ -212,7 +212,9 @@ ax.plot(np.log10(psigmas_theory),
 ax.set_xlabel('$\log_{10} p(\sigma)$\n Log-Likelihood')
 ax.set_ylabel("Log-Neighborlikelihood\n $\log_{10} n(\sigma) = \log_{10} \sum_{\sigma' \sim \sigma} p(\sigma')$")
 ax.legend()
+fig.tight_layout()
 fig.savefig('main.png')
+fig.savefig('../../paper/images/nnproblikelihood.pdf')
 
 slope, intercept = np.polyfit(np.log10(psigmas), np.log10(nsigmas), 1)
 rho1 = 1 - S/(k*(S-1))
@@ -233,10 +235,10 @@ print('nsigmabar (lower, sampled, upper):', Nn/N, nsigmabar, nsigmabar_upper)
 print('prediction (-S, -3/2S, rhop)', nsigmabar_pred, nsigmabar_pred2, nsigmabar_pred3)
 ```
 
-    slope, prediction 0.8655586372960176 0.8830409356725146
-    nsigmavar (sampled, upper, pred): 2.8128526752865896e-19 4.537687332739518e-19 3.5383129466773965e-19 3.993712659499665e-19
-    nsigmabar (lower, sampled, upper): 3.33984375e-10 1.387208081120254e-09 1.697763829483453e-09
-    prediction (-S, -3/2S, rhop) 1.5337302218204152e-09 1.454276854481315e-09 1.6086008919132467e-09
+    slope, prediction 0.8653734425950762 0.8830409356725146
+    nsigmavar (sampled, upper, pred): 2.7861268219362906e-19 4.477595114649322e-19 3.4914553609356446e-19 3.806250426060438e-19
+    nsigmabar (lower, sampled, upper): 3.33984375e-10 1.376673489089933e-09 1.6786749617905207e-09
+    prediction (-S, -3/2S, rhop) 1.5178420867874503e-09 1.4394409138213942e-09 1.5700597083794556e-09
 
 
 
@@ -264,7 +266,6 @@ ax.set_xlabel('Probability');
 
 ## TODO
 
-- Check these formulas!
 - What about longer distances? (Second, third neighbours etc.?) Do things generalize?
 - Test with rough Mount Fuji?
 
