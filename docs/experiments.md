@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Experiments
-order: 3
+order: 2
 ---
 
 {% for post in site.posts %}

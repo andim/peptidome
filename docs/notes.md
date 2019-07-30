@@ -1,3 +1,9 @@
+---
+layout: page
+title: Notes
+order: 3
+---
+
 # 2019-04-09: Reading on Chargaff's rule
 
 This relates to the comment by Richard Neher about %A = %T and %G = %C in double-stranded DNA organisms. This is known as Chargaff's rule (https://en.wikipedia.org/wiki/Chargaff%27s_rules): 
