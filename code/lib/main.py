@@ -85,10 +85,12 @@ def calc_jsd(p, q, base=np.e):
     return 0.5*(scipy.stats.entropy(p, m, base=base)
                 + scipy.stats.entropy(q, m, base=base))
 
-def fasta_iter(fasta_name, returnheader=True):
+def fasta_iter(fasta_name, returnheader=True, returndescription=False):
     """
     Given a fasta file return a iterator over tuples of header, complete sequence.
     """
+    if returnheader and returndescription:
+        raise Exception('one of returnheader/returndescription needs to be False')
     if guess_type(fasta_name)[1] =='gzip':
         _open = partial(gzip.open, mode='rt')
     else:
@@ -96,7 +98,9 @@ def fasta_iter(fasta_name, returnheader=True):
     with _open(fasta_name) as f:
         fasta_sequences = SeqIO.parse(f, 'fasta')
         for fasta in fasta_sequences:
-            if returnheader:
+            if returndescription:
+                yield fasta.description, str(fasta.seq)
+            elif returnheader:
                 yield fasta.id, str(fasta.seq)
             else:
                 yield str(fasta.seq)
