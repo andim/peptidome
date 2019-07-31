@@ -196,18 +196,20 @@ def count_kmers_iterable(iterable, k, clean=False, **kwargs):
     return counter
 
 def calc_tripletmodelparams(proteome):
-    df = counter_to_df(count_kmers_proteome(proteome, 1), norm=True)
+    df = Counter(proteome, 1).to_df(norm=True)
+#    df = counter_to_df(count_kmers_proteome(proteome, 1), norm=True)
     df = df.set_index('seq')
     charlogp = np.log10(df['freq']).to_dict()
 
-    df1 = counter_to_df(count_kmers_proteome(proteome, 2), norm=False)
+    #df1 = counter_to_df(count_kmers_proteome(proteome, 2), norm=False)
+    df1 = Counter(proteome, 2).to_df(norm=False)
     strcolumn_to_charcolumns(df1, 'seq')
     count = df1.pivot(columns='aa1', index='aa2')['count']
     count /= np.sum(count, axis=0)
     count[count.isna()] = 1e-10
     doubletlogp = np.log10(count).to_dict()
 
-    df2 = counter_to_df(count_kmers_proteome(proteome, 3), norm=False)
+    df2 = Counter(proteome, 3).to_df(norm=False)
     df2['aa12'] = [s[:2] for s in df2['seq']]
     df2['aa3'] = [s[2] for s in df2['seq']]
     count = df2.pivot(columns='aa12', index='aa3')['count']

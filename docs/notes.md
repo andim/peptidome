@@ -4,6 +4,14 @@ title: Notes
 order: 3
 ---
 
+# 2019-07-31: Skype w/ Ben
+
+Other flu strains to look at: H5N1 (bird flu), Flu B (only human), H3N2 (other seasonal flu strain).
+
+Revisit the question of optimal crossreactivity in the light of the biases that we have seen.
+
+Grouping proteins: Look at https://www.ncbi.nlm.nih.gov/geo/. A few groups to considerhousekeeping genes, innate immunity related genes, heat shock proteins, metal ion transport, olfactory receptor family, HLA family, mitochondrial.
+
 # 2019-04-09: Reading on Chargaff's rule
 
 This relates to the comment by Richard Neher about %A = %T and %G = %C in double-stranded DNA organisms. This is known as Chargaff's rule (https://en.wikipedia.org/wiki/Chargaff%27s_rules): 
