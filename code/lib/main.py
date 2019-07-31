@@ -17,6 +17,7 @@ from . import nsb
 
 aminoacids = 'ACDEFGHIKLMNPQRSTVWY'
 aminoacids_set = set(aminoacids)
+naminoacids = len(aminoacids)
 
 # Define path variables
 repopath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
@@ -77,8 +78,8 @@ def entropy_grassberger(n, base=None):
     return entropy
 
 def calc_jsd(p, q, base=np.e):
-    "Calculate Jensen Shannon Divergence"
-    p, q = np.asarray(p), np.asarray(q)
+    "Calculate Jensen Shannon Divergence between p and q"
+    p, q = np.array(p, copy=True), np.array(q, copy=True)
     p /= np.sum(p)
     q /= np.sum(q)
     m = 0.5*(p + q)
@@ -226,8 +227,9 @@ def iscontained(string, strings):
     return False
 
 try:
-    from clib import count_kmers
+    from .clib import count_kmers
 except ImportError:
+    print('clib not found')
     def count_kmers(string, k, counter=None, gap=0):
         """
         Count occurrence of kmers in a given string.

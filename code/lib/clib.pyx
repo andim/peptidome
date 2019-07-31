@@ -1,5 +1,6 @@
 from collections import defaultdict
 cimport cython
+import numpy as np
 cimport numpy as np
 
 @cython.boundscheck(False)
@@ -13,6 +14,17 @@ def energy(np.ndarray[long, ndim=1] s, np.ndarray[double, ndim=1] h, np.ndarray[
         for j in range(i+1, N):
             energy += J[j-i-1, s[i], s[j]]
     return -energy
+
+
+cdef int naminoacids = 20
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def aacounts_int(np.ndarray[np.int64_t, ndim=1] seq):
+    cdef np.ndarray[np.int64_t, cast=True] counter = np.zeros(naminoacids, dtype=np.int64)
+    cdef Py_ssize_t i
+    for i in range(seq.shape[0]):
+        counter[seq[i]] += 1
+    return counter
 
 def count_kmers(str string, int k, counter=None, int gap=0):
     """
