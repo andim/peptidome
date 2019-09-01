@@ -4,6 +4,11 @@ title: Notes
 order: 3
 ---
 
+# 2019-08-22: Protein structure and family databases
+
+- Pfam: Protein domains found in sequences of a given proteome. See e.g. [Human](http://pfam.xfam.org/proteome/9606#tabview=tab2), interestingly there are for example nearly 8000 occurrences of C2H2 zinc finger domains in line with the signal we have seen inthe mutual information analysis. A CSV file with where domains are located can be downloaded via [FTP](ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/proteomes/) 
+- [CathDB](http://www.cathdb.info): protein domains classified (at top level) into mainly alpha, mainly beta, alpha/beta, and few secondary structure
+
 # 2019-07-31: Skype w/ Ben
 
 Other flu strains to look at: H5N1 (bird flu), Flu B (only human), H3N2 (other seasonal flu strain).
@@ -201,3 +206,4 @@ Interested in the project, previous programming experience in Python, --> send h
 - acute articular rhumatism (after acute streptococcus infection) (check if T cell mediated)
 - Guillain Barré syndrom often ~ month after small infection or vaccination (check if T cell mediated)
 - Generally look for T cells mediated auto-immune diseases.
+
