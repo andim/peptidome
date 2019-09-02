@@ -16,6 +16,19 @@ for ind, row in proteomes.iterrows():
             url = r"http://www.uniprot.org/uniprot/?query=proteome%3A"+row['proteomeid']+r"&format=fasta&include=no"
         urllib.request.urlretrieve(url, datadir+row['path'])
 
+# download protein domain data from Pfam
+for ind, row in proteomes.iterrows():
+    if row['speciesid']:
+        path = datadir + row['speciesid'] +  '_pfam.tsv.gz'
+        print(path)
+        if not os.path.exists(path):
+            url = r"ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/proteomes/%s.tsv.gz"%(row['speciesid'])
+            try:
+                urllib.request.urlretrieve(url, path)
+            except urllib.error.URLError:
+                print('%s not found in Pfam'%row['speciesid'])
+
+
 # Download proteome of all viruses with human host
 path = datadir+'human-viruses-uniref90.fasta'
 if not os.path.exists(path):

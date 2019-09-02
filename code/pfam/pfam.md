@@ -1,0 +1,3 @@
+# How much confounding is there due to shared protein domains?
+
+An analysis based on Pfam domain assignments. As expected the dominant peaks in the mutual information vanish once we exclude all proteins containing Zinc finger motifs. We can also use the domain information in various ways to filter the protein data to more generally assess how much shared protein domains affect the mutual information. One sensible way to do so is to keep just one randmly chosen protein per protein domain family. This also removes the Zinc finger peak, but otherwise the decay of mutual information is broadly similar. 

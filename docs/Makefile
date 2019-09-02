@@ -25,6 +25,9 @@ nbconvert:
 	jupyter nbconvert --to markdown ../code/*/*.ipynb --output-dir notebooks
 	mv notebooks/*/*png notebook_files/
 
+commitposts:
+	git rm -r _posts
+	git add _posts/*md
 
 clean:
 	rm -rf build *.c *.so *.pyc
