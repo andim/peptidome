@@ -6,10 +6,9 @@ import sys
 sys.path.append('..')
 from lib import *
 
-min_length = 100
+min_length = 200
 
 aas =  aminoacids
-
 def aa_frequencies(proteome, min_length=1):
     proteome = proteome_path(proteome)
     n = sum([1 for h, seq in fasta_iter(proteome) if len(seq)>=min_length])
@@ -29,7 +28,6 @@ def aa_frequencies(proteome, min_length=1):
             array[i, j] = counter[aa]/sum_
         i += 1
     return array
-
 
 aa_human = aa_frequencies('Human', min_length=min_length)
 aa_malaria = aa_frequencies('Malaria', min_length=min_length)

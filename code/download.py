@@ -20,8 +20,8 @@ for ind, row in proteomes.iterrows():
 for ind, row in proteomes.iterrows():
     if row['speciesid']:
         path = datadir + row['speciesid'] +  '_pfam.tsv.gz'
-        print(path)
         if not os.path.exists(path):
+            print(path)
             url = r"ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/proteomes/%s.tsv.gz"%(row['speciesid'])
             try:
                 urllib.request.urlretrieve(url, path)
@@ -56,7 +56,9 @@ path_urls = [
              ('proteinatlas.tsv.zip', r'https://www.proteinatlas.org/download/proteinatlas.tsv.zip'),
              ('proteinatlas.xml.gz', r'https://www.proteinatlas.org/download/proteinatlas.xml.gz'),
              # DNA sequence data
-             ('dna_chr21.fa.gz', r'ftp://ftp.ensembl.org/pub/release-96/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.21.fa.gz')
+             ('dna_chr21.fa.gz', r'ftp://ftp.ensembl.org/pub/release-96/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.21.fa.gz'),
+             ('dna_human_all.fa.gz', r'ftp://ftp.ensembl.org/pub/release-96/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz'),
+             ('dna_pfalciparum.fasta', r'https://plasmodb.org/common/downloads/release-45/Pfalciparum3D7/fasta/data/PlasmoDB-45_Pfalciparum3D7_Genome.fasta')
             ]
 for path, url in path_urls:
     if not os.path.exists(datadir+path):
