@@ -590,15 +590,17 @@ def dist1(x, reference):
     return False
 
 def dist2(x, reference):
-    """ Is the string x a Hamming distance 1 away from any of the kmers in the reference set"""
+    """ Is the string x a Hamming distance 2 away from any of the kmers in the reference set"""
     for i in range(len(x)):
         for j in range(i+1, len(x)):
             for aai in aminoacids:
+                if aai == x[i]:
+                    continue
                 si = x[:i]+aai+x[i+1:]
                 for aaj in aminoacids:
-                    if (aai == x[i]) and (aaj == x[j]):
+                    if aaj == x[j]:
                         continue
-                    if si[:j]+aaj+si[j+1:] in human9:
+                    if si[:j]+aaj+si[j+1:] in reference:
                         return True
     return False
 
