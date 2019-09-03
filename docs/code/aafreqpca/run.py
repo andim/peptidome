@@ -6,18 +6,16 @@ import sys
 sys.path.append('..')
 from lib import *
 
-min_length = 100
+min_length = 200
 
 aas =  aminoacids
-
 def aa_frequencies(proteome, min_length=1):
-    proteome = proteome_path(proteome)
     n = sum([1 for h, seq in fasta_iter(proteome) if len(seq)>=min_length])
     array = np.zeros((n, len(aas)))
     i = 0
     for h, seq in fasta_iter(proteome):
-        seq = seq.replace('X', '')
-        seq = seq.replace('U', '')
+        for sym in 'XUBZ':
+            seq = seq.replace(sym, '')
         if len(seq) < min_length:
             continue
         counter = {}
@@ -30,9 +28,9 @@ def aa_frequencies(proteome, min_length=1):
         i += 1
     return array
 
+aa_human = aa_frequencies(proteome_path('Human'), min_length=min_length)
+aa_malaria = aa_frequencies(proteome_path('Malaria'), min_length=min_length)
+aa_cmv = aa_frequencies(proteome_path('CMV'), min_length=min_length)
+aa_viruses = aa_frequencies(datadir+'human-viruses-uniref90.fasta', min_length=min_length)
 
-aa_human = aa_frequencies('Human', min_length=min_length)
-aa_malaria = aa_frequencies('Malaria', min_length=min_length)
-aa_cmv = aa_frequencies('CMV', min_length=min_length)
-
-np.savez('data/data.npz', human=aa_human, malaria=aa_malaria, cmv=aa_cmv)
+np.savez('data/data.npz', human=aa_human, malaria=aa_malaria, cmv=aa_cmv, viruses=aa_viruses)

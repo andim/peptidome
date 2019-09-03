@@ -6,6 +6,7 @@ copycode:
 	rm -f code/*/*.md
 	rm -f code/*/*.pdf
 	rm -f code/*.md
+	rm -f code/*/Makefile
 	rm -f code/*/data/ -r
 	rm -f code/*/.ipynb_checkpoints/ -r
 	rm -f code/.gitignore
