@@ -29,7 +29,7 @@
         {% assign filenameparts = file.path | split: "/" %}
         {% assign filename = filenameparts | last | replace: file.extname,"" %}
         {% assign filedir = filenameparts[2]  %}
-        <a href="{{ file.path }}" title="{{ file.path }}">
+        <a href="{{ site.url }}/{{ file.path }}" title="{{ file.path }}">
             <img src="{{ site.url }}/{{ file.path }}" alt="{{ filename }}" title="{{ filename }}"/>
             <span>{{ filename }}</span>
         </a>
