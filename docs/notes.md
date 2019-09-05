@@ -4,6 +4,10 @@ title: Notes
 order: 3
 ---
 
+# 2019-09-05: Protein tissue distribution database
+
+https://www.proteinatlas.org/ has data on the distribution of human proteins across tissues and cell types. This could be a useful resource to check how much the peptide statistics should vary across tissues. 
+
 # 2019-08-22: Protein structure and family databases
 
 - Pfam: Protein domains found in sequences of a given proteome. See e.g. [Human](http://pfam.xfam.org/proteome/9606#tabview=tab2), interestingly there are for example nearly 8000 occurrences of C2H2 zinc finger domains in line with the signal we have seen inthe mutual information analysis. A CSV file with where domains are located can be downloaded via [FTP](ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/proteomes/) 
