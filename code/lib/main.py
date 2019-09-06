@@ -631,4 +631,12 @@ def ntfreq_to_aafreq(ntfreq):
     for nts, aa in codon_map.items():
         if not aa == 'STOP':
             frequencies[aa] += np.prod([ntfreq[nt_to_ind[nt]] for nt in nts])
+    sum_ = sum(frequencies.values())
+    for aa in aminoacids:
+        frequencies[aa] /= sum_
     return frequencies
+
+def dict_to_array(dict_):
+    "return an array from a dictionary by sorting the keys"
+    keys = sorted(dict_.keys())
+    return np.array([dict_[key] for key in keys])
