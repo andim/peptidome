@@ -49,6 +49,21 @@
 
 \maketitle
 
+\section{Maxent formalism}
+We consider a distribution $P(\boldsymbol \sigma)$, where $\boldsymbol \sigma$ is an N-dimensional state vector. We search for the distribution which maximizes the entropy subject to some constraints on the expectation value of a (smallish) number of observables:
+\begin{equation}
+\langle f_\mu(\boldsymbol \sigma)\rangle = \sum_{\boldsymbol \sigma} P(\boldsymbol \sigma) f_\mu(\boldsymbol \sigma) = f_\mu^{emp}
+\end{equation}
+This leads to Lagrangian of the form,
+\begin{equation}
+    \mathcal{L}(P(\B \sigma)) = - \sum_{\B \sigma} P(\B \sigma) \ln P(\B \sigma) - \sum_{\mu = 0}^K \lambda_\mu \[[ \langle f_\mu(\boldsymbol \sigma) \rangle - f_\mu^{emp} \]]
+\end{equation}
+where the index 0 refers to the normalization constraints. Taking the derivative with respect to $P(\B \sigma)$ we derive that the maximum entropy distribution has the following general form:
+\begin{equation}
+    P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ -\sum_{\mu=1}^K \lambda_\mu f_\mu(\boldsymbol \sigma) \right]
+\end{equation}
+
+
 \section{Approach to a lognormal distribution}
 
 See e.g. \url{http://www.scholarpedia.org/article/Cumulants}.
@@ -56,6 +71,8 @@ See e.g. \url{http://www.scholarpedia.org/article/Cumulants}.
 Cumulant of a sum of identically distributed random variables = sum of cumulants. Calculate the cumulants of the amino acid distribution and derive the cumulants of the kmer distribution from there.
 
 One also has $\kappa_n(c X) = c^n \kappa_n(X)$. For $c = 1/N$ this gives the central limit theorem: higher order cumulants of $N^{-1} \sum_i X_i$ vanish more quickly than the first and second order cumulants and the distribution thus converges to a Gaussian distribution which has $\kappa_n = 0$ for $n>2$.
+
+The approach of including more and more of the history in a Markov chain has been used extensively on the nucleotide level: In general an n-th order Markov chain is a model which includes a dependence on the previous n symbols in a sequence.
 
 \end{document}
 

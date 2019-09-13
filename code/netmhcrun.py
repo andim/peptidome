@@ -1,29 +1,23 @@
+# runs netMHC on all pathogen proteomes
+# for all HLA types
+
 import subprocess
 import os
-
+from multiprocessing import Pool
 import pandas as pd
 
 from lib import *
+from netmhcrunutils import *
 
-dfproteomes = pd.read_csv('../data/proteomes.csv', sep=',')
-dfhla = pd.read_csv('../data/hlas.csv', sep='\t', skiprows=1)
+#number of parallel python processes
+n_proc = 1
 
-for idx, row in dfproteomes.iterrows():
-    if idx < 2:
-        continue
+dfproteomes = load_proteomes(only_pathogens=True)
+dfhla = pd.read_csv(datadir+'hlas.csv', sep='\t', skiprows=1)
+pool = Pool(processes=n_proc)
+
+for name, row in dfproteomes.iterrows():
+    print(name)
     fastapath = datadir + row['path']
-    name = row['shortname']
-
     outname = datadir + 'netmhc/%s' % name.replace(' ', '')
-
-    for hla in dfhla['name']:
-        fullout = '%s-%s.csv' % (outname, hla)
-        if not os.path.exists(fullout):
-            #netMHC fasta -xls -xlsfile out.csv -a HLA-A0101
-            subprocess.run(['netMHC', fastapath,
-                            '-xls',
-                            '-xlsfile %s' % fullout,
-                            '-a %s'%hla])
-            df = pd.read_csv(fullout, sep='\t', skiprows=1)
-            dfbinders = df[df['nM']<500]
-            dfbinders.to_csv(fullout)
+    pool.starmap(run_netMHC, [(fastapath, outname, hla) for hla in dfhla['name']])

@@ -13,6 +13,7 @@ InfluenzaA,Influenza A,Influenza A virus,,UP000116233,virus,A/Mexico City/INER13
 CMV,Cytomegalovirus,Human betaherpesvirus 5,,UP000008991,virus,
 HCV,Hepacivirus C,Hepacivirus C,,UP000000518,virus,
 HBV,Hepatitis B virus,Hepatitis B virus,,UP000008591,virus,genotype C subtype ayr (isolate Human/Japan/Okamoto/-)
+HSV1,Herpex simplex virus 1,Human alphaherpesvirus 1,,UP000106517,virus,strain RH2
 DENV,Dengue virus,Dengue virus,,UP000002500,virus,
 HIV,Human immunodeficiency virus,Human immunodeficiency virus,,UP000002241,virus,
 EBV,Epstein-Barr virus,Human gammaherpesvirus 4,,UP000153037,virus,
@@ -22,7 +23,7 @@ Tuberculosis,Mycobacterium tuberculosis,Mycobacterium tuberculosis,,UP000001584,
 Listeria,Listeria monocytogenes,Listeria monocytogenes,,UP000000817,bacterium,
 Burkholderia,Burkholderia pseudomallei,Burkholderia pseudomallei,,UP000000605,bacterium,
 Meningococcus,Neisseria meningitidis,Neisseria meningitidis,,UP000000425,bacterium,
-StreptococcusPyogenes,Streptococcus pyogenes,Streptococcus pyogenes,,UP000000750,bacterium,
+StrepA,Streptococcus pyogenes,Streptococcus pyogenes,,UP000000750,bacterium,
 Hpylori,Helicobacter pylori,Helicobacter pylori,,UP000000429,bacterium,causing chronic gastritis
 Lyme,Borreliella burgdorferi,Borreliella burgdorferi,,UP000001807,bacterium,
 Tetanus,Clostridium tetani,Clostridium tetani,,UP000001412,bacterium,

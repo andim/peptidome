@@ -1,41 +1,44 @@
-import sys
-sys.path.append('..')
 import numpy as np
 import pandas as pd
 
+import sys
+sys.path.append('..')
 from lib import *
 
-#name = 'human'
-#proteome = human
-#name = 'mouse'
-#proteome = mouse
-#name = 'yeast'
-#proteome = yeast
-#name = 'malaria'
-#proteome = malaria
-name = 'viruses'
-proteome = datadir + 'human-viruses-uniref90_nohiv.fasta'
+name = sys.argv[1]
+if name == 'Viruses':
+    proteome = datadir + 'human-viruses-uniref90_nohiv.fasta'
+else:
+    proteome = proteome_path(name)
+print(name, proteome)
 
-entropyestimator = entropy_grassberger
+def calc_mi_std(seqs, gap):
+    mis = []
+    for i in range(30):
+        df2 = Counter(random.sample(seqs, 10000), k=2, gap=gap).to_df(norm=False, clean=True)
+        mis.append(calc_mi(df2))
+    return np.std(mis, ddof=1)/2**.5
 
-df1 = counter_to_df(count_kmers_proteome(proteome, k=1))
-df1 = df1[~df1['seq'].str.contains('U|B|X|Z')]
-df1.set_index('seq', inplace=True)
-entropy1 = entropyestimator(df1['freq'], base=2)
-
-meanabsfoldchanges = []
-mutualinformations = []
+mutualinformation = []
+mutualinformation_std = []
+shuffled_mutualinformation = []
 gaps = np.arange(0, 201, 1)
 for gap in gaps:
-    df2 = counter_to_df(count_kmers_proteome(proteome, k=2, gap=gap), norm=False)
-    df2 = df2[~df2['seq'].str.contains('U|B|X|Z')]
-    entropy2 = entropyestimator(df2['count'], base=2)
-    df = strcolumn_to_charcolumns(df2, 'seq')
-    e1 = entropyestimator(df.groupby('aa1').agg(np.sum)['count'], base=2)
-    e2 = entropyestimator(df.groupby('aa2').agg(np.sum)['count'], base=2)
-    mi = e1 + e2 - entropy2
-    print(gap, mi)
-    mutualinformations.append(mi)
+    seqs = [s for s in fasta_iter(human, returnheader=False)]
+    df2 = Counter(seqs, k=2, gap=gap).to_df(norm=False, clean=True)
+    mi = calc_mi(df2)
+    mutualinformation.append(mi)
+    mi_std = calc_mi_std(seqs, gap)
+    mutualinformation_std.append(mi_std)
 
-df = pd.DataFrame.from_dict(dict(gaps=gaps, mutualinformation=mutualinformations))
+    # calculate shuffled mi
+    iterable = scrambled(fasta_iter(proteome, returnheader=False))
+    df2 = Counter(iterable, k=2, gap=gap).to_df(norm=False, clean=True)
+    shuffledmi = calc_mi(df2)
+    shuffled_mutualinformation.append(shuffledmi)
+    print(gap, mi, mi_std, shuffledmi)
+
+df = pd.DataFrame.from_dict(dict(gaps=gaps, mutualinformation=mutualinformation,
+                                 mutualinformation_std=mutualinformation_std,
+                                 shuffledmutualinformation=shuffled_mutualinformation))
 df.to_csv('data/mutualinformation-%s.csv'%name)

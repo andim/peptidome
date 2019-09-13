@@ -43,7 +43,7 @@
 \title{A statistical ensemble approach to immune discrimination}
 %\author{Andreas Mayer}
 %\author{Quentin Marcou}
-%\author{Marta Luksza}
+%%\author{Marta Luksza}
 %\author{Ben D Greenbaum}
 %\author{William Bialek}
 \date{\today}
@@ -83,7 +83,7 @@ Karlin and Bucher \cite{Karlin1992} have shown the existence of pairwise correla
 
 Another interesting line of work has involved low-complexity sequences within proteins (see \cite{Cascarina2018} and references therein).
 
-There has been some early work about peptide similarity in the context of immunology by Burroughs, De Boer, and Kesmir \cite{Burroughs2004}. Interestingly, they demonstrate that the number of shared 9mers decreases with evolutionary distance, and is much lower for e.g. human and bacteria than for human and mouse, or human and drosophila. The paper also discusses some possible slight preference of the antigen processing pathway for non-self antigens. In a follow up work an overlapping set of authors build a tool for immunogenicity prediction based on small differences in amino acid usage in recognized epitopes \cite{Calis2013}. A more recent follow up by Wortel et al. \cite{Wortel2018} shows that self and foreign peptides are largely similar (much more similar then words from different languages). They then argue that under these conditions thymic selection should minimizie the co-occurrence of similar self-peptides for efficient self/non-self discrimination based on negative selection. 
+There has been some early work about peptide similarity in the context of immunology. Starting with work by Claverie and co-workers \cite{Claverie1988} and later by Burroughs, De Boer, and Kesmir \cite{Burroughs2004}. Interestingly, they demonstrate that the number of shared 9mers decreases with evolutionary distance, and is much lower for e.g. human and bacteria than for human and mouse, or human and drosophila. The paper also discusses some possible slight preference of the antigen processing pathway for non-self antigens. In a follow up work an overlapping set of authors build a tool for immunogenicity prediction based on small differences in amino acid usage in recognized epitopes \cite{Calis2013}. A more recent follow up by Wortel et al. \cite{Wortel2018} shows that self and foreign peptides are largely similar (much more similar then words from different languages). They then argue that under these conditions thymic selection should minimizie the co-occurrence of similar self-peptides for efficient self/non-self discrimination based on negative selection. 
 
 Coevolution \cite{Bahir2009}.
 
@@ -110,6 +110,27 @@ Under the heading of immunopeptidomics and MHC ligandomics efforts are underway 
 
 How close to random is the protein distribution? To answer this question we calculate how much information about the amino acid in a certain position is revealed by knowing its neighbors. Concretely, we calculate the mutual information between amino acid pair a certain distance apart. The mutual information can be expressed as $I(X, Y) = H(X) + H(Y) - H(X, Y)$. We use this expression to calulate the mutual information from the single site entropies and the entropy of the joint distribution, which we calculate using the estimator proposed by Grassberger \cite{Grassberger2003}. (TODO: Use NSB estimator instead?) Note that one cannot assume uniform single site entropies across all comparions stemming most notably from differences in amino acid composition for the first few amino acids within a protein (Fig.~\ref{figentropyaa}). The universal constraints on unrelated proteins are surprisingly small as measured by the mutual information (Fig.~\ref{figmutualinformationdecay}, see also \cite{Lavelle2009}). 
 
+\begin{figure}
+    \includegraphics[width=\columnwidth]{4mer-comparison}
+    \caption{Performance of the Maxent model for predicting the 4mer frequencies. Using an even split of the data into a test and a training set we compare predictions on the test set with the reproducibility of the frequencies between the training and test set.
+    \label{fig4mermaxent}
+    }
+\end{figure}
+
+\begin{table}
+    \begin{center}
+        \begin{tabular}{ c c }
+            distribution & 4mer DKL\\ \hline
+            uniform & 0.1115\\
+            independent & 0.0195\\
+            1st order Markov chain & 0.0132\\
+            Pairwise Maxent & 0.0092\\
+            2nd order Markov chain & 0.0087\\
+            test & 0.0076\\
+        \end{tabular}
+    \end{center}
+    \caption{Comparison of models based on 4mer frequencies}
+\end{table}
 
 We can further dissect which correlations between individual amino acids contribute to the mutual information. To do so we analyze the fold enrichment of amino acid doublets relative to an independent model. Most doublets are only over- or underrepresented moderately (Fig.~\ref{figdoubletentrichment}). An exception is a strong enrichment of Cysteine-Cysteine 3 amino acids apart. This enrichment has been found previously \cite{Greenbaum2014} and is likely due to a particular preference of cysteines to form disulfide bonds at this distance. Another prominent feature of this data are the relatively high enrichments along the diagonal at all distances. This might be attributable to amino acid repeats within some proteins \cite{Turjanski2018}.
 
@@ -192,12 +213,29 @@ OnchocercaVolvulus&0.03&0.069\\
 \end{table}
 
 
+
+
 %\begin{figure}
 %    \includegraphics[width=\columnwidth]{viruses}
 %    \caption{Likelihood of randomly drawn viral 9mers given a triplet model based on the human proteome statistics. B cell and T cell epitope likelihoods. Interestingly the B cell epitopes are more similar to the human proteome than if they where drawn at random.
 %    \label{figviruses}
 %    }
 %\end{figure}
+
+
+\subsection{Features of immune epitopes}
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{likelihoodprofile-iedb-tcell}
+    \caption{Likelihood of IEDB T cell epitopes given a triplet model based on the human proteome statistics compared to random self peptides. The three distributions are largely indistinguishable except for a slight depletion of epitopes at the highest likelihoods.
+    \label{figtcelliedb}
+    }
+\end{figure}
+
+Which of the possible peptides do eventually get recognized by the immune system? To answer this question we score known immune epitopes from the Immune Epitope Database (IEDB) against a model for the likeliehood of self peptides (Fig.~\ref{figtcelliedb}). There are few epitopes that are very likely under the self statistics, but overall the distributions are largely indistinguishable. There are also no statistical differences between IEDB entries with positive vs. negative assays.
+
+We can zoom into epitopes from particular pathogens to see whether this finding is due to the similarity of the pathogen proteomes or to immune selection.
+
 
 
 \subsection{A shell theory of immunogenicity?}
@@ -229,6 +267,7 @@ Consider that there is a number $N_T$ neighboring peptides that if they are in t
     }
 \end{figure}
 
+
+\input{independentmodel}
+
 \end{document}
-
-

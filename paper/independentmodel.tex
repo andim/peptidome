@@ -1,0 +1,85 @@
+\section{An analysis of neighbor density in an independent site model}
+
+\begin{figure}
+    \includegraphics{nnproblikelihood}
+    \caption{The nearest neighbor probability and the likelihood of a sequence are closely related. The likelihood of a 9mer drawn from an independent site model based on the human amino acid frequencies is closely related to the sum of the likelihoods of all its neighboring sequences. The deviation from a linear scaling is well desribed by the theory developed in the text. 
+    \label{fignnproblikelihood}
+    }
+\end{figure}
+
+When the probability is correlated across sequence space we expect sequences that are highly probable under a given model to also have more neighbors in a set of sequences drawn from that same model. Here we will make this link quantitative for an indepndent site model.
+
+We denote by $k$ the length of the sequences $\B \sigma$ we consider and by $S$ the number of possible choices per site (e.g. for peptides we have $S=20$ amino acids). We do not impose that the model is translation invariant, i.e. the probability of an amino acid can depend on position,
+\begin{equation} \label{eqpsigma}
+    p(\B \sigma) = \prod_{i=1}^k p_i(\sigma_i).
+\end{equation}
+Let us define the probability that a randomly drawn sequence is a neighbor of sequence $\B \sigma$ as
+\begin{equation}
+    n(\B \sigma) = \sum_{\B \sigma' \sim \B \sigma} p(\B \sigma').
+\end{equation}
+We have 
+\begin{align*}
+    n(\B \sigma) &= \sum_{i=1}^k \sum_{s / \sigma_i} p(\B \sigma) \frac{p_i(s)}{p_i(\sigma_i)} \\
+              &= p(\B \sigma) \sum_i \frac{1-p_i(\sigma_i)}{p_i(\sigma_i)}
+\end{align*}
+from which we finally obtain
+\begin{equation}
+    n(\B \sigma) = p(\B \sigma) \left[\sum_i \frac{1}{p_i(\sigma_i)} - k\right].
+\end{equation}
+Expanding $p_i(\sigma_i) = 1/S + \delta p_i(\sigma_i)$ around its mean value $1/S$ we obtain at first order
+\begin{equation} \label{eqnsigmadeltas}
+    n(\B \sigma) \approx p(\B \sigma) \left[ k (S-1) - S^2 \sum_i \delta p_i(\sigma_i)\right].
+\end{equation}
+We can rewrite Eq.~\ref{eqpsigma} as
+\begin{align}
+    p(\B \sigma) &= \prod_{i=1}^k \left(\frac{1}{S} + \delta p_i(\sigma_i) \right)
+                 &= \frac{1}{S^k} e^{\sum_{i=1}^k \ln(1+ S \delta p_i(\sigma_i))}
+\end{align}
+and then expand similarly for small $\delta p_i$ to obtain
+\begin{equation}
+    p(\B \sigma) \approx \frac{1}{S^k} e^{S \sum_{i=1}^k \delta p_i(\sigma_i)}.
+\end{equation}
+The previous equation can be rewritten as
+\begin{equation*}
+    S \sum_{i=1}^k \delta p_i(\sigma_i) \approx \ln\left(p(\B \sigma)/p_0\right),
+\end{equation*}
+where $p_0 = 1/S^k$ is the average probability of a sequence.
+Plugging this into Eq.~\ref{eqnsigmadeltas} yields
+\begin{equation} 
+    n(\B \sigma) \approx p(\B \sigma) \left[ k (S-1) - S \ln\left(p(\B \sigma)/p_0\right)\right].
+\end{equation}
+
+Note that this formula recovers the correct limiting behavior as $p(\B \sigma) \to p_0$, for which $n(\B \sigma)$ is simply the number of neighbors times the probability of a sequence. The formula shows that the density is locally proportional to the probability with a slope that varies slowly with the probability. On a log-log plot the slope is given by
+\begin{equation}
+\frac{\ud \ln n(\B \sigma)}{\ud \ln p(\B \sigma)} = 1 - \frac{S}{k(S-1) - S \ln(p(\B \sigma)/p_0)},
+\end{equation}
+which can be approximated as long as $p(\B \sigma)$ is within a factor of $k$ of $p_0$ as
+\begin{equation}
+\frac{\ud \ln n(\B \sigma)}{\ud \ln p(\B \sigma)} = 1 - \frac{S}{k(S-1)}.
+\end{equation}
+
+We can use the result derived earlier to calculate the probability 
+\begin{align}
+\bar n = \sum_{\B \sigma, \B \sigma', \B \sigma \sim \B \sigma'} p(\B \sigma) p(\B \sigma') 
+\end{align}
+with which two randomly chosen sequences are neighbors. We can rewrite
+\begin{align*}
+\bar n &= \sum_{\sigma} p(\B \sigma) \sum_{\sigma' \sim \sigma} p(\B \sigma')  \\
+    &= \sum_{\B \sigma} p(\B \sigma) n(\B \sigma)\\
+    &= 1/p_0 \sum_{\B \sigma} p_0 p(\B \sigma) n(\B \sigma) = 1/p_0 \langle p(\B \sigma) n(\B \sigma) \rangle,
+\end{align*}
+where the expectation value is taken with respect to the uniform distribution.
+Plugging in Eq.~\ref{eqnsigmadeltas} we have
+\begin{equation}
+\bar n p_0 = \langle p(\B \sigma)^2 \rangle k(S-1) - S \langle p(\B \sigma)^2 \ln (p(\B \sigma)/p_0) \rangle.
+\end{equation}
+Up to second order we have
+\begin{equation}
+\langle p(\B \sigma)^2 \ln (p(\B \sigma)/p_0) \rangle \approx \frac{3}{2} \langle \delta p^2\rangle.
+\end{equation}
+Together with $\langle p^2 \rangle = \langle \delta p^2\rangle + p_0^2$ this yields the following relation between the average density and the coefficient of variation of $p$,
+\begin{equation}
+\bar n = p_0 k (S-1) \left[1+\langle \delta p^2/p_0^2 \rangle \left(1 - \frac{3S}{2k(S-1)}\right) \right]
+\end{equation}
+
+
