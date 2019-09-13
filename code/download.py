@@ -23,7 +23,10 @@ path = datadir+'human-viruses-uniref90.fasta'
 if not os.path.exists(path):
     url = r"https://www.uniprot.org/uniref/?query=uniprot%3A(host%3A%22Homo+sapiens+(Human)+[9606]%22)+AND+identity%3A0.9&sort=score&format=fasta"
     print(url)
-    urllib.request.urlretrieve(url, path)
+    try:
+        urllib.request.urlretrieve(url, path)
+    except:
+        print('could not download human viruses')
 
 # filter HIV1 proteins from the combined proteome
 path_nohiv = datadir + 'human-viruses-uniref90_nohiv.fasta'
