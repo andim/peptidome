@@ -86,6 +86,22 @@ def calc_jsd(p, q, base=np.e):
     return 0.5*(scipy.stats.entropy(p, m, base=base)
                 + scipy.stats.entropy(q, m, base=base))
 
+def calc_mi(df2):
+    """Calculate the mutual information between
+       residues from a count of pairs of amino acids.
+       Uses the Treves-Panzeri correction for finite size
+    """
+    strcolumn_to_charcolumns(df2, 'seq')
+    df11 = df2.groupby('aa1').agg(np.sum)['count']
+    df11 /= np.sum(df11)
+    df12 = df2.groupby('aa2').agg(np.sum)['count']
+    df12 /= np.sum(df12)
+    df2['theory'] = [float(df11.loc[s[0]] * df12.loc[s[1]]) for s in df2['seq']]
+    df2['freq'] = df2['count']/np.sum(df2['count'])
+    mi = np.sum(df2['freq']*np.log2(df2['freq']/df2['theory']))
+    micorr = mi - (len(aminoacids)-1)**2/(2*np.log(2)*np.sum(df2['count']))
+    return micorr
+
 def fasta_iter(fasta_name, returnheader=True, returndescription=False):
     """
     Given a fasta file return a iterator over tuples of header, complete sequence.

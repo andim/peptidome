@@ -53,7 +53,7 @@ nsigma_sum = np.sum(np.fromiter((np.prod(pi[sigmap]) for sigmap in neighbors(sig
 print(nsigma, nsigma_sum)
 ```
 
-    0.43379441914720135 0.4337944191472014
+    0.3439384511191594 0.3439384511191593
 
 
 ## correlation between probabilities
@@ -87,10 +87,6 @@ fig, ax = plt.subplots(figsize=(3.42, 3.42))
 trans = np.log10
 ax.plot(trans(psigmas), trans(psigmaps), '.', label='data', ms=1)
 ax.plot(trans(psigmas), trans(psigmas), '-', label='linear')
-#psigmas_theory = np.linspace(0.5*S**(-k), 2*S**(-k))
-#ax.plot(np.log10(psigmas_theory), np.log10(psigmas_theory)+np.log10(k*(S-1)-S*(psigmas_theory*S**k-1)),
-#        '-', label='theory')
-#ax.plot([-k*np.log10(S)], [-k*np.log10(S) + np.log10(k*(S-1))], 'o')
 ax.set_xlabel('$\log_{10} p(\sigma)$')
 ax.set_ylabel("$\log_{10} p(\sigma')$")
 ```
@@ -115,7 +111,7 @@ rhop, np.corrcoef(np.log(psigmaps), np.log(psigmas))[0, 1]
 
 
 
-    (0.8491838235254919, 0.8955826296953464)
+    (0.8432573033820352, 0.8950549164412782)
 
 
 
@@ -155,7 +151,7 @@ pi /= pi.sum()
 
 psigmas = []
 nsigmas = []
-Nsample = 100000
+Nsample = 10000
 for i in range(Nsample):
     sigma = np.random.randint(0, S, k)
     psigma = np.prod(pi[sigma])
@@ -168,31 +164,33 @@ rho = np.corrcoef(psigmas, nsigmas)[1, 0]
 print(r'$\rho_{p(\sigma), n(\sigma)}$:', rho)
 ```
 
-    $\rho_{p(\sigma), n(\sigma)}$: 0.9906201713914548
+    $\rho_{p(\sigma), n(\sigma)}$: 0.991705622487347
 
 
 
 ```python
-np.var(np.log(psigmas))/k, np.var(np.log(pi))
+# variance of lognormal
+np.var(np.log(psigmas)), np.var(np.log(pi))*k
 ```
 
 
 
 
-    (0.2650286172753722, 0.2637393500109682)
+    (2.3464343858318664, 2.373654150098714)
 
 
 
 
 ```python
+# coefficient of variation
 sigmasq = np.var(np.log(pi))*k
-np.var(psigmas), (np.exp(sigmasq)-1)/N**2
+np.var(psigmas)*N**2, (np.exp(sigmasq)-1)**.5, (np.exp(np.var(np.log(psigmas)))-1)**.5
 ```
 
 
 
 
-    (1.5312729094932873e-23, 3.714200465543339e-23)
+    (3.124411221821948, 3.1203451200778947, 3.0738003845887154)
 
 
 
@@ -226,7 +224,7 @@ print('nsigmavar (sampled, upper, pred):',
       np.var(psigmas)*Nn**2,
       nsigmavar_pred,
       nsigmavar_pred2)
-nsigmabar = np.sum(nsigmas*psigmas/np.sum(psigmas))
+nsigmabar = np.mean(nsigmas*psigmas)*N
 nsigmabar_upper = Nn*np.mean(psigmas**2)*N
 nsigmabar_pred = Nn/N + N*Nn*rho1*np.var(psigmas)
 nsigmabar_pred2 = Nn/N + N*(Nn-1.5*S)*np.var(psigmas)
@@ -235,10 +233,10 @@ print('nsigmabar (lower, sampled, upper):', Nn/N, nsigmabar, nsigmabar_upper)
 print('prediction (-S, -3/2S, rhop)', nsigmabar_pred, nsigmabar_pred2, nsigmabar_pred3)
 ```
 
-    slope, prediction 0.8653734425950762 0.8830409356725146
-    nsigmavar (sampled, upper, pred): 2.7861268219362906e-19 4.477595114649322e-19 3.4914553609356446e-19 3.806250426060438e-19
-    nsigmabar (lower, sampled, upper): 3.33984375e-10 1.376673489089933e-09 1.6786749617905207e-09
-    prediction (-S, -3/2S, rhop) 1.5178420867874503e-09 1.4394409138213942e-09 1.5700597083794556e-09
+    slope, prediction 0.8661041850727093 0.8830409356725146
+    nsigmavar (sampled, upper, pred): 2.31033278570407e-19 3.485142079822372e-19 2.717578898191919e-19 2.942066076857593e-19
+    nsigmabar (lower, sampled, upper): 3.33984375e-10 1.1630385948709255e-09 1.3607527570242163e-09
+    prediction (-S, -3/2S, rhop) 1.25544159081077e-09 1.19441793413456e-09 1.2927452558183374e-09
 
 
 
@@ -262,6 +260,264 @@ ax.set_xlabel('Probability');
 
 
 ![png](notebook_files/math_14_0.png)
+
+
+# resampling
+
+
+```python
+S = 20
+k = 9
+
+Nn = k*(S-1)
+N = float(S**k)
+
+sigma_lognormal = 0.3
+pi = np.random.lognormal(sigma=sigma_lognormal, size=S)
+pi /= pi.sum()
+```
+
+
+```python
+nsigmabars = []
+for i in range(100):
+    psigmas = []
+    nsigmas = []
+    Nsample = 10000
+    for i in range(Nsample):
+        sigma = np.random.randint(0, S, k)
+        psigma = np.prod(pi[sigma])
+        nsigma = np.prod(pi[sigma])*np.sum((1-pi[sigma])/pi[sigma])
+        psigmas.append(psigma)
+        nsigmas.append(nsigma)
+    nsigmas = np.asarray(nsigmas)
+    psigmas = np.asarray(psigmas)
+    nsigmabar = np.mean(nsigmas*psigmas)*N
+    nsigmabars.append(nsigmabar)
+
+```
+
+
+```python
+plt.hist(nsigmabars)
+p0 = 1/N
+cv = (np.exp(np.var(np.log(pi))*k)-1)**.5
+predicted = p0 * Nn * (1.0 +  cv**2 * (1-1.5* S/Nn))
+plt.axvline(predicted, c='k')
+```
+
+
+
+
+    <matplotlib.lines.Line2D at 0x7fc64d02e0f0>
+
+
+
+
+![png](notebook_files/math_18_1.png)
+
+
+
+```python
+S = 20
+k = 9
+
+Nn = k*(S-1)
+N = float(S**k)
+
+empmeans = []
+empstds = []
+predicts =[]
+varpis = []
+for j, sigma_lognormal in enumerate(np.logspace(-2.5, np.log(0.9), 10)):
+    pi = np.random.lognormal(sigma=sigma_lognormal, size=S)
+    pi /= pi.sum()
+
+    nsigmabars = []
+    Nrepeat = 100
+    for i in range(Nrepeat):
+        psigmas = []
+        nsigmas = []
+        Nsample = 1000
+        for i in range(Nsample):
+            sigma = np.random.randint(0, S, k)
+            psigma = np.prod(pi[sigma])
+            nsigma = np.prod(pi[sigma])*np.sum((1-pi[sigma])/pi[sigma])
+            psigmas.append(psigma)
+            nsigmas.append(nsigma)
+        nsigmas = np.asarray(nsigmas)
+        psigmas = np.asarray(psigmas)
+        nsigmabar = np.mean(nsigmas*psigmas)*N
+        nsigmabars.append(nsigmabar)
+    cv = (np.exp(np.var(np.log(pi))*k)-1)**.5
+    predicted = p0 * Nn * (1.0 +  cv**2 * (1-1.5* S/Nn))
+    empmeans.append(np.mean(nsigmabars))
+    empstds.append(np.std(nsigmabars))
+    predicts.append(predicted)
+    varpis.append(np.var(np.log(pi)))
+```
+
+
+```python
+fig, ax = plt.subplots(figsize=(3.42, 2.5))
+varpis_theory = np.linspace(min(varpis), max(varpis))
+cv = (np.exp(varpis_theory*k)-1)**.5
+predicted = p0 * Nn * (1.0 +  cv**2 * (1-1.5*S/Nn))
+ax.plot((np.exp(varpis_theory)-1)**.5, predicted*N/Nn-1, '-', label='prediction')
+ax.errorbar((np.exp(np.array(varpis))-1)**.5, np.array(empmeans)*N/Nn-1, 2*np.array(empstds)/Nrepeat**.5*N/Nn, fmt='o', label='simulated')
+plt.xscale('log')
+plt.yscale('log')
+plt.legend()
+plt.ylabel(r'relative neighbor density - 1')
+plt.xlabel(r'geometric coefficient of variation of site frequencies')
+fig.tight_layout()
+fig.savefig('neighborprobability.png')
+```
+
+
+![png](notebook_files/math_20_0.png)
+
+
+# Neighbors from different distribution
+
+
+```python
+sigma_lognormal = 1.0
+pi = np.random.lognormal(sigma=sigma_lognormal, size=S)
+pi /= pi.sum()
+```
+
+
+```python
+dpi = np.random.lognormal(sigma=0.5, size=S)
+pi2 = pi*dpi
+pi2 /= pi2.sum()
+```
+
+
+```python
+df = Counter(human, 1).to_df(norm=True, clean=True)
+df.sort_values('seq', inplace=True)
+pi = np.asarray(df['freq'])
+pi
+```
+
+
+
+
+    array([0.07012693, 0.02305051, 0.0473157 , 0.07101057, 0.0365297 ,
+           0.06577845, 0.02626757, 0.04330068, 0.05724314, 0.09970845,
+           0.02132759, 0.03584496, 0.06314819, 0.04767035, 0.05643573,
+           0.08332527, 0.05347764, 0.05963846, 0.01217275, 0.02662735])
+
+
+
+
+```python
+df = Counter(proteome_path('CMV'), 1).to_df(norm=True, clean=True)
+df.sort_values('seq', inplace=True)
+pi2 = np.asarray(df['freq'])
+pi2
+```
+
+
+
+
+    array([0.07841523, 0.02543691, 0.04814408, 0.05226157, 0.03913136,
+           0.06177753, 0.03239089, 0.03522738, 0.0298289 , 0.10188489,
+           0.02023668, 0.03222314, 0.06128954, 0.03547138, 0.08161771,
+           0.07588373, 0.06789276, 0.07445024, 0.01390795, 0.03252814])
+
+
+
+
+```python
+Nsample = 100000
+psigmas = []
+p2sigmas = []
+nsigmas = []
+n2sigmas = []
+for i in range(Nsample):
+    sigma = np.random.randint(0, S, k)
+    psigma = np.prod(pi[sigma])
+    nsigma = np.prod(pi[sigma])*np.sum((1-pi[sigma])/pi[sigma])
+    p2sigma = np.prod(pi2[sigma])
+    n2sigma = np.prod(pi2[sigma])*np.sum((1-pi2[sigma])/pi2[sigma])
+    psigmas.append(psigma)
+    p2sigmas.append(p2sigma)
+    nsigmas.append(nsigma)
+    n2sigmas.append(n2sigma)
+psigmas = np.array(psigmas)
+p2sigmas = np.array(p2sigmas)
+nsigmas = np.array(nsigmas)
+n2sigmas = np.array(n2sigmas)
+```
+
+
+```python
+plt.plot(np.array(psigmas), np.array(p2sigmas), 'o', ms=1)
+plt.xscale('log')
+plt.yscale('log')
+np.corrcoef(psigmas, p2sigmas)[0, 1]
+```
+
+
+
+
+    0.7913977897096637
+
+
+
+
+![png](notebook_files/math_27_1.png)
+
+
+
+```python
+np.mean(psigmas*n2sigmas)*N/(Nn/N), np.mean(psigmas*nsigmas)*N/(Nn/N), np.mean(p2sigmas*n2sigmas)*N/(Nn/N)
+```
+
+
+
+
+    (3.724899792702455, 4.123023237427103, 4.662227304409363)
+
+
+
+
+```python
+np.mean(np.log(pi2/pi))
+```
+
+
+
+
+    -0.0057572107868609414
+
+
+
+
+```python
+k * np.var(pi2/pi-1), k*np.var(np.log(pi2/pi))
+```
+
+
+
+
+    (0.4074057104108117, 0.4713946807340225)
+
+
+
+
+```python
+np.var(np.log(p2sigmas[np.abs((psigmas-1e-12)/psigmas)<0.02]))
+```
+
+
+
+
+    0.44364034581030587
+
 
 
 ## TODO
