@@ -4,6 +4,29 @@ title: Notes
 order: 3
 ---
 
+# 2019-09-10: References to look at 
+
+Unpublished paper Klatzmann group who looked at whether presentation of peptides in the thymus is biased towards viral-like peptides. Underlying papers
+
+"- Derbinski, J., Schulte, A., Kyewski, B. & Klein, L. Promiscuous gene
+expression in medullary thymic epithelial cells mirrors the peripheral
+self. Nature Immunology 2, 1032–1039 (2001).
+
+- Espinosa, G. et al. Peptides presented by HLA class I molecules in
+the human thymus. Journal of Proteomics 94, 23–36 (2013).
+
+
+I think the first ref is about that fact that the 'thymopeptidome' is
+unique because thymic APCs express AIRE which controls what proteins
+are expressed (to make sure that protein expressed only some specific
+tissues are also expressed in the thymus). The second ref contains the
+dataset itself from what I understand.
+"
+
+Also reread Misha ... Shugay paper where they reanalyze data from Diego Chowell
+
+
+
 # 2019-09-05: Protein tissue distribution database
 
 https://www.proteinatlas.org/ has data on the distribution of human proteins across tissues and cell types. This could be a useful resource to check how much the peptide statistics should vary across tissues. 
