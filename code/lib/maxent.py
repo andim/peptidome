@@ -40,7 +40,11 @@ def fit_global(fks, niter=1, nmcmc=1e6, epsilon=0.1, prng=None, output=False):
         prng = np.random
     q = len(aminoacids)
     aas_arr = np.array(list(aminoacids))
-    hks = np.zeros((q, N+1))
+    f1 = np.sum(np.arange(fks.shape[1])*fks, axis=1)/(fks.shape[1]-1)
+    h = np.array(np.log(f1))
+    h -= np.mean(h)
+    hks = h.reshape(20, 1)*np.arange(fks.shape[1])
+    #hks = np.zeros((q, N+1))
     for i in range(niter):
         if output:
             print('iteration %g'%i)
@@ -55,7 +59,8 @@ def fit_global(fks, niter=1, nmcmc=1e6, epsilon=0.1, prng=None, output=False):
         #print(fks, prob_aa_ks)
         hks += (fks - prob_aa_ks)*epsilon
         jsd = calc_jsd(fks, prob_aa_ks)
-        #print(hks, jsd)
+        if output:
+            print(jsd)
     return hks
 
 

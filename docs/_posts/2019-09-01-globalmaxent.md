@@ -25,6 +25,7 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import matplotlib
 %matplotlib inline
 
 plt.style.use('../peptidome.mplstyle')
@@ -55,6 +56,40 @@ train, test = train_test_split(humanseqs, test_size=0.5)
 
 ```python
 k = 3
+
+```
+
+
+```python
+kmers = [''.join(s) for s in itertools.product(aminoacids, repeat=k)]
+df = pd.DataFrame.from_dict(dict(seq=kmers, freq=np.zeros(len(kmers))))
+df.set_index('seq', inplace=True)
+df['freq'] = df.add(count(train, k), fill_value=0.0)
+df['freq_test'] = np.zeros(len(kmers))
+df['freq_test'] = df['freq_test'].add(count(test, k)['freq'], fill_value=0.0)
+jsd_test = calc_jsd(df['freq_test'], df['freq'])
+jsd_flat = calc_jsd(df['freq_test'], np.ones_like(df['freq']), base=2)
+
+
+#df_test.set_index('seq', inplace=True)
+#df_count = counter_to_df(count_kmers_iterable(test, k), norm=False)
+#df_count.set_index('seq', inplace=True)
+#df_test = df_test.add(df_count, fill_value=0.0)
+#df_test['freq'] = df_test['count'] / np.sum(df_test['count'])
+
+
+tripletparams = calc_tripletmodelparams(train)
+#kmers = df.index
+df['freq_ind'] = np.array([10**(loglikelihood_independent(s, **tripletparams)) for s in kmers])
+df['freq_mc'] = np.array([10**(loglikelihood_mc(s, **tripletparams)) for s in kmers])
+df['freq_tri'] = np.array([10**(loglikelihood_triplet(s, **tripletparams)) for s in kmers])
+jsd_ind = calc_jsd(df['freq_test'], df['freq_ind'], base=2)
+jsd_mc = calc_jsd(df['freq_test'], df['freq_mc'], base=2)
+jsd_tri = calc_jsd(df['freq_test'], df['freq_tri'], base=2)
+```
+
+
+```python
 aacountss = []
 #for seq in np.random.choice(humanseqs, 1000, replace=False):
 for seq in train:
@@ -72,8 +107,13 @@ for seq in train:
 
 
 ```python
-pseudocount = 1e-6
-aafreqs = np.mean(np.asarray(aacountss), axis=0)/4
+aafreqs
+```
+
+
+```python
+pseudocount = 1e-2
+aafreqs = np.mean(np.asarray(aacountss), axis=0)/k
 prob_aa_ks = prob_aa(aacountss, k, pseudocount=pseudocount)
 for i in range(len(aminoacids)):
     aa = map_numbertoaa([i])[0]
@@ -90,58 +130,30 @@ plt.yscale('log')
 fks = np.asarray(prob_aa_ks)
 ```
 
-    A 0.052869612410112614 [0.80854678 0.17271444 0.01745235 0.00128644]
-    C 0.01805536711239755 [9.30250906e-01 6.73169212e-02 2.39197182e-03 4.02012121e-05]
-    D 0.0364863642530867 [8.61883728e-01 1.30417741e-01 7.56787723e-03 1.30653928e-04]
-    E 0.05207312599560802 [0.811788   0.16936769 0.01760813 0.00123619]
-    F 0.027593103482932074 [8.94341178e-01 1.01070860e-01 4.46233399e-03 1.25628777e-04]
-    G 0.05020502615591033 [8.14727712e-01 1.70438042e-01 1.41206740e-02 7.13571430e-04]
-    H 0.020278996376866216 [9.21652873e-01 7.56486214e-02 2.62815392e-03 7.03521173e-05]
-    I 0.03280041608249288 [8.75848622e-01 1.17216669e-01 6.81912975e-03 1.15578475e-04]
-    K 0.042550465077713956 [8.42833381e-01 1.44548465e-01 1.22010663e-02 4.17087528e-04]
-    L 0.07325162438002202 [0.7350841  0.23793587 0.02586948 0.00111056]
-    M 0.015817918683008456 [9.38331348e-01 6.00907542e-02 1.55277163e-03 2.51257594e-05]
-    N 0.027300388444163035 [8.95562289e-01 9.98045216e-02 4.50253519e-03 1.30653928e-04]
-    P 0.04768742556495259 [0.82693883 0.15630229 0.01582923 0.00092965]
-    Q 0.035217513655847514 [8.67200338e-01 1.25045855e-01 7.43722331e-03 3.16584510e-04]
-    R 0.04283438610244272 [8.41355987e-01 1.46442947e-01 1.17086016e-02 4.92464791e-04]
-    S 0.061713877959185724 [0.77887326 0.19708139 0.02236192 0.00168343]
-    T 0.038485118015668424 [8.54863592e-01 1.36553450e-01 8.36185107e-03 2.21106644e-04]
-    V 0.04376780787843155 [8.35833346e-01 1.53448007e-01 1.05327162e-02 1.85930588e-04]
-    W 0.01021990060251559 [9.59748541e-01 3.96333650e-02 6.08043262e-04 1.00503068e-05]
-    Y 0.020791561766642045 [9.19723215e-01 7.74325499e-02 2.79900905e-03 4.52263629e-05]
+    A 0.06996142799603539 [0.80968332 0.17191753 0.01723068 0.00116847]
+    C 0.022987171805945703 [9.33251950e-01 6.45807850e-02 2.12105337e-03 4.62112699e-05]
+    D 0.04752083352072876 [8.65236848e-01 1.27209834e-01 7.30727676e-03 2.46040928e-04]
+    E 0.07090366687719624 [0.80858117 0.17145032 0.01864483 0.00132367]
+    F 0.036646607860660346 [8.94731741e-01 1.00672173e-01 4.52059662e-03 7.54890486e-05]
+    G 0.06564995170048339 [8.18478119e-01 1.66879460e-01 1.38568570e-02 7.85563369e-04]
+    H 0.026372753040700168 [9.23559418e-01 7.38535513e-02 2.49637333e-03 9.06570544e-05]
+    I 0.0433956650191743 [8.76438068e-01 1.17059792e-01 6.37920645e-03 1.22933160e-04]
+    K 0.057558408434069765 [8.40977210e-01 1.45911280e-01 1.25705748e-02 5.40935181e-04]
+    L 0.0997766128984372 [0.73160601 0.23891444 0.02802325 0.00145631]
+    M 0.020157633207868057 [9.40987457e-01 5.75673460e-02 1.43002724e-03 1.51697696e-05]
+    N 0.03606428577181663 [8.96303746e-01 9.92791857e-02 4.33752232e-03 7.95456083e-05]
+    P 0.0633279533944792 [0.82839852 0.15444699 0.01592658 0.0012279 ]
+    Q 0.04762747988813537 [8.65808294e-01 1.25929019e-01 7.83462953e-03 4.28056998e-04]
+    R 0.056398173560437186 [8.43594750e-01 1.44119515e-01 1.17821912e-02 5.03544283e-04]
+    S 0.0839536195300893 [0.7749925  0.19970161 0.02375839 0.00154749]
+    T 0.05312253097345029 [8.50042210e-01 1.40797016e-01 8.91173431e-03 2.49039255e-04]
+    V 0.059632721433632886 [8.32706767e-01 1.55975781e-01 1.10299640e-02 2.87488386e-04]
+    W 0.012197310830126741 [9.64003671e-01 3.54045966e-02 5.87850176e-04 3.88195126e-06]
+    Y 0.026745192256533074 [9.22502949e-01 7.48010226e-02 2.65352093e-03 4.25074545e-05]
 
 
 
-![png](notebook_files/globalmaxent_4_1.png)
-
-
-
-```python
-df4 = count(train, k)
-
-kmers = [''.join(s) for s in itertools.product(aminoacids, repeat=k)]
-df4_test = pd.DataFrame.from_dict(dict(seq=kmers, count=np.ones(len(kmers))))
-df4_test.set_index('seq', inplace=True)
-df4_count = counter_to_df(count_kmers_iterable(test, k), norm=False)
-df4_count.set_index('seq', inplace=True)
-df4_test = df4_test.add(df4_count, fill_value=0.0)
-df4_test['freq'] = df4_test['count'] / np.sum(df4_test['count'])
-
-m, jsd_test = calc_logfold(df4, df4_test)
-jsd_flat = calc_jsd(df4_test['freq'], np.ones_like(df4_test['freq']), base=2)
-
-tripletparams = calc_tripletmodelparams(train)
-kmers = df4_test.index
-df4_test['freq_ind'] = np.array([10**(loglikelihood_independent(s, **tripletparams)) for s in kmers])
-df4_test['freq_mc'] = np.array([10**(loglikelihood_mc(s, **tripletparams)) for s in kmers])
-df4_test['freq_tri'] = np.array([10**(loglikelihood_triplet(s, **tripletparams)) for s in kmers])
-jsd_ind = calc_jsd(df4_test['freq'], df4_test['freq_ind'], base=2)
-jsd_mc = calc_jsd(df4_test['freq'], df4_test['freq_mc'], base=2)
-jsd_tri = calc_jsd(df4_test['freq'], df4_test['freq_tri'], base=2)
-```
-
-    0.010897964608850834 0.004330712857986406 0.0006560602716436357
+![png](notebook_files/globalmaxent_7_1.png)
 
 
 
@@ -150,77 +162,119 @@ jsd_tri = calc_jsd(df4_test['freq'], df4_test['freq_tri'], base=2)
 df0 = count(train, 1)
 df1 = count(train, 2, gap=0)
 dfgap1 = count(train, 2, gap=1)
-#dfgap2 = count(train, 2, gap=2)
+if k == 4:
+    dfgap2 = count(train, 2, gap=2)
 ```
 
 
 ```python
-h, Jk = fit_ising(df0, [df1, dfgap1], nmcmc=1e5, niter=10, epsilon=0.2, N=k, output=True)
+args = [df1, dfgap1, dfgap2] if k == 4 else [df1, dfgap1]
+h, Jk = fit_ising(df0, args, nmcmc=5e5, niter=10, epsilon=0.2, N=k, output=True)
 ```
 
-    [ 0.45583391 -0.65966922  0.06195008  0.46711346 -0.20365802  0.38743241
-     -0.53224446 -0.03012386  0.24849105  0.80557161 -0.73964675 -0.21818239
-      0.3494629   0.06753122  0.24014704  0.62725912  0.18191248  0.29630799
-     -1.28896439 -0.51652418]
+    [ 0.45064363 -0.66223406  0.06333304  0.4629459  -0.19656768  0.3854325
+     -0.52553527 -0.02818728  0.25583203  0.80453681 -0.73591469 -0.21272923
+      0.34986356  0.065175    0.23435418  0.63313531  0.17436984  0.2898184
+     -1.29639769 -0.51187429]
     iteration 0
-    f1 1.7980113655344387e-05
-    f2, gap 0 0.0028484694647664304
-    f2, gap 1 0.002543765259393053
+    f1 1.8311327018804256e-06
+    f2, gap 0 0.0024731617339114604
+    f2, gap 1 0.0019070783123505302
     iteration 1
-    f1 1.909891196019059e-05
-    f2, gap 0 0.0021012734690487316
-    f2, gap 1 0.00204135343936187
+    f1 3.3900093109713984e-06
+    f2, gap 0 0.0015817489739268422
+    f2, gap 1 0.0012995759316692316
     iteration 2
-    f1 2.581531551959246e-05
-    f2, gap 0 0.0016414890433930139
-    f2, gap 1 0.0017588411425468627
+    f1 9.268514563015938e-06
+    f2, gap 0 0.0010972309352332186
+    f2, gap 1 0.000954357059266837
     iteration 3
-    f1 3.149932535818803e-05
-    f2, gap 0 0.0013222696028610996
-    f2, gap 1 0.001682078457705895
+    f1 5.157987435376661e-06
+    f2, gap 0 0.0006972884607963435
+    f2, gap 1 0.0007532083623517943
     iteration 4
-    f1 2.37098776610066e-05
-    f2, gap 0 0.0009425092680246468
-    f2, gap 1 0.0014162282847352292
+    f1 7.4022841238182986e-06
+    f2, gap 0 0.0005312058224422888
+    f2, gap 1 0.0005668540865402425
     iteration 5
-    f1 3.3826509577924464e-05
-    f2, gap 0 0.0008713812455070927
-    f2, gap 1 0.0014788084147246757
+    f1 4.800080026283236e-06
+    f2, gap 0 0.0004133188857749824
+    f2, gap 1 0.00039058110618158943
     iteration 6
-    f1 1.82518618672324e-05
-    f2, gap 0 0.0008719767237254431
-    f2, gap 1 0.0012051425125093342
+    f1 8.770982888280625e-06
+    f2, gap 0 0.0002612592712186204
+    f2, gap 1 0.00036418114320951064
     iteration 7
-    f1 4.088294320124979e-05
-    f2, gap 0 0.0007653191447326585
-    f2, gap 1 0.001378997653632085
+    f1 1.0737980039005098e-05
+    f2, gap 0 0.00021728326063600212
+    f2, gap 1 0.0003054588496494451
     iteration 8
-    f1 4.596228509951644e-05
-    f2, gap 0 0.0006390897658745285
-    f2, gap 1 0.0015096784112672212
+    f1 1.1213053024518112e-05
+    f2, gap 0 0.0002127026392051891
+    f2, gap 1 0.0003097994523042824
     iteration 9
-    f1 4.6797464050848576e-05
-    f2, gap 0 0.0008103418806007312
-    f2, gap 1 0.0015002282774818215
+    f1 9.264813398524108e-06
+    f2, gap 0 0.00016542791741173696
+    f2, gap 1 0.0003106619077589409
 
 
 
 ```python
 Z = np.exp(scipy.special.logsumexp([-clib.energy(np.array(s), h, Jk) for s in itertools.product(range(naminoacids), repeat=k)]))
-df4_test['freq_maxent'] = np.exp([-clib.energy(map_aatonumber(s), h, Jk) for s in kmers])/Z
-jsd_maxent = calc_jsd(df4_test['freq'], df4_test['freq_maxent'], base=2)
+df['freq_maxent'] = np.exp([-clib.energy(map_aatonumber(s), h, Jk) for s in kmers])/Z
+jsd_maxent = calc_jsd(df_test['freq'], df['freq_maxent'], base=2)
 ```
 
 
 ```python
-hks = fit_global(fks, niter=3, nmcmc=2e5, epsilon=0.1)
+hks = fit_global(fks, niter=10, nmcmc=1e6, epsilon=0.1, output=True)
 ```
+
+    iteration 0
+
+
+
+    ---------------------------------------------------------------------------
+
+    KeyboardInterrupt                         Traceback (most recent call last)
+
+    <ipython-input-15-1d1f53d46f21> in <module>
+    ----> 1 hks = fit_global(fks, niter=10, nmcmc=1e6, epsilon=0.1, output=True)
+    
+
+    ~/repos/peptidome/code/lib/maxent.py in fit_global(fks, niter, nmcmc, epsilon, prng, output)
+         54             return energy_global(aacounts_int(x), hks)
+         55         x0 = jump(None)
+    ---> 56         samples = mcmcsampler(x0, energy, jump, nmcmc, prng=prng)
+         57         aacountss = [aacounts_int(s) for s in samples]
+         58         prob_aa_ks = prob_aa(aacountss, N)
+
+
+    ~/repos/peptidome/code/lib/main.py in mcmcsampler(x0, energy, jump, nsteps, nburnin, nsample, prng)
+        392     for i in range(nsteps):
+        393         xp = jump(x)
+    --> 394         Exp = energy(xp)
+        395         if prng.rand() < np.exp(-Exp+Ex):
+        396             x = xp
+
+
+    ~/repos/peptidome/code/lib/maxent.py in energy(x)
+         52             return prng.randint(q, size=N)
+         53         def energy(x):
+    ---> 54             return energy_global(aacounts_int(x), hks)
+         55         x0 = jump(None)
+         56         samples = mcmcsampler(x0, energy, jump, nmcmc, prng=prng)
+
+
+    KeyboardInterrupt: 
+
 
 
 ```python
+pseudocount = 1e-2
 niter=10
 nmcmc=1e6
-epsilon=10.0
+epsilon=0.5
 prng=None
 output=False
 
@@ -229,31 +283,45 @@ if prng is None:
     prng = np.random
 q = len(aminoacids)
 aas_arr = np.array(list(aminoacids))
-hks = np.zeros((q, N+1))
+f1 = np.sum(np.arange(fks.shape[1])*fks, axis=1)/(fks.shape[1]-1)
+h = np.array(np.log(f1))
+h -= np.mean(h)
+hks = h.reshape(20, 1)*np.arange(fks.shape[1])
+#hks = np.zeros((q, N+1))
 for i in range(niter):
     if output:
         print('iteration %g'%i)
-    def jump(x):
-        xp = x.copy()
-        i = np.random.randint(0, len(x))
-        xp[i] = (xp[i]+np.random.randint(0, q-1))%q
-        return xp
 #    def jump(x):
-#        return prng.randint(q, size=N)
+#        xp = x.copy()
+#        i = np.random.randint(0, len(x))
+#        xp[i] = (xp[i]+np.random.randint(0, q-1))%q
+#        return xp
+    def jump(x):
+        return prng.randint(q, size=N)
     def energy(x):
         return energy_global(aacounts_int(x), hks)
     x0 = jump(prng.randint(q, size=N))
     samples = mcmcsampler(x0, energy, jump, nmcmc, prng=prng, nburnin=1e3)
     aacountss = [aacounts_int(s) for s in samples]
     prob_aa_ks = prob_aa(aacountss, N, pseudocount=pseudocount)
+    #Z = np.exp(scipy.special.logsumexp([-energy_global(aacounts_int(np.array(s)), hks) for s in itertools.product(range(naminoacids), repeat=k)]))
+    #probs = np.exp([-energy_global(aacounts(s), hks) for s in kmers])/Z
+    if i == 0:
+        prob_aa_ks0 = prob_aa_ks
     hks += np.log(fks/prob_aa_ks)*epsilon
     #hks += (fks-prob_aa_ks)*epsilon
     jsd = calc_jsd(fks, prob_aa_ks, base=2)
     print(jsd)
-
 ```
 
-    [0.00077246 0.02835408 0.10252522 0.29745049]
+    [1.10117816e-06 7.74560294e-05 1.75845336e-03 4.21032201e-02]
+    [4.80264514e-07 2.96191307e-05 4.47725283e-04 1.33540836e-02]
+    [9.00871057e-08 7.32318900e-06 1.84663381e-04 4.57381818e-03]
+    [1.34871083e-07 5.07726315e-06 8.89053339e-05 1.43496314e-03]
+    [1.03323545e-07 4.23810963e-06 6.26173221e-05 2.37524623e-03]
+    [1.01322380e-07 4.22541529e-06 6.09838332e-05 7.04714132e-03]
+    [9.27197319e-08 4.45691194e-06 7.34718428e-05 2.13776972e-03]
+    [1.76452037e-07 4.85923223e-06 5.10446124e-05 1.63425838e-03]
 
 
 
@@ -261,28 +329,12 @@ for i in range(niter):
 
     KeyboardInterrupt                         Traceback (most recent call last)
 
-    <ipython-input-202-8153a3419192> in <module>
-         24         return energy_global(aacounts_int(x), hks)
-         25     x0 = jump(prng.randint(q, size=N))
-    ---> 26     samples = mcmcsampler(x0, energy, jump, nmcmc, prng=prng, nburnin=1e3)
-         27     aacountss = [aacounts_int(s) for s in samples]
-         28     prob_aa_ks = prob_aa(aacountss, N, pseudocount=pseudocount)
-
-
-    ~/repos/peptidome/code/lib/main.py in mcmcsampler(x0, energy, jump, nsteps, nburnin, nsample, prng)
-        376     for i in range(nsteps):
-        377         xp = jump(x)
-    --> 378         Exp = energy(xp)
-        379         if prng.rand() < np.exp(-Exp+Ex):
-        380             x = xp
-
-
-    <ipython-input-202-8153a3419192> in energy(x)
-         22 #        return prng.randint(q, size=N)
-         23     def energy(x):
-    ---> 24         return energy_global(aacounts_int(x), hks)
-         25     x0 = jump(prng.randint(q, size=N))
-         26     samples = mcmcsampler(x0, energy, jump, nmcmc, prng=prng, nburnin=1e3)
+    <ipython-input-438-4d17c82bc8d1> in <module>
+         29         return energy_global(aacounts_int(x), hks)
+         30     x0 = jump(prng.randint(q, size=N))
+    ---> 31     samples = mcmcsampler(x0, energy, jump, nmcmc, prng=prng, nburnin=1e3)
+         32     aacountss = [aacounts_int(s) for s in samples]
+         33     prob_aa_ks = prob_aa(aacountss, N, pseudocount=pseudocount)
 
 
     KeyboardInterrupt: 
@@ -291,27 +343,95 @@ for i in range(niter):
 
 ```python
 plt.plot(fks.flatten(), prob_aa_ks.flatten(), 'o')
-x = [1e-5, 1e0]
+x = [1e-6, 1e0]
 plt.plot(x, x, 'k')
 plt.xscale('log')
 plt.yscale('log')
 ```
 
 
+![png](notebook_files/globalmaxent_13_0.png)
+
+
+
 ```python
-Z = np.exp(scipy.special.logsumexp([-energy_global(aacounts_int(np.array(s)), hks) for s in itertools.product(range(naminoacids), repeat=k)]))
-df4_test['freq_maxentglobal'] = np.exp([-energy_global(aacounts(s), hks) for s in kmers])/Z
-jsd_maxentglobal = calc_jsd(df4_test['freq'], df4_test['freq_maxentglobal'], base=2)
+plt.plot(fks.flatten(), prob_aa_ks0.flatten()/fks.flatten(), 'o')
+plt.plot(fks.flatten(), prob_aa_ks.flatten()/fks.flatten(), 'o')
+#x = [1e-6, 1e0]
+#plt.plot(x, x, 'k')
+plt.axhline(1.0, c='k')
+#plt.ylim(1e-1)
+plt.xscale('log')
+plt.yscale('log')
+```
+
+
+![png](notebook_files/globalmaxent_14_0.png)
+
+
+
+```python
+Z = np.exp(scipy.special.logsumexp(
+           [-energy_global(aacounts_int(np.array(s)), hks) for s in itertools.product(range(naminoacids), repeat=k)]
+           ))
+df['freq_maxentglobal'] = np.exp([-energy_global(aacounts(s), hks) for s in kmers])/Z
+jsd_maxentglobal = calc_jsd(df['freq_test'], df['freq_maxentglobal'], base=2)
 ```
 
 
 ```python
-print('4mer', 'test', jsd_test, 'maxent', jsd_maxent, 'maxentglobal', jsd_maxentglobal,
+entropies = {}
+Smax = np.log2(20)*k
+for column in df.filter(regex='freq'):
+    f3 = np.array(df[column])
+    entropy = scipy.stats.entropy(f3, base=2)
+    print(column, Smax-entropy)
+    entropies[column] = entropy
+```
+
+    freq 0.4818228760509786
+    freq_test 0.4842479763025853
+    freq_ind 0.4325065695757271
+    freq_mc 0.46518219003396943
+    freq_tri 0.4816500946701403
+    freq_maxent 0.4637896156769994
+    freq_maxentglobal 0.4502190795582077
+
+
+
+```python
+print('test', jsd_test, 'maxent', jsd_maxent, 'maxentglobal', jsd_maxentglobal,
               'flat', jsd_flat, 'ind', jsd_ind, 'mc', jsd_mc, 'tri', jsd_tri)
 ```
 
-    4mer test 0.0004548957507683046 maxent 0.0026720994413888133 maxentglobal 0.010713706421513562 flat 0.11583779521335114 ind 0.010897964608850834 mc 0.004330712857986406 tri 0.0006560602716436357
+    test 0.00045066791878147335 maxent 0.0022975074189060768 maxentglobal 0.0074488182226179825 flat 0.11636605633280683 ind 0.010787692666021382 mc 0.004270292681160973 tri 0.0006520739816125916
 
+
+
+```python
+from scipy.interpolate import interpn
+
+def density_scatter(x, y, ax=None, sort=True, bins=20, trans=None, **kwargs):
+    """
+    Scatter plot colored by 2d histogram
+    """
+    if ax is None :
+        ax = plt.gca()
+    if trans is None:
+        trans = lambda x: x
+    data , x_e, y_e = np.histogram2d(trans(x), trans(y), bins = bins)
+    z = interpn(( 0.5*(x_e[1:] + x_e[:-1]), 0.5*(y_e[1:]+y_e[:-1]) ),
+                data, np.vstack([trans(x),trans(y)]).T,
+                method="splinef2d", bounds_error=False )
+
+    # Sort the points by density, so that the densest points are plotted last
+    if sort :
+        idx = z.argsort()
+        x, y, z = x[idx], y[idx], z[idx]
+
+    ax.scatter(x, y, c=z, **kwargs)
+    return ax
+```
 
 
 ```python
@@ -326,268 +446,69 @@ def scatterplot(x, y, ax=None):
 
 
 ```python
-from scipy.interpolate import interpn
-def density_scatter( x , y, ax = None, sort = True, bins = 20, **kwargs, logcolor=True)   :
-    """
-    Scatter plot colored by 2d histogram
-    """
-    if ax is None :
-        ax = plt.gca()
-    if logcolor:
-        
-    data , x_e, y_e = np.histogram2d( x, y, bins = bins)
-    z = interpn( ( 0.5*(x_e[1:] + x_e[:-1]) , 0.5*(y_e[1:]+y_e[:-1]) ) , data , np.vstack([x,y]).T , method = "splinef2d", bounds_error = False )
+scatter = lambda x, y, ax: density_scatter(x, y, ax=ax, s=1, bins=100,
+                                           trans=lambda x: np.log(x+1e-8),
+                                           norm=matplotlib.colors.LogNorm(vmin=0.5, vmax=50 if k ==3 else 400),
+                                           cmap='viridis')
+#scatter = lambda x, y, ax: ax.scatter(x, y, s=1, alpha=1, edgecolor=None)
 
-    # Sort the points by density, so that the densest points are plotted last
-    if sort :
-        idx = z.argsort()
-        x, y, z = x[idx], y[idx], z[idx]
+fig, axes = plt.subplots(figsize=(7.2, 2.0), ncols=5, sharex=True, sharey=True)
+axes[0].set_ylabel('test set')
 
-    ax.scatter( x, y, c=z, **kwargs )
-    return ax
-```
-
-
-      File "<ipython-input-140-dbbdf9711b33>", line 2
-        def density_scatter( x , y, ax = None, sort = True, bins = 20, **kwargs, logcolor=True)   :
-                                                                                        ^
-    SyntaxError: invalid syntax
-
-
-
-
-```python
-# Generate fake data
-x = np.random.normal(size=100000)
-y = x * 3 + np.random.normal(size=100000)
-
-fig, ax = plt.subplots()
-scatter(x, y, ax=ax, s=1)
-plt.show()
-```
-
-
-```python
-logscatter = False
-#scatter = lambda x, y, ax: density_scatter(np.log10(x), np.log10(y), ax=ax, s=1, bins=100)
-scatter = lambda x, y, ax: ax.scatter(x, y, s=1, alpha=1, edgecolor=None)
-#scatter = lambda x, y, ax: ax.plot(x, y, 'o', ms=0.1, alpha=1)
-
-
-fig, axes = plt.subplots(figsize=(5.8, 2.0), ncols=4, sharex=True, sharey=True)
-ax = axes[0]
-scatter(df4_test['freq_ind'], df4_test['freq'], ax)
-ax.set_xlabel('independent prediction')
-ax.set_ylabel('test set')
-ax.set_title('JSD = %g'%round(jsd_ind, 4))
-ax = axes[1]
-scatter(df4_test['freq_maxentglobal'], df4_test['freq'], ax)
-ax.set_xlabel('global maxent prediction')
-#ax.set_ylabel('test set')
-ax.set_title('JSD = %g'%round(jsd_maxentglobal, 4))
-ax = axes[2]
-scatter(df4_test['freq_maxent'], df4_test['freq'], ax)
-ax.set_xlabel('maxent prediction')
-#ax.set_ylabel('test set')
-ax.set_title('JSD = %g'%round(jsd_maxent, 4))
-ax = axes[3]
-scatter(df4['freq'], df4_test['freq'], ax)
-ax.set_xlabel('training set')
-#ax.set_ylabel('test set')
-ax.set_title('JSD = %g'%round(jsd_test, 4))
-if logscatter:
-    x = np.linspace(-8, -3)
-else:
-    x = np.logspace(-6, -2)
+for ax, column, xlabel in [(axes[0], 'freq_ind','independent prediction'),
+                           (axes[1], 'freq_maxentglobal', 'global maxent prediction'),
+                           (axes[2], 'freq_mc', 'mc'),
+                           (axes[3], 'freq_maxent', 'maxent prediction'),
+                           (axes[4], 'freq', 'training set')
+                            ]:
+    scatter(df[column], df['freq_test'], ax)
+    ax.set_xlabel(xlabel)
+    jsd = calc_jsd(df['freq_test'], df[column], base=2)
+    entropy = entropies[column]
+    ax.set_title('JSD = {:.4f}\nH = {:.2f}'.format(jsd, entropy))
+    
+if k == 3:
+    x = np.logspace(-5.7, -2.7)
+elif k == 4:
+    x = np.logspace(-7.7, -2.9)
 for ax in axes:
-    ax.plot(x, x, 'k')
+    ax.plot(x, x, 'k', lw=0.8)
     ax.set_xlim(min(x), max(x))
     ax.set_ylim(min(x), max(x))
-    #plt.legend()
-    if not logscatter:
-        ax.set_xscale('log')
-        ax.set_yscale('log')
+    ax.set_xscale('log')
+    ax.set_yscale('log')
 fig.tight_layout()
-fig.savefig('main.png', dpi=600)
-#fig.savefig('main.svg')
-#fig.savefig('main.pdf')
+fig.savefig('main.png' if k == 3 else 'comparison_k4.png', dpi=600)
 ```
 
 
-![png](notebook_files/globalmaxent_17_0.png)
+![png](notebook_files/globalmaxent_20_0.png)
 
 
 
 ```python
-df4_test['freq_maxentglobal'].sum()
+2**entropies['freq'], 2**entropies['freq_maxent'], 2**entropies['freq_ind'], 20**k
 ```
 
 
 
 
-    0.9999999999999996
+    (5728.578236172637, 5800.633160515391, 5927.786266321473, 8000)
 
 
 
 
 ```python
-print(4*np.log2(20),
-      scipy.stats.entropy(df4_test['freq_ind'], base=2),
-      scipy.stats.entropy(df4_test['freq_maxentglobal'], base=2),
-      scipy.stats.entropy(df4_test['freq_maxent'], base=2),
-      scipy.stats.entropy(df4_test['freq'], base=2),
-     )
-```
-
-    17.28771237954945 12.531732292067517 12.584080695323632 12.497181813942442 12.483591187682844
-
-
-
-```python
-df4_test['freq_maxentglobal'].sort_values(ascending=False)
+bins = np.linspace(-6, -2)
+kwargs = dict(bins=bins, histtype='step')
+plt.hist(np.log10(df['freq_ind']), **kwargs)
+plt.hist(np.log10(df['freq_maxent']),**kwargs)
+plt.hist(np.log10(df['freq']),**kwargs)
+plt.yscale('log')
 ```
 
 
-
-
-    seq
-    SSS    0.001448
-    EEE    0.001164
-    AAA    0.001085
-    LLL    0.001044
-    PPP    0.000907
-    GGG    0.000786
-    LSS    0.000751
-    SSL    0.000751
-    SLS    0.000751
-    LLS    0.000688
-    LSL    0.000688
-    SLL    0.000688
-    ALL    0.000587
-    LLA    0.000587
-    LAL    0.000587
-    ALA    0.000584
-    AAL    0.000584
-    LAA    0.000584
-    GLL    0.000579
-    LGL    0.000579
-    LLG    0.000579
-    LEL    0.000569
-    LLE    0.000569
-    ELL    0.000569
-    LEE    0.000567
-    ELE    0.000567
-    EEL    0.000567
-    RRR    0.000560
-    PLL    0.000534
-    LLP    0.000534
-             ...   
-    WHM    0.000009
-    HWM    0.000009
-    MWH    0.000009
-    WMM    0.000008
-    MWM    0.000008
-    MMW    0.000008
-    NWW    0.000008
-    WWN    0.000008
-    WNW    0.000008
-    WFW    0.000008
-    FWW    0.000008
-    WWF    0.000008
-    MCW    0.000008
-    WMC    0.000008
-    CMW    0.000008
-    CWM    0.000008
-    MWC    0.000008
-    WCM    0.000008
-    YWW    0.000006
-    WWY    0.000006
-    WYW    0.000006
-    HWW    0.000006
-    WHW    0.000006
-    WWH    0.000006
-    WWC    0.000005
-    CWW    0.000005
-    WCW    0.000005
-    WMW    0.000005
-    MWW    0.000005
-    WWM    0.000005
-    Name: freq_maxentglobal, Length: 8000, dtype: float64
-
-
-
-
-```python
-df4['freq'].sort_values(ascending=False)
-```
-
-
-
-
-    seq
-    SSS    0.001469
-    LLL    0.001425
-    EEE    0.001338
-    PPP    0.001204
-    AAA    0.001154
-    SSL    0.000905
-    SLL    0.000898
-    LLS    0.000879
-    ALL    0.000856
-    LLA    0.000845
-    LSS    0.000826
-    LEE    0.000823
-    LSL    0.000804
-    SLS    0.000790
-    EEL    0.000787
-    LLE    0.000778
-    GGG    0.000763
-    LLG    0.000753
-    LAL    0.000741
-    ELL    0.000733
-    SSP    0.000721
-    LGL    0.000700
-    AAL    0.000699
-    LAA    0.000697
-    PGP    0.000682
-    LPP    0.000672
-    VLL    0.000671
-    SPS    0.000669
-    GSS    0.000667
-    PSS    0.000666
-             ...   
-    HWM    0.000007
-    HMW    0.000007
-    YMW    0.000006
-    WYC    0.000006
-    WMC    0.000006
-    MWH    0.000006
-    WYW    0.000006
-    WWY    0.000006
-    MYW    0.000006
-    HWW    0.000006
-    WWW    0.000006
-    YWW    0.000006
-    NWW    0.000006
-    WCW    0.000005
-    MCW    0.000005
-    MMW    0.000005
-    WWH    0.000005
-    WFM    0.000005
-    CMW    0.000005
-    WHM    0.000005
-    WMY    0.000004
-    MWC    0.000004
-    WWC    0.000004
-    MWM    0.000004
-    WWM    0.000004
-    WMW    0.000004
-    WHW    0.000004
-    CWW    0.000003
-    MWW    0.000003
-    WCM    0.000003
-    Name: freq, Length: 8000, dtype: float64
-
+![png](notebook_files/globalmaxent_22_0.png)
 
 
 
