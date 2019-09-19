@@ -4,24 +4,29 @@ title: Notes
 order: 3
 ---
 
-# 2019-09-10: References to look at 
+# 2019-09-17: Meeting with Bill
+
+Now that we know what the relevant problem is (distinguish a peptide from a set of learned self-peptides drawn both from approximately the same distribution) we should revisit the question of how one might construct a system to achieve such discrimination. 
+
+Maybe things become easier as dimensionality becomes large. Pointers for how to proceed could be gleaned from Shannon's argument about achieving channel capacity with random codes.
+
+# 2019-09-10: References about immunopeptidomics (thymic presentation)
 
 Unpublished paper Klatzmann group who looked at whether presentation of peptides in the thymus is biased towards viral-like peptides. Underlying papers
 
-"- Derbinski, J., Schulte, A., Kyewski, B. & Klein, L. Promiscuous gene
+- Derbinski, J., Schulte, A., Kyewski, B. & Klein, L. Promiscuous gene
 expression in medullary thymic epithelial cells mirrors the peripheral
 self. Nature Immunology 2, 1032–1039 (2001).
 
 - Espinosa, G. et al. Peptides presented by HLA class I molecules in
 the human thymus. Journal of Proteomics 94, 23–36 (2013).
 
-
 I think the first ref is about that fact that the 'thymopeptidome' is
 unique because thymic APCs express AIRE which controls what proteins
 are expressed (to make sure that protein expressed only some specific
 tissues are also expressed in the thymus). The second ref contains the
 dataset itself from what I understand.
-"
+
 
 Also reread Misha ... Shugay paper where they reanalyze data from Diego Chowell
 
