@@ -10,14 +10,16 @@ min_length = 200
 
 aas =  aminoacids
 def aa_frequencies(proteome, min_length=1):
-    n = sum([1 for h, seq in fasta_iter(proteome) if len(seq)>=min_length])
-    array = np.zeros((n, len(aas)))
-    i = 0
+    seqs = []
     for h, seq in fasta_iter(proteome):
         for sym in 'XUBZ':
             seq = seq.replace(sym, '')
         if len(seq) < min_length:
             continue
+        seqs.append(seq)
+    array = np.zeros((len(seqs), len(aas)))
+    i = 0
+    for seq in seqs:
         counter = {}
         for aa in aas:
             counter[aa] = 1
