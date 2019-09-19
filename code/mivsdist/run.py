@@ -5,7 +5,9 @@ import sys
 sys.path.append('..')
 from lib import *
 
-name = sys.argv[1]
+run = int(sys.argv[1])-1
+names = ['Human', 'Mouse', 'Yeast', 'Viruses']
+name = names[run]
 if name == 'Viruses':
     proteome = datadir + 'human-viruses-uniref90_nohiv.fasta'
 else:
