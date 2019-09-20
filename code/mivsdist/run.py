@@ -26,7 +26,7 @@ mutualinformation_std = []
 shuffled_mutualinformation = []
 gaps = np.arange(0, 201, 1)
 for gap in gaps:
-    seqs = [s for s in fasta_iter(human, returnheader=False)]
+    seqs = [s for s in fasta_iter(proteome, returnheader=False)]
     df2 = Counter(seqs, k=2, gap=gap).to_df(norm=False, clean=True)
     mi = calc_mi(df2)
     mutualinformation.append(mi)
