@@ -1,0 +1,85 @@
+\documentclass[superscriptaddress,twocolumn,pre]{revtex4}
+\bibliographystyle{apsrev}
+
+\usepackage{ifthen}
+\newboolean{pnas}
+\setboolean{pnas}{false}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\graphicspath{{images/}}
+\usepackage{color}
+\usepackage[pdfstartview=FitH,
+            breaklinks=true,
+            bookmarksopen=false,
+            bookmarksnumbered=true,
+            colorlinks=true,
+            linkcolor=black,
+            citecolor=black,
+            urlcolor=black,
+            pdftitle={Peptidome},
+            pdfauthor={Andreas Mayer},
+            pdfsubject={}
+            ]{hyperref}
+\newcommand{\B}{\boldsymbol}
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\<}{\langle}
+\renewcommand{\>}{\rangle}
+
+\def\(({\left(}
+\def\)){\right)}                       
+\def\[[{\left[}
+\def\]]{\right]}
+
+\newcommand{\AM}[1]{{\color{blue}#1}}
+
+\begin{document}
+
+\title{A statistical ensemble approach to immune discrimination}
+%\author{Andreas Mayer}
+%\author{Quentin Marcou}
+%\author{Warren James}
+%\author{Christopher Russo}
+%\author{William Bialek*}
+%\author{Ben D Greenbaum*}
+\date{\today}
+
+\begin{abstract}
+The immune system needs to distinguish molecular features of pathogens from those found in the organisms' own proteins. A naive but universal way to discriminate, would be to have a system that can recognize any possible foreign peptide, while whitelisting every self peptide that should not elicit a reaction via negative selection. This previously prevailing view has been challenged in recent decades for the T cell system by experiments showing that many self-peptides are not entirely eliminated, but either do not make adequate antigens or are suppressed via regulatory mechanism and that T-cell receptors can be highly non-specific. The implication is that the immune system has adopted a different evolutionary strategy needs to be better understood. To begin to understand this approach we characterize the self and pathogen proteomes as statistical ensembles. Probabilistic models reveal how both universal and phyla-specific constraints on protein evolution shape the statistics of both proteomes. The models furthermore allow us to quantify to what extent the ensembles differ systematically, and hypothesize that the immune system has evolved to maximize the likelihood of recognition based on peptide statistics, since evolution is unlikely to develop strategies for organisms to combat pathogen features they never encounter. We analyze whether and how these differences might be used for an efficient immune defense. Finally, we compare predictions about what would be an efficient immune strategy to what is known about epitopes recognized by the immune system. 
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+A key question in quantitative immunology is how the immune system distinguishes foreign antigens from self-antigens. Fundamentally, there is one view of adaptive immunity in which both self and non-self antigens are random samples from a common (and essentially uniform) distribution of peptides of a given length. Discrimination is then achieved solely on the basis of "white-listing": thymic negative selection acts to get rid of those T cells that are reactive to self, leaving everything else as potentially foreign. If the two types of antigens are instead drawn from different distributions, than some regions of peptide space will be much more likely to be self and some much more likely to be non-self. Over evolutionary timescales the recombination machinery might then have evolved to bias the immune repertoire towards recognizing antigens that are more statistically unlikely to arise from the human proteome. Additionally due to different types of proteins and different types of environments, the amino acid and nucleic acid distributions needed for proper functioning of a protein might differ between a host and its pathogen. On the other hand, however, coevolution of the pathogens might select that they have a more similar distribution to their host than they would otherwise have. 
+
+The ability to address these issues experimentally has drastically changed our view of the T cell recognition machinery over the past decades \cite{Davis, garcia, Cross reactivity papers}. It is clear thymic selection eliminates self reactive T cells only partially. There are many self-reactive T cell in the blood that survive thymic selection, only to be suppressed by peripheral regulation. Moreover, T cell recognition is non-specific, as a cross-reactive T cell maybe be capable of recognizing many hundred peptides. It is therefore clear that self-peptides are eliminated only partially, likely in a biased manner ,and that a cross reactive T-cell receptor repertoire may engage in negative selection only partially. 
+
+Previous work has focused on similarity between self and non-self peptides. Work by Claverie and co-workers \cite{Claverie1988} and later by Burroughs, De Boer, and Kesmir \cite{Burroughs2004} demonstrate that the number of shared 9mers decreases with evolutionary distance, and is much lower for e.g. human and bacteria than for human and mouse, or human and drosophila. The paper also discusses some possible slight preference of the antigen processing pathway for non-self antigens. In a follow up work an overlapping set of authors build a tool for immunogenicity prediction based on small differences in amino acid usage in recognized epitopes \cite{Calis2013}. A more recent follow up by Wortel et al. \cite{Wortel2018} shows that self and foreign peptides are largely similar (much more similar then words from different languages). They then argue that under these conditions thymic selection should minimize the co-occurrence of similar self-peptides for efficient self/non-self discrimination based on negative selection. The emerging view would suggest that the immunogenicity of an antigen, via T cell reactivity, is related to how untypical it is given the normal distribution of the human proteome, rather than precision whitelisting. In cancer immunology \cite{Walz2015} it has been known for sometime that immune activation can be achieved not just by neoantigens but also by large changes in protein abundance, such as those arising from epigenetic dysregulation. While mutation derived neoantigens have been implicated in response to checkpoint blockade immunotherapy, they are not the only source of immunogenicity \cite{XXX}. 
+
+There is quite a lot of data in a single proteome. The approximately 20000 genes times 1000 amino acids per gene on average gives $2 \cdot 10^7$ possible peptides, when not accounting restrictions on which can be processed and presented \cite{Luksza}. This also implies that most 5mers will still be represented in the proteome, as there are only about $20^5 = 3.2 \cdot 10^6$ possible 5mers. As a consequence, small changes in amino acid usage can lead to larger changes in the relative likelihood of longer stretches of otherwise random sequences: consider a 10\% difference for single amino acids than a random 8mer has a loglikelihood ratio of $1.1^8 \approx 2.15$. Even larger likelihood ratios are expected for long {\it k}-mers once pairwise or higher-order correlations are considered  \cite{Schneidman2006}. In that sense, the ability to capture features of genuine antigens would come from an adequate statistical model that captures typical peptides. Karlin and Bucher \cite{Karlin1992} have shown the existence of pairwise correlations in amino acid usage and discuss various structural reasons for these correlations. Peer et al. \cite{Peer2004} have shown that amino acid and oligopeptide compositions differentiate among phyla, which is a very encouraging finding since it implies on can construct models of self-peptide that are not simply random, and follow up work has shown similar conclusions \cite{Bogatyreva2006}. On the other hand \cite{Lavelle2009} claims that generally 4mers and 5mers do not show large deviations from random models when taking care to remove bias by large protein families, implying the diversification of and selection upon these families account for most organism specific difference. On a more general level the question which structural constraints restrain the evolution of amino acid patterns has received attention for a long time \cite{Turjanski2018}. Random strings of amino acids do not yield valid, folding proteins, but amino acid strings of natural proteins are hard to distinguish from random, other than by deviations from uniform in individual amino acid frequencies that seem to be governed by amino acid mass \cite{BenAlbert}.
+
+To capture these effects in an ensemble approach, we start by establishing an ensemble model of the self-proteome, demonstrating that most long peptides are random, other than single amino acid biases and a small amount of comparatively weak correlations. We build a maximum entropy distribution constrained to reproduce the amino acid frequencies and the correlations between pairs of amino acids a given distance apart (as we consider random substrings the distribution should only depend on absolute distance).
+
+
+A similar approach was done by Mora et al. \cite{Mora2010} for the distribution of antibodies, however antibodes offer more antigen specificity than T-cell receptors.
+
+There is also other type of efforts that we could link to: There is the emerging field of immunopeptidomics, and we could also try and build models for HLA-restricted amino acid distributions.
+
+
+
+
+
+
+
+One could try and check this by looking at known antigens from the immuno-epitope database (IEDB). Are they less typical of the human ensemble? This could be a useful insight for cancer immunotherapy: Are good neoantigens those that represent large perturbations from the normal distribution towards the pathogen distribution? Interestingly, for neoantigen prediction Luksza et al. \cite{Luksza2017} have found that how well a neoantigen aligns to known viral/bacterial antigens is a predictor of its immunogenicity. The same idea could also be of relevance for autoimmunity, where more uncommon peptides within the self-peptidome might also be more likely to lead to autoimmunity. One way to test for this is whether pathogens adapted to a particular host are particularly similar to its peptidome.
+
+\bibliography{library}
+\end{document}
+
