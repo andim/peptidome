@@ -4,6 +4,14 @@ title: Notes
 order: 3
 ---
 
+# 2019-10-06: similar sounding Shugay abstract 
+
+See [here](http://mccmb.belozersky.msu.ru/2019/thesis/MCCMB2019/abstracts/179.pdf)
+
+# 2019-09-26: Protein evolution angle: How do weak correlations add up?
+
+TODO: Correlated population state despite weak interactions in proteins? To start think about mutual information decay from a Markov chain model?
+
 # 2019-09-17: Meeting with Bill
 
 Now that we know what the relevant problem is (distinguish a peptide from a set of learned self-peptides drawn both from approximately the same distribution) we should revisit the question of how one might construct a system to achieve such discrimination. 
