@@ -1,7 +1,7 @@
-- Malaria: which proteins do the IEDB epitopes come from? (Life stages etc)
-- check distribution of distances to closest self antigen for IEDB epitopes
-- work out probability of neighbors as a function of your probability in an independent model
+
 - How does crossreactivity influence peripheral self/non-self discrimination based on the small differences in the underlying distributions we find?
 - no peripheral tolerance for antigens in immune-priviledged sites (e.g. testis). Do they have different statistics?
-- look at which malaria proteins are expressed in which life stage
+- Malaria: which proteins do the IEDB epitopes come from? (Life stages etc)
+
+19-10-07: fix mivsdist plots with show human mutual information values for all species
 

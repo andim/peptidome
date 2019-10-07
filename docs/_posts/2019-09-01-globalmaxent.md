@@ -37,10 +37,6 @@ from lib.maxent import *
 %autoreload 2
 ```
 
-    The autoreload extension is already loaded. To reload it, use:
-      %reload_ext autoreload
-
-
 
 ```python
 humanseqs = [s for s in fasta_iter(human, returnheader=False)]
@@ -107,11 +103,6 @@ for seq in train:
 
 
 ```python
-aafreqs
-```
-
-
-```python
 pseudocount = 1e-2
 aafreqs = np.mean(np.asarray(aacountss), axis=0)/k
 prob_aa_ks = prob_aa(aacountss, k, pseudocount=pseudocount)
@@ -119,7 +110,7 @@ for i in range(len(aminoacids)):
     aa = map_numbertoaa([i])[0]
     prob_aa_k = prob_aa_ks[i]
     print(aa, aafreqs[i], prob_aa_k)
-    if i < 4:
+    if i >16:
         l, = plt.plot(prob_aa_k, label=aa)
         x = np.arange(0, k+1, 1)
         n = k
@@ -130,30 +121,59 @@ plt.yscale('log')
 fks = np.asarray(prob_aa_ks)
 ```
 
-    A 0.06996142799603539 [0.80968332 0.17191753 0.01723068 0.00116847]
-    C 0.022987171805945703 [9.33251950e-01 6.45807850e-02 2.12105337e-03 4.62112699e-05]
-    D 0.04752083352072876 [8.65236848e-01 1.27209834e-01 7.30727676e-03 2.46040928e-04]
-    E 0.07090366687719624 [0.80858117 0.17145032 0.01864483 0.00132367]
-    F 0.036646607860660346 [8.94731741e-01 1.00672173e-01 4.52059662e-03 7.54890486e-05]
-    G 0.06564995170048339 [8.18478119e-01 1.66879460e-01 1.38568570e-02 7.85563369e-04]
-    H 0.026372753040700168 [9.23559418e-01 7.38535513e-02 2.49637333e-03 9.06570544e-05]
-    I 0.0433956650191743 [8.76438068e-01 1.17059792e-01 6.37920645e-03 1.22933160e-04]
-    K 0.057558408434069765 [8.40977210e-01 1.45911280e-01 1.25705748e-02 5.40935181e-04]
-    L 0.0997766128984372 [0.73160601 0.23891444 0.02802325 0.00145631]
-    M 0.020157633207868057 [9.40987457e-01 5.75673460e-02 1.43002724e-03 1.51697696e-05]
-    N 0.03606428577181663 [8.96303746e-01 9.92791857e-02 4.33752232e-03 7.95456083e-05]
-    P 0.0633279533944792 [0.82839852 0.15444699 0.01592658 0.0012279 ]
-    Q 0.04762747988813537 [8.65808294e-01 1.25929019e-01 7.83462953e-03 4.28056998e-04]
-    R 0.056398173560437186 [8.43594750e-01 1.44119515e-01 1.17821912e-02 5.03544283e-04]
-    S 0.0839536195300893 [0.7749925  0.19970161 0.02375839 0.00154749]
-    T 0.05312253097345029 [8.50042210e-01 1.40797016e-01 8.91173431e-03 2.49039255e-04]
-    V 0.059632721433632886 [8.32706767e-01 1.55975781e-01 1.10299640e-02 2.87488386e-04]
-    W 0.012197310830126741 [9.64003671e-01 3.54045966e-02 5.87850176e-04 3.88195126e-06]
-    Y 0.026745192256533074 [9.22502949e-01 7.48010226e-02 2.65352093e-03 4.25074545e-05]
+    A 0.07018196319094387 [0.80916578 0.17231273 0.0173313  0.00119019]
+    C 0.0230518411129529 [9.33056429e-01 6.47747237e-02 2.12573121e-03 4.31157313e-05]
+    D 0.04751265640647439 [8.65330503e-01 1.27051639e-01 7.36723431e-03 2.50623661e-04]
+    E 0.07104289911013449 [0.80831139 0.17162396 0.01868921 0.00137544]
+    F 0.03642254924194759 [8.95360441e-01 1.00090155e-01 4.47071103e-03 7.86935267e-05]
+    G 0.0651804495280772 [8.19793028e-01 1.65643908e-01 1.37917429e-02 7.71321347e-04]
+    H 0.026185023932931942 [9.24073474e-01 7.33913854e-02 2.44172513e-03 9.34153731e-05]
+    I 0.043559198005213164 [8.75960026e-01 1.17522398e-01 6.39752031e-03 1.20054905e-04]
+    K 0.05764134520755409 [8.40720483e-01 1.46186534e-01 1.25414375e-02 5.51545212e-04]
+    L 0.09976095693871588 [0.73159094 0.23897938 0.02798553 0.00144414]
+    M 0.02024943247866004 [9.40738078e-01 5.77927128e-02 1.45203148e-03 1.71772400e-05]
+    N 0.03617338783220694 [8.95955799e-01 9.96479737e-02 4.31648216e-03 7.97450872e-05]
+    P 0.06315935031790425 [0.82867275 0.15436119 0.0157813  0.00118476]
+    Q 0.04760332428640815 [8.66062564e-01 1.25559124e-01 7.88407627e-03 4.94235167e-04]
+    R 0.05632414888740814 [8.43751431e-01 1.44027681e-01 1.17178904e-02 5.02998171e-04]
+    S 0.08343197554677932 [0.77624353 0.19872057 0.02353235 0.00150356]
+    T 0.05390725400291096 [8.48410194e-01 1.41818527e-01 9.41059153e-03 3.60686989e-04]
+    V 0.0597070188973594 [8.32553539e-01 1.56062440e-01 1.10934388e-02 2.90582959e-04]
+    W 0.012168423999460666 [9.64093587e-01 3.53129792e-02 5.87999307e-04 5.43481496e-06]
+    Y 0.026736801075956666 [9.22503319e-01 7.48229097e-02 2.63381017e-03 3.99610499e-05]
 
 
 
-![png](notebook_files/globalmaxent_7_1.png)
+![png](notebook_files/globalmaxent_6_1.png)
+
+
+
+```python
+for i, aa in enumerate(aminoacids):
+    dist = scipy.stats.rv_discrete(values=(np.arange(k+1), prob_aa_ks[i]))
+    print(aa, dist.var()/(dist.mean()*(1-dist.mean()/k)))
+```
+
+    A 1.0625771941793762
+    C 1.0195649023022253
+    D 1.0198392910670318
+    E 1.077522672501814
+    F 1.0138094683680006
+    G 1.036764862445943
+    H 1.0173861616040063
+    I 1.0170495603845016
+    K 1.0518972712591002
+    L 1.0182700744915758
+    M 1.0091885943746781
+    N 1.0120498490975285
+    P 1.0830176561123857
+    Q 1.0377695511885143
+    R 1.0465291072434337
+    S 1.0624230391457272
+    T 1.0231977957502412
+    V 1.0150855582618494
+    W 1.0088789308278159
+    Y 1.0156053703525478
 
 
 
@@ -172,50 +192,68 @@ args = [df1, dfgap1, dfgap2] if k == 4 else [df1, dfgap1]
 h, Jk = fit_ising(df0, args, nmcmc=5e5, niter=10, epsilon=0.2, N=k, output=True)
 ```
 
-    [ 0.45064363 -0.66223406  0.06333304  0.4629459  -0.19656768  0.3854325
-     -0.52553527 -0.02818728  0.25583203  0.80453681 -0.73591469 -0.21272923
-      0.34986356  0.065175    0.23435418  0.63313531  0.17436984  0.2898184
-     -1.29639769 -0.51187429]
+    [ 0.45372895 -0.65964851  0.06305901  0.46478129 -0.20277892  0.37814671
+     -0.53260975 -0.0245608   0.25711263  0.80430225 -0.73222319 -0.20974447
+      0.34726576  0.0645158   0.23295415  0.62676144  0.18877261  0.29108636
+     -1.29886505 -0.51205627]
     iteration 0
-    f1 1.8311327018804256e-06
-    f2, gap 0 0.0024731617339114604
-    f2, gap 1 0.0019070783123505302
+    f1 6.4331098127172665e-06
+    f2, gap 0 0.002384177887086923
+    f2, gap 1 0.001963444279899073
     iteration 1
-    f1 3.3900093109713984e-06
-    f2, gap 0 0.0015817489739268422
-    f2, gap 1 0.0012995759316692316
+    f1 5.311625918338817e-06
+    f2, gap 0 0.0017391698645377244
+    f2, gap 1 0.0013212536337933634
     iteration 2
-    f1 9.268514563015938e-06
-    f2, gap 0 0.0010972309352332186
-    f2, gap 1 0.000954357059266837
+    f1 1.1357785609720052e-05
+    f2, gap 0 0.0011039446554275954
+    f2, gap 1 0.0009683778291910818
     iteration 3
-    f1 5.157987435376661e-06
-    f2, gap 0 0.0006972884607963435
-    f2, gap 1 0.0007532083623517943
+    f1 1.2602404368973092e-05
+    f2, gap 0 0.0007024574157963314
+    f2, gap 1 0.0007356535850437341
     iteration 4
-    f1 7.4022841238182986e-06
-    f2, gap 0 0.0005312058224422888
-    f2, gap 1 0.0005668540865402425
+    f1 8.006796881827585e-06
+    f2, gap 0 0.0005425770284775988
+    f2, gap 1 0.0005897652759192061
     iteration 5
-    f1 4.800080026283236e-06
-    f2, gap 0 0.0004133188857749824
-    f2, gap 1 0.00039058110618158943
-    iteration 6
-    f1 8.770982888280625e-06
-    f2, gap 0 0.0002612592712186204
-    f2, gap 1 0.00036418114320951064
-    iteration 7
-    f1 1.0737980039005098e-05
-    f2, gap 0 0.00021728326063600212
-    f2, gap 1 0.0003054588496494451
-    iteration 8
-    f1 1.1213053024518112e-05
-    f2, gap 0 0.0002127026392051891
-    f2, gap 1 0.0003097994523042824
-    iteration 9
-    f1 9.264813398524108e-06
-    f2, gap 0 0.00016542791741173696
-    f2, gap 1 0.0003106619077589409
+
+
+
+    ---------------------------------------------------------------------------
+
+    KeyboardInterrupt                         Traceback (most recent call last)
+
+    <ipython-input-9-09a14c965d89> in <module>
+          1 args = [df1, dfgap1, dfgap2] if k == 4 else [df1, dfgap1]
+    ----> 2 h, Jk = fit_ising(df0, args, nmcmc=5e5, niter=10, epsilon=0.2, N=k, output=True)
+    
+
+    ~/repos/peptidome/code/lib/maxent.py in fit_ising(f1, f2s, niter, nmcmc, epsilon, Jk, prng, output, N)
+         84             return clib.energy(x, h, Jk)
+         85         x0 = jump(None)
+    ---> 86         samples = mcmcsampler(x0, energy, jump, nmcmc, prng=prng)
+         87         samples = [''.join(aas_arr[s]) for s in samples]
+         88         f1_model = count(samples, 1)
+
+
+    ~/repos/peptidome/code/lib/main.py in mcmcsampler(x0, energy, jump, nsteps, nburnin, nsample, prng)
+        392     for i in range(nsteps):
+        393         xp = jump(x)
+    --> 394         Exp = energy(xp)
+        395         if prng.rand() < np.exp(-Exp+Ex):
+        396             x = xp
+
+
+    ~/repos/peptidome/code/lib/maxent.py in energy(x)
+         81         def jump(x):
+         82             return prng.randint(q, size=N)
+    ---> 83         def energy(x):
+         84             return clib.energy(x, h, Jk)
+         85         x0 = jump(None)
+
+
+    KeyboardInterrupt: 
 
 
 
@@ -229,45 +267,6 @@ jsd_maxent = calc_jsd(df_test['freq'], df['freq_maxent'], base=2)
 ```python
 hks = fit_global(fks, niter=10, nmcmc=1e6, epsilon=0.1, output=True)
 ```
-
-    iteration 0
-
-
-
-    ---------------------------------------------------------------------------
-
-    KeyboardInterrupt                         Traceback (most recent call last)
-
-    <ipython-input-15-1d1f53d46f21> in <module>
-    ----> 1 hks = fit_global(fks, niter=10, nmcmc=1e6, epsilon=0.1, output=True)
-    
-
-    ~/repos/peptidome/code/lib/maxent.py in fit_global(fks, niter, nmcmc, epsilon, prng, output)
-         54             return energy_global(aacounts_int(x), hks)
-         55         x0 = jump(None)
-    ---> 56         samples = mcmcsampler(x0, energy, jump, nmcmc, prng=prng)
-         57         aacountss = [aacounts_int(s) for s in samples]
-         58         prob_aa_ks = prob_aa(aacountss, N)
-
-
-    ~/repos/peptidome/code/lib/main.py in mcmcsampler(x0, energy, jump, nsteps, nburnin, nsample, prng)
-        392     for i in range(nsteps):
-        393         xp = jump(x)
-    --> 394         Exp = energy(xp)
-        395         if prng.rand() < np.exp(-Exp+Ex):
-        396             x = xp
-
-
-    ~/repos/peptidome/code/lib/maxent.py in energy(x)
-         52             return prng.randint(q, size=N)
-         53         def energy(x):
-    ---> 54             return energy_global(aacounts_int(x), hks)
-         55         x0 = jump(None)
-         56         samples = mcmcsampler(x0, energy, jump, nmcmc, prng=prng)
-
-
-    KeyboardInterrupt: 
-
 
 
 ```python
@@ -314,32 +313,6 @@ for i in range(niter):
     print(jsd)
 ```
 
-    [1.10117816e-06 7.74560294e-05 1.75845336e-03 4.21032201e-02]
-    [4.80264514e-07 2.96191307e-05 4.47725283e-04 1.33540836e-02]
-    [9.00871057e-08 7.32318900e-06 1.84663381e-04 4.57381818e-03]
-    [1.34871083e-07 5.07726315e-06 8.89053339e-05 1.43496314e-03]
-    [1.03323545e-07 4.23810963e-06 6.26173221e-05 2.37524623e-03]
-    [1.01322380e-07 4.22541529e-06 6.09838332e-05 7.04714132e-03]
-    [9.27197319e-08 4.45691194e-06 7.34718428e-05 2.13776972e-03]
-    [1.76452037e-07 4.85923223e-06 5.10446124e-05 1.63425838e-03]
-
-
-
-    ---------------------------------------------------------------------------
-
-    KeyboardInterrupt                         Traceback (most recent call last)
-
-    <ipython-input-438-4d17c82bc8d1> in <module>
-         29         return energy_global(aacounts_int(x), hks)
-         30     x0 = jump(prng.randint(q, size=N))
-    ---> 31     samples = mcmcsampler(x0, energy, jump, nmcmc, prng=prng, nburnin=1e3)
-         32     aacountss = [aacounts_int(s) for s in samples]
-         33     prob_aa_ks = prob_aa(aacountss, N, pseudocount=pseudocount)
-
-
-    KeyboardInterrupt: 
-
-
 
 ```python
 plt.plot(fks.flatten(), prob_aa_ks.flatten(), 'o')
@@ -348,10 +321,6 @@ plt.plot(x, x, 'k')
 plt.xscale('log')
 plt.yscale('log')
 ```
-
-
-![png](notebook_files/globalmaxent_13_0.png)
-
 
 
 ```python
@@ -364,10 +333,6 @@ plt.axhline(1.0, c='k')
 plt.xscale('log')
 plt.yscale('log')
 ```
-
-
-![png](notebook_files/globalmaxent_14_0.png)
-
 
 
 ```python
@@ -389,23 +354,11 @@ for column in df.filter(regex='freq'):
     entropies[column] = entropy
 ```
 
-    freq 0.4818228760509786
-    freq_test 0.4842479763025853
-    freq_ind 0.4325065695757271
-    freq_mc 0.46518219003396943
-    freq_tri 0.4816500946701403
-    freq_maxent 0.4637896156769994
-    freq_maxentglobal 0.4502190795582077
-
-
 
 ```python
 print('test', jsd_test, 'maxent', jsd_maxent, 'maxentglobal', jsd_maxentglobal,
               'flat', jsd_flat, 'ind', jsd_ind, 'mc', jsd_mc, 'tri', jsd_tri)
 ```
-
-    test 0.00045066791878147335 maxent 0.0022975074189060768 maxentglobal 0.0074488182226179825 flat 0.11636605633280683 ind 0.010787692666021382 mc 0.004270292681160973 tri 0.0006520739816125916
-
 
 
 ```python
@@ -482,20 +435,9 @@ fig.savefig('main.png' if k == 3 else 'comparison_k4.png', dpi=600)
 ```
 
 
-![png](notebook_files/globalmaxent_20_0.png)
-
-
-
 ```python
 2**entropies['freq'], 2**entropies['freq_maxent'], 2**entropies['freq_ind'], 20**k
 ```
-
-
-
-
-    (5728.578236172637, 5800.633160515391, 5927.786266321473, 8000)
-
-
 
 
 ```python
@@ -506,10 +448,6 @@ plt.hist(np.log10(df['freq_maxent']),**kwargs)
 plt.hist(np.log10(df['freq']),**kwargs)
 plt.yscale('log')
 ```
-
-
-![png](notebook_files/globalmaxent_22_0.png)
-
 
 
 ```python
