@@ -1,4 +1,4 @@
-import random
+import random, re
 import gzip
 from mimetypes import guess_type
 from functools import partial
@@ -45,6 +45,61 @@ def load_proteomes(only_pathogens=False):
 def proteome_path(name):
     proteomes = load_proteomes()
     return datadir + proteomes.loc[name]['path']
+
+def fasta_iter(fasta_name, returnheader=True, returndescription=False):
+    """
+    Given a fasta file return a iterator over tuples of header, complete sequence.
+    """
+    if returnheader and returndescription:
+        raise Exception('one of returnheader/returndescription needs to be False')
+    if guess_type(fasta_name)[1] =='gzip':
+        _open = partial(gzip.open, mode='rt')
+    else:
+        _open = open
+    with _open(fasta_name) as f:
+        fasta_sequences = SeqIO.parse(f, 'fasta')
+        for fasta in fasta_sequences:
+            if returndescription:
+                yield fasta.description, str(fasta.seq)
+            elif returnheader:
+                yield fasta.id, str(fasta.seq)
+            else:
+                yield str(fasta.seq)
+
+# Alternative code that does not rely on Biopython
+#def fasta_iter(fasta_name, returnheader=True):
+#    """
+#    Given a fasta file return a iterator over tuples of header, complete sequence.
+#    """
+#    f = open(fasta_name)
+#    faiter = (x[1] for x in groupby(f, lambda line: line[0] == ">"))
+#    for header in faiter:
+#        # drop the ">"
+#        header = next(header)[1:].strip()
+#        # join all sequence lines together
+#        seq = "".join(s.strip() for s in next(faiter))
+#        if returnheader:
+#            yield header, seq
+#        else:
+#            yield seq
+
+def load_proteome_as_df(name):
+    "Return proteome as dataframe given its name"
+    headers, seqs = list(zip(*[(h, seq) for h, seq in fasta_iter(proteome_path(name),                                                             returndescription=True, returnheader=False)]))
+    genes = []
+    for h in headers:
+        m = re.search('(?<=GN\=)[^\s]+', h)
+        if m:
+             genes.append(m.group(0))
+        else:
+             genes.append('')
+    df = pd.DataFrame(dict(Gene=genes, Sequence=seqs))
+    return df
+
+def unique_amino_acids(proteome):
+    "returns an array of all unique amino acids used within a proteome"
+    return np.unique(list(''.join([seq for h, seq in proteome])))
+
 
 human = proteome_path('Human')
 
@@ -102,47 +157,6 @@ def calc_mi(df2):
     micorr = mi - (len(aminoacids)-1)**2/(2*np.log(2)*np.sum(df2['count']))
     return micorr
 
-def fasta_iter(fasta_name, returnheader=True, returndescription=False):
-    """
-    Given a fasta file return a iterator over tuples of header, complete sequence.
-    """
-    if returnheader and returndescription:
-        raise Exception('one of returnheader/returndescription needs to be False')
-    if guess_type(fasta_name)[1] =='gzip':
-        _open = partial(gzip.open, mode='rt')
-    else:
-        _open = open
-    with _open(fasta_name) as f:
-        fasta_sequences = SeqIO.parse(f, 'fasta')
-        for fasta in fasta_sequences:
-            if returndescription:
-                yield fasta.description, str(fasta.seq)
-            elif returnheader:
-                yield fasta.id, str(fasta.seq)
-            else:
-                yield str(fasta.seq)
-
-# Alternative code that does not rely on Biopython
-#def fasta_iter(fasta_name, returnheader=True):
-#    """
-#    Given a fasta file return a iterator over tuples of header, complete sequence.
-#    """
-#    f = open(fasta_name)
-#    faiter = (x[1] for x in groupby(f, lambda line: line[0] == ">"))
-#    for header in faiter:
-#        # drop the ">"
-#        header = next(header)[1:].strip()
-#        # join all sequence lines together
-#        seq = "".join(s.strip() for s in next(faiter))
-#        if returnheader:
-#            yield header, seq
-#        else:
-#            yield seq
-
-def unique_amino_acids(proteome):
-    "returns an array of all unique amino acids used within a proteome"
-    return np.unique(list(''.join([seq for h, seq in proteome])))
-
 def strcolumn_to_charcolumns(df, column, prefix='aa'):
     """Build columns of chars from a column of strings of fixed length."""
     k = len(df[column][0]) 
@@ -193,9 +207,12 @@ class Counter(defaultdict):
         if clean:
             self.clean()
         if norm:
-            return pd.DataFrame(dict(seq=list(self.keys()), freq=normalize(self)))
-        arr = np.array(list(self.values()), dtype=np.float)
-        return pd.DataFrame(dict(seq=list(self.keys()), count=arr))
+            df = pd.DataFrame(dict(seq=list(self.keys()), freq=normalize(self)))
+        else:
+            arr = np.array(list(self.values()), dtype=np.float)
+            df = pd.DataFrame(dict(seq=list(self.keys()), count=arr))
+        df.sort_values('seq', inplace=True)
+        return df
 
 def count_kmers_proteome(proteome, k, **kwargs):
     return count_kmers_iterable(fasta_iter(proteome, returnheader=False), k, **kwargs)
