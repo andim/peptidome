@@ -5,7 +5,9 @@ copycode:
 	cp ../code . -r
 	rm -f code/*/*.md
 	rm -f code/*/*.pdf
+	rm -f code/*/submit.sh
 	rm -f code/*.md
+	rm -f code/requirements.txt
 	rm -f code/*/Makefile
 	rm -f code/*/data/ -r
 	rm -f code/*/.ipynb_checkpoints/ -r
@@ -31,6 +33,7 @@ commit: copycode
 	mkdir _posts
 	python code_to_posts.py
 	git add _posts/*md
+	git add code/*/*png code/*/*py notebook_files/*png
 
 clean:
 	rm -rf build *.c *.so *.pyc

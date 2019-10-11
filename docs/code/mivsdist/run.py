@@ -5,7 +5,9 @@ import sys
 sys.path.append('..')
 from lib import *
 
-name = sys.argv[1]
+run = int(sys.argv[1])-1
+names = ['Human', 'Mouse', 'Yeast', 'Viruses']
+name = names[run]
 if name == 'Viruses':
     proteome = datadir + 'human-viruses-uniref90_nohiv.fasta'
 else:
@@ -15,7 +17,7 @@ print(name, proteome)
 def calc_mi_std(seqs, gap):
     mis = []
     for i in range(30):
-        df2 = Counter(random.sample(seqs, 10000), k=2, gap=gap).to_df(norm=False, clean=True)
+        df2 = Counter(random.sample(seqs, int(len(seqs)/2)), k=2, gap=gap).to_df(norm=False, clean=True)
         mis.append(calc_mi(df2))
     return np.std(mis, ddof=1)/2**.5
 
@@ -24,7 +26,7 @@ mutualinformation_std = []
 shuffled_mutualinformation = []
 gaps = np.arange(0, 201, 1)
 for gap in gaps:
-    seqs = [s for s in fasta_iter(human, returnheader=False)]
+    seqs = [s for s in fasta_iter(proteome, returnheader=False)]
     df2 = Counter(seqs, k=2, gap=gap).to_df(norm=False, clean=True)
     mi = calc_mi(df2)
     mutualinformation.append(mi)
