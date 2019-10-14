@@ -4,6 +4,12 @@ title: Notes
 order: 3
 ---
 
+# 2019-10-14: Adding up mutual information?
+
+For a while now I have been wondering how mutual information adds up. In general simply adding it up does not work, but intuitively it seems like this might work in the limit of weak correlations. It seems that this is indeed the case in Ising models, see Schneidman et al. Nature 2006: "For weak correlations, we can solve the Ising model in perturbation theory to show that the multi-information IN is the sum of mutual information terms between all pairs of cells."
+
+TODO: refresh intuition by readin up on perturbation theory in Ising models
+
 # 2019-10-06: similar sounding Shugay abstract 
 
 See [here](http://mccmb.belozersky.msu.ru/2019/thesis/MCCMB2019/abstracts/179.pdf)
