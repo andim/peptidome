@@ -13,7 +13,7 @@ proteome = pd.read_csv('data/human_uniquedomains.csv')['seq']
 entropyestimator = lambda x: entropy_grassberger(x, base=2)
 
 mutualinformation = []
-gaps = np.arange(0, 201, 1)
+gaps = np.arange(0, 1001, 1)
 for gap in gaps:
     df2 = Counter(proteome, k=2, gap=gap).to_df(norm=False, clean=True)
     entropy2 = entropyestimator(df2['count'])
