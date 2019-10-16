@@ -10,7 +10,31 @@ For a while now I have been wondering how mutual information adds up. In general
 
 TODO: refresh intuition by readin up on perturbation theory in Ising models
 
-# 2019-10-06: similar sounding Shugay abstract 
+# 2019-10-7 Meeting with Quentin
+(heavily skewed towards Q's thinking)
+## About pathogens epitopes being close to self
+- can it be explained by the need of proliferation signals given by the self in order to keep a clone alive until infection? Only TCRs recognizing at least mildy self can remain alive
+- if epitopes need to be close to self to elicit an immune response, is there a self concentration/ neighborhood avoidance effect? Practically: if we look at the number of times a kmer is found in the human/mice genome is it more than what is expected by chance using the peptidome model ("concentration" effect)? Conversely if we look at the number of kmers in the human/mice genome with distance 1 from a self kmer, are they underrepresented compared to what would be expected from peptidome statistics?
+
+## About differences in peptidome statistics
+- are physical constraints on peptidome solely contained in 1-point aa frequencies?
+- are cancer mutation stirring peptidome towards uniform aa distribution (such as frameshifts, less for SNPs) immunogenic?
+- link Arup's quorum sensing idea with peptidome (they actually do a simulation with a bacterian genome in the paper)
+
+## About T cell regulation
+- T effectors and T regs use different MHC class, thus interacting T reg and T effectors recognise different kmers while "targeting" the same pathogen. Could this be the mechanism for activation specificity? (joint probability of encountering 2 kmers close to self but not self)
+
+
+## Miscellaneous
+- where do auto-immune peptides lie in the peptide space (PCA image, + look at Misha's ALICE paper)
+- Role of memory repertoire: T cells for specific epitopes are selected, this goes "against" the quorum sensing idea with numerous not so specific T cells eliciting a response
+- What's the fraction of activated T cells "by error" (meaning without infection) during basal life?
+- how many epitopes are needed for a T cell vaccine? (like Flu)
+- Kinetic proofreading at the cellular scale? (with a hierarchy of T cell types)
+- could it be that in the end all the hardest work of activation decision is mostly done by the innate immune system?
+- about tissue specific peptides: I remember a talk from people of Adrien Six's group talking about repertoire sequencing in different organs     
+
+# 2019-10-06: similar sounding Shugay abstract
 
 See [here](http://mccmb.belozersky.msu.ru/2019/thesis/MCCMB2019/abstracts/179.pdf)
 
@@ -20,7 +44,7 @@ TODO: Correlated population state despite weak interactions in proteins? To star
 
 # 2019-09-17: Meeting with Bill
 
-Now that we know what the relevant problem is (distinguish a peptide from a set of learned self-peptides drawn both from approximately the same distribution) we should revisit the question of how one might construct a system to achieve such discrimination. 
+Now that we know what the relevant problem is (distinguish a peptide from a set of learned self-peptides drawn both from approximately the same distribution) we should revisit the question of how one might construct a system to achieve such discrimination.
 
 Maybe things become easier as dimensionality becomes large. Pointers for how to proceed could be gleaned from Shannon's argument about achieving channel capacity with random codes.
 
@@ -48,11 +72,11 @@ Also reread Misha ... Shugay paper where they reanalyze data from Diego Chowell
 
 # 2019-09-05: Protein tissue distribution database
 
-https://www.proteinatlas.org/ has data on the distribution of human proteins across tissues and cell types. This could be a useful resource to check how much the peptide statistics should vary across tissues. 
+https://www.proteinatlas.org/ has data on the distribution of human proteins across tissues and cell types. This could be a useful resource to check how much the peptide statistics should vary across tissues.
 
 # 2019-08-22: Protein structure and family databases
 
-- Pfam: Protein domains found in sequences of a given proteome. See e.g. [Human](http://pfam.xfam.org/proteome/9606#tabview=tab2), interestingly there are for example nearly 8000 occurrences of C2H2 zinc finger domains in line with the signal we have seen inthe mutual information analysis. A CSV file with where domains are located can be downloaded via [FTP](ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/proteomes/) 
+- Pfam: Protein domains found in sequences of a given proteome. See e.g. [Human](http://pfam.xfam.org/proteome/9606#tabview=tab2), interestingly there are for example nearly 8000 occurrences of C2H2 zinc finger domains in line with the signal we have seen inthe mutual information analysis. A CSV file with where domains are located can be downloaded via [FTP](ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/proteomes/)
 - [CathDB](http://www.cathdb.info): protein domains classified (at top level) into mainly alpha, mainly beta, alpha/beta, and few secondary structure
 
 # 2019-07-31: Skype w/ Ben
@@ -65,7 +89,7 @@ Grouping proteins: Look at https://www.ncbi.nlm.nih.gov/geo/. A few groups to co
 
 # 2019-04-09: Reading on Chargaff's rule
 
-This relates to the comment by Richard Neher about %A = %T and %G = %C in double-stranded DNA organisms. This is known as Chargaff's rule (https://en.wikipedia.org/wiki/Chargaff%27s_rules): 
+This relates to the comment by Richard Neher about %A = %T and %G = %C in double-stranded DNA organisms. This is known as Chargaff's rule (https://en.wikipedia.org/wiki/Chargaff%27s_rules):
 
 "The first rule holds that a double-stranded DNA molecule globally has percentage base pair equality: %A = %T and %G = %C. The rigorous validation of the rule constitutes the basis of Watson-Crick pairs in the DNA double helix model.
 
@@ -75,7 +99,7 @@ The first rule needs to be true given the base-pairing that we now know about. T
 
 "In most bacterial genomes (which are generally 80-90% coding) genes are arranged in such a fashion that approximately 50% of the coding sequence lies on either strand. Wacław Szybalski, in the 1960s, showed that in bacteriophage coding sequences purines (A and G) exceed pyrimidines (C and T). This rule has since been confirmed in other organisms and should probably be now termed "Szybalski's rule". While Szybalski's rule generally holds, exceptions are known to exist. The biological basis for Szybalski's rule, like Chargaff's, is not yet known."
 
-There are some ideas that the second rule might hold because of inversions and inverted transpositions (see G Albrecht Buehler, PNAS 2006). 
+There are some ideas that the second rule might hold because of inversions and inverted transpositions (see G Albrecht Buehler, PNAS 2006).
 
 
 # 2019-04-01: Skype w/ Ben G
@@ -192,7 +216,7 @@ From http://chemlabs.princeton.edu/hecht/research/ :
 
 Interested in the project, previous programming experience in Python, --> send him some references/code to get started
 
-# 2018-11-12: Meeting with Bill Bialek 
+# 2018-11-12: Meeting with Bill Bialek
 
 - Given that departures from independence are small, one could try and use the analytical results from perturbation theory to invert C <-> J relationship. How well does this do?
 - The decay of the mutual information with distance is slower than the growth in the number of interactions at that distance -> the overall ensemble is constrained.
@@ -252,4 +276,3 @@ Interested in the project, previous programming experience in Python, --> send h
 - acute articular rhumatism (after acute streptococcus infection) (check if T cell mediated)
 - Guillain Barré syndrom often ~ month after small infection or vaccination (check if T cell mediated)
 - Generally look for T cells mediated auto-immune diseases.
-
