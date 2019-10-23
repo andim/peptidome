@@ -12,7 +12,8 @@ for species in ['Human', 'Yeast']:
     df = pd.read_csv('data/mutualinformation-%s.csv'%species)
     err = ax.errorbar(df['gaps']+1, df['mutualinformation'],
             2*df['mutualinformation_std'], fmt='_', label=species, ms=3)
-    print(np.sum(df['mutualinformation']))
+    print(np.sum(df['mutualinformation'].iloc[:200]))
+    print(np.sum(2*df['mutualinformation'].iloc[:4]))
     ax.plot(df['gaps']+1, df['shuffledmutualinformation'], '_', ms=3,
             label=('shuffled') if species == 'Human' else '', c=err.lines[0].get_color())
 d = np.linspace(1, 200)

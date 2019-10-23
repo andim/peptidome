@@ -8,7 +8,11 @@ order: 3
 
 For a while now I have been wondering how mutual information adds up. In general simply adding it up does not work, but intuitively it seems like this might work in the limit of weak correlations. It seems that this is indeed the case in Ising models, see Schneidman et al. Nature 2006: "For weak correlations, we can solve the Ising model in perturbation theory to show that the multi-information IN is the sum of mutual information terms between all pairs of cells."
 
-TODO: refresh intuition by readin up on perturbation theory in Ising models
+TODO: refresh intuition by reading up on perturbation theory in Ising models
+
+Talked with Bill: this is indeed what you would expect. Has previously done this calculation for Ising models. Intuitively this should also hold for Potts models.
+
+A quick calculation: Scaling of summed mutual information with length: $I_0 \int_1^N x^{-1/2} \sim 2 I_0 N^{1/2}$ with $I_0 approx 0.015$ we get 0.3 bit. When do we get as much information from context as from one-point frequencies (~0.15 bit)? -> at N=25. At N=9 (peptide on MHC length) we only get a reduction of 0.09 bit, i.e. correlations at this length are less important than the one point frequencies.
 
 # 2019-10-06: similar sounding Shugay abstract 
 

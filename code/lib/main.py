@@ -93,7 +93,8 @@ def load_proteome_as_df(name):
              genes.append(m.group(0))
         else:
              genes.append('')
-    df = pd.DataFrame(dict(Gene=genes, Sequence=seqs))
+    accessions = [h.split('|')[1] for h in headers] 
+    df = pd.DataFrame(dict(Gene=genes, Accession=accessions, Sequence=seqs))
     return df
 
 def unique_amino_acids(proteome):
@@ -141,12 +142,17 @@ def calc_jsd(p, q, base=np.e):
     return 0.5*(scipy.stats.entropy(p, m, base=base)
                 + scipy.stats.entropy(q, m, base=base))
 
-def calc_mi(df2):
+def calc_mi(df2_or_seqs, gap=0):
     """Calculate the mutual information between
        residues from a count of pairs of amino acids.
        Uses the Treves-Panzeri correction for finite size
     """
-    strcolumn_to_charcolumns(df2, 'seq')
+    try:
+        df2 = df2_or_seqs
+        strcolumn_to_charcolumns(df2, 'seq')
+    except:
+        df2 = Counter(df2_or_seqs, k=2, gap=gap).to_df(norm=False, clean=True)
+        strcolumn_to_charcolumns(df2, 'seq')
     df11 = df2.groupby('aa1').agg(np.sum)['count']
     df11 /= np.sum(df11)
     df12 = df2.groupby('aa2').agg(np.sum)['count']
@@ -156,6 +162,13 @@ def calc_mi(df2):
     mi = np.sum(df2['freq']*np.log2(df2['freq']/df2['theory']))
     micorr = mi - (len(aminoacids)-1)**2/(2*np.log(2)*np.sum(df2['count']))
     return micorr
+
+def calc_mi_std(seqs, gap):
+    mis = []
+    for i in range(30):
+        df2 = Counter(random.sample(seqs, int(len(seqs)/2)), k=2, gap=gap).to_df(norm=False, clean=True)
+        mis.append(calc_mi(df2))
+    return np.mean(mis), np.std(mis, ddof=1)/2**.5
 
 def strcolumn_to_charcolumns(df, column, prefix='aa'):
     """Build columns of chars from a column of strings of fixed length."""

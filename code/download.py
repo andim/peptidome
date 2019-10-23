@@ -61,7 +61,8 @@ path_urls = [
              # DNA sequence data
              ('dna_chr21.fa.gz', r'ftp://ftp.ensembl.org/pub/release-96/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.21.fa.gz'),
              ('dna_human_all.fa.gz', r'ftp://ftp.ensembl.org/pub/release-96/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz'),
-             ('dna_pfalciparum.fasta', r'https://plasmodb.org/common/downloads/release-45/Pfalciparum3D7/fasta/data/PlasmoDB-45_Pfalciparum3D7_Genome.fasta')
+             ('dna_pfalciparum.fasta', r'https://plasmodb.org/common/downloads/release-45/Pfalciparum3D7/fasta/data/PlasmoDB-45_Pfalciparum3D7_Genome.fasta'),
+             ('disprot.tsv', r'https://www.disprot.org/api/search?release=current&show_ambiguous=false&show_obsolete=false&format=tsv')
             ]
 for path, url in path_urls:
     if not os.path.exists(datadir+path):
