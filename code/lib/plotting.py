@@ -28,3 +28,25 @@ def label_axes(fig_or_axes, labels=string.ascii_uppercase,
         xycoords = (ax.yaxis.label, 'axes fraction')
         ax.annotate(labelstyle % label, xy=xy, xycoords=xycoords, **defkwargs)
 
+from scipy.interpolate import interpn
+
+def density_scatter(x, y, ax=None, sort=True, bins=20, trans=None, **kwargs):
+    """
+    Scatter plot colored by 2d histogram
+    """
+    if ax is None :
+        ax = plt.gca()
+    if trans is None:
+        trans = lambda x: x
+    data , x_e, y_e = np.histogram2d(trans(x), trans(y), bins = bins)
+    z = interpn(( 0.5*(x_e[1:] + x_e[:-1]), 0.5*(y_e[1:]+y_e[:-1]) ),
+                data, np.vstack([trans(x),trans(y)]).T,
+                method="splinef2d", bounds_error=False )
+
+    # Sort the points by density, so that the densest points are plotted last
+    if sort :
+        idx = z.argsort()
+        x, y, z = x[idx], y[idx], z[idx]
+
+    ax.scatter(x, y, c=z, **kwargs)
+    return ax

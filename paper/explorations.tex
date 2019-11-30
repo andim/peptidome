@@ -74,6 +74,22 @@ One also has $\kappa_n(c X) = c^n \kappa_n(X)$. For $c = 1/N$ this gives the cen
 
 The approach of including more and more of the history in a Markov chain has been used extensively on the nucleotide level: In general an n-th order Markov chain is a model which includes a dependence on the previous n symbols in a sequence.
 
+\section{Mean-field theory}
+
+See the SI of Morcos et al. for a derivation of mean-field results for the Potts model \cite{Morcos2011}. Under the mean-field assumption we have 
+\begin{equation}
+    J_{ij}^{MF} = - (C^{-1})_{ij}, 
+\end{equation}
+where $c_{ij} = f_{ij} - f_i f_j$ is the connected correlation function. At small couplings we can expand the inverse of this matrix by noting that its off-diagonal elements are small compared to its diagonal. Setting $C = D + A$ we expand the inverse to first order as
+\begin{equation}
+    (D+A)^{-1} \approx D^{-1} + D^{-1} A D^{-1}. 
+\end{equation}
+This yields the even simpler equation
+\begin{equation}
+    J_{ij}^{MF} = - \rho_{ij},
+\end{equation}
+where $\rho_{ij} = c_{ij}/(f_i f_j)$ is a normalization of the connected correlation function. This is also the leading order term found by Sessak and Monasson for a small-correlation expansion for the inverse Ising problem.
+
 \end{document}
 
 
