@@ -14,13 +14,6 @@ else:
     proteome = proteome_path(name)
 print(name, proteome)
 
-def calc_mi_std(seqs, gap):
-    mis = []
-    for i in range(30):
-        df2 = Counter(random.sample(seqs, int(len(seqs)/2)), k=2, gap=gap).to_df(norm=False, clean=True)
-        mis.append(calc_mi(df2))
-    return np.std(mis, ddof=1)/2**.5
-
 mutualinformation = []
 mutualinformation_std = []
 shuffled_mutualinformation = []
