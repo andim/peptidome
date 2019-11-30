@@ -31,3 +31,7 @@ Leprosy,Mycobacterium leprae,Mycobacterium leprae,,UP000000806,bacterium,
 Malaria,Plasmodium falciparum,Plasmodium falciparum,36329,UP000001450,parasite,
 Chagas,Trypanosoma cruzi,Trypanosoma cruzi,353153,UP000002296,parasite,
 OnchocercaVolvulus,Onchocerca volvulus,Onchocerca volvulus,6282,UP000024404,parasite,causes river blindness
+PlasmodiumVivax,Plasmodium vivax,Plasmodium vivax,126793,UP000008333,parasite,
+PlasmodiumKnowlesi,Plasmodium knowlesi,Plasmodium knowlesi,5851,UP000031513,parasite,
+PlasmodiumBerghei,Plasmodium berghei,Plasmodium berghei,5823,UP000074855,parasite,
+PlasmodiumYoeliiYoelii,Plasmodium yoelii yoelii,Plasmodium yoelii yoelii,73239,UP000008553,parasite,
