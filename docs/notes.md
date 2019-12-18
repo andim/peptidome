@@ -4,6 +4,23 @@ title: Notes
 order: 3
 ---
 
+# 2019-12-18: Sum up and next steps
+
+We are trying to answer the question of how protein statistics might have shaped the organization of adaptive immune defenses. To do so we are characterizing the statistical structure of small peptides drawn from host or pathogen proteomes. Based on our analyses so far there seems to be a more limited amount of statistical structure for short peptides than one might have naively thought (1). Furthermore a large fraction of this structure is universal, i.e. shared between pathogens and their hosts. This seems to indicate that the immune system cannot as a matter of principle distinguish self and non-self in a purely statistical manner (2). Instead the solution it employs is to "overfit", i.e. it learns to ignore the sparse set of self peptides. The primary evolutionary pressure shaping the immune repertoire then is to cover the universally more dense regions of peptide space more, and any preference for regions enriched in non-self peptides might be secondary. We have found some evidence that indeed the immune system does recognize peptides that are close to self at least as likely (if not slightly at higher rates) than peptides that are far from any self peptides (3).
+
+(1) Which further checks should we do to convince ourselves that we capture most of the relevant statistics?
+
+Three-point correlations? Maybe as a more stringent test we could also look at how well our maxent models reproduce statistics on the distribution of pairwise hamming distances?
+
+(2) This statement is true on average and for a single peptide. We can relax both assumptions and ask if still it remains true.
+
+Are there any strong outliers that distinguish pathogens from their host? (While the average peptide might look similar, there might be one universal kmer that is shared across a lot of pathogens but not found in host.) Could the immune system discriminate statistically by using collective decision making and averaging over multiple peptides? Both are possibilities, which we might want to explore and/or rule out.
+
+(3) Can we find further evidence for or against this idea?
+
+In particular, we might want to take another look at cancer neoantigen immunogenicity as analyzed previously in Martha's paper. What other predictions could we test?
+
+
 # 2019-10-14: Adding up mutual information?
 
 For a while now I have been wondering how mutual information adds up. In general simply adding it up does not work, but intuitively it seems like this might work in the limit of weak correlations. It seems that this is indeed the case in Ising models, see Schneidman et al. Nature 2006: "For weak correlations, we can solve the Ising model in perturbation theory to show that the multi-information IN is the sum of mutual information terms between all pairs of cells."
