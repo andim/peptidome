@@ -14,8 +14,8 @@ for species in ['Human', 'Yeast']:
             2*df['mutualinformation_std'], fmt='_', label=species, ms=3)
     print(np.sum(df['mutualinformation'].iloc[:200]))
     print(np.sum(2*df['mutualinformation'].iloc[:4]))
-    ax.plot(df['gaps']+1, df['shuffledmutualinformation'], '_', ms=3,
-            label=('shuffled') if species == 'Human' else '', c=err.lines[0].get_color())
+#    ax.plot(df['gaps']+1, df['shuffledmutualinformation'], '_', ms=3,
+#            label=('shuffled') if species == 'Human' else '', c=err.lines[0].get_color())
 d = np.linspace(1, 200)
 #ax.plot(d, 0.005*np.exp(-d/50), zorder=10, label='exponential ($d_c=50$)')
 l, = ax.plot(d, 0.02*d**-.5, zorder=10, c='k', label=r'power law ($-1/2$)')

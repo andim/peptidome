@@ -362,32 +362,6 @@ print('test', jsd_test, 'maxent', jsd_maxent, 'maxentglobal', jsd_maxentglobal,
 
 
 ```python
-from scipy.interpolate import interpn
-
-def density_scatter(x, y, ax=None, sort=True, bins=20, trans=None, **kwargs):
-    """
-    Scatter plot colored by 2d histogram
-    """
-    if ax is None :
-        ax = plt.gca()
-    if trans is None:
-        trans = lambda x: x
-    data , x_e, y_e = np.histogram2d(trans(x), trans(y), bins = bins)
-    z = interpn(( 0.5*(x_e[1:] + x_e[:-1]), 0.5*(y_e[1:]+y_e[:-1]) ),
-                data, np.vstack([trans(x),trans(y)]).T,
-                method="splinef2d", bounds_error=False )
-
-    # Sort the points by density, so that the densest points are plotted last
-    if sort :
-        idx = z.argsort()
-        x, y, z = x[idx], y[idx], z[idx]
-
-    ax.scatter(x, y, c=z, **kwargs)
-    return ax
-```
-
-
-```python
 from scipy.stats import gaussian_kde
 def scatterplot(x, y, ax=None):
     if ax is None:
@@ -399,7 +373,7 @@ def scatterplot(x, y, ax=None):
 
 
 ```python
-scatter = lambda x, y, ax: density_scatter(x, y, ax=ax, s=1, bins=100,
+scatter = lambda x, y, ax: plotting.density_scatter(x, y, ax=ax, s=1, bins=100,
                                            trans=lambda x: np.log(x+1e-8),
                                            norm=matplotlib.colors.LogNorm(vmin=0.5, vmax=50 if k ==3 else 400),
                                            cmap='viridis')
