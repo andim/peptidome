@@ -20,4 +20,31 @@ class BallTreeDist:
         d = min(bt.query(sequence_number)[0] for bt in self.bts)
         return int(d*len(sequence))
 
+def dist1(x, reference):
+    """ Is the kmer x a Hamming distance 1 away from any of the kmers in the reference set"""
+    for i in range(len(x)):
+        for aa in aminoacids:
+            if aa == x[i]:
+                continue
+            if x[:i]+aa+x[i+1:] in reference:
+                return True
+    return False
+
+def dist2(x, reference):
+    """ Is the string x a Hamming distance 2 away from any of the kmers in the reference set"""
+    for i in range(len(x)):
+        for j in range(i+1, len(x)):
+            for aai in aminoacids:
+                if aai == x[i]:
+                    continue
+                si = x[:i]+aai+x[i+1:]
+                for aaj in aminoacids:
+                    if aaj == x[j]:
+                        continue
+                    if si[:j]+aaj+si[j+1:] in reference:
+                        return True
+    return False
+
+def number_hamming_neighbors(distance, length, q):
+    return (q-1)**distance * falling_factorial(length, distance)
 

@@ -34,6 +34,8 @@ def density_scatter(x, y, ax=None, sort=True, bins=20, trans=None, **kwargs):
     """
     Scatter plot colored by 2d histogram
     """
+    x = np.asarray(x)
+    y = np.asarray(y)
     if ax is None :
         ax = plt.gca()
     if trans is None:

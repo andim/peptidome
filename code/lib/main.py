@@ -625,31 +625,6 @@ def falling_factorial(x, n):
     "returns x (x-1) ... (x-n+1)"
     return scipy.special.factorial(x)/scipy.special.factorial(x-n+1)
 
-def dist1(x, reference):
-    """ Is the kmer x a Hamming distance 1 away from any of the kmers in the reference set"""
-    for i in range(len(x)):
-        for aa in aminoacids:
-            if aa == x[i]:
-                continue
-            if x[:i]+aa+x[i+1:] in reference:
-                return True
-    return False
-
-def dist2(x, reference):
-    """ Is the string x a Hamming distance 2 away from any of the kmers in the reference set"""
-    for i in range(len(x)):
-        for j in range(i+1, len(x)):
-            for aai in aminoacids:
-                if aai == x[i]:
-                    continue
-                si = x[:i]+aai+x[i+1:]
-                for aaj in aminoacids:
-                    if aaj == x[j]:
-                        continue
-                    if si[:j]+aaj+si[j+1:] in reference:
-                        return True
-    return False
-
 codon_map = {"UUU":"F", "UUC":"F", "UUA":"L", "UUG":"L",
     "UCU":"S", "UCC":"S", "UCA":"S", "UCG":"S",
     "UAU":"Y", "UAC":"Y", "UAA":"STOP", "UAG":"STOP",
