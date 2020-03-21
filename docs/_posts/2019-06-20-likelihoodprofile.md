@@ -218,6 +218,60 @@ if (len(likelihoods_t) > 100) or (len(likelihoods_b) > 100):
     plt.close()
 
 ```
+#### plot-iedb-tcell-epitopes.py
+
+```python
+import json
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+import sys
+sys.path.append('..')
+
+from lib import *
+plt.style.use('../peptidome.mplstyle')
+
+
+k = 9
+ref = 'human'
+
+likelihood_human = pd.read_csv('data/proteome-ref%s-k%i-Human.zip'%(ref, k))['likelihoods']
+
+with open(datadir+ 'triplet-%s.json' % ref, 'r') as f:
+    tripletparams = json.load(f)
+loglikelihood = lambda seq, k: loglikelihood_triplet(seq, **tripletparams, k=k)
+likelihoodname = 'triplet'
+
+
+df_ts = load_iedb_tcellepitopes(human_only=True)
+mask = ~(df_ts['Assay', 'Qualitative Measure'] == 'Negative')
+print(mask.shape, np.sum(mask))
+likelihoods_t, weights_t = likelihoods_epitopes(df_ts[mask]['Epitope', 'Description'], loglikelihood, k)
+likelihoods_t_neg, weights_t_neg = likelihoods_epitopes(df_ts[~mask]['Epitope', 'Description'], loglikelihood, k)
+#df_bs = load_iedb_bcellepitopes(human_only=True)
+#df_b = df_bs[~df_bs['Epitope', 'Parent Species'].str.contains('Homo sapiens', na=False)]
+#likelihoods_b, weights_b = likelihoods_epitopes(df_b['Epitope', 'Description'], loglikelihood, k)
+
+print(len(likelihood_human), len(likelihoods_t))#, len(likelihoods_b))
+
+fig, ax = plt.subplots()
+ps = [likelihood_human, likelihoods_t]#, likelihoods_t_neg]#, likelihoods_b]
+labels = ['Human proteins', 'IEDB+ T cell epitopes']#, 'IEDB negative']#, 'B epitopes']
+weights = [np.ones(len(likelihood_human)), weights_t]#, weights_t_neg]#, weights_b]
+plot_histograms(ps, labels, weights=weights, xmin=-14.1, xmax=-8.9, ax=ax, nbins=35)
+ax.set_xlim(-14, -9)
+ax.set_ylabel('Frequency')
+ax.set_xlabel('$log_{10}$ Likelihood under human proteome statistics')
+ax.legend(title='Peptide')
+#plt.title('all')
+fig.tight_layout()
+plt.show()
+fig.savefig('plots/likelihoodprofile-all-%s-k%i.png' % (likelihoodname, k), dpi=300)
+fig.savefig('main.png')
+fig.savefig('../../paper/images/likelihoodprofile-iedb-tcell.pdf')
+
+```
 #### run-likelihoods.py
 
 ```python
@@ -248,11 +302,22 @@ def run(name, path, proteinname=True):
     df = pd.DataFrame.from_dict(dict(likelihoods=likelihoods, protein=protein))
     df.to_csv('data/proteome-ref%s-k%i-%s.zip'%(ref, k, name), compression='zip', index=False, float_format='%.4f')
 
+# All viruses
 path = datadir+'human-viruses-uniref90_nohiv.fasta'
 pathout = 'data/proteome-ref%s-k%i-%s.zip'%(ref, k, 'Viruses')
 if not os.path.exists(pathout):
-    run('Viruses', pathin, proteinname=False)
+    run('Viruses', path, proteinname=False)
 
+# Cancer datasets
+filenames = ['frameshifts.fasta.gz', 'pb1ufo.fasta.gz']
+for filename in filenames:
+    name = filename.split('.')[0]
+    path = datadir+'cancer/' + filename
+    pathout = 'data/proteome-ref%s-k%i-%s.zip'%(ref, k, name)
+    if not os.path.exists(pathout):
+        run(name, path, proteinname=False)
+
+# Proteomes
 proteomes = load_proteomes()
 for name, row in proteomes.iterrows():
     path = datadir + row['path']
@@ -338,60 +403,6 @@ for name, row in pathogenproteomes.iterrows():
         plt.close()
 
 ```
-#### plot-all.py
-
-```python
-import json
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-
-import sys
-sys.path.append('..')
-
-from lib import *
-plt.style.use('../peptidome.mplstyle')
-
-
-k = 9
-ref = 'human'
-
-likelihood_human = pd.read_csv('data/proteome-ref%s-k%i-Human.zip'%(ref, k))['likelihoods']
-
-with open(datadir+ 'triplet-%s.json' % ref, 'r') as f:
-    tripletparams = json.load(f)
-loglikelihood = lambda seq, k: loglikelihood_triplet(seq, **tripletparams, k=k)
-likelihoodname = 'triplet'
-
-
-df_ts = load_iedb_tcellepitopes(human_only=True)
-mask = ~(df_ts['Assay', 'Qualitative Measure'] == 'Negative')
-print(mask.shape, np.sum(mask))
-likelihoods_t, weights_t = likelihoods_epitopes(df_ts[mask]['Epitope', 'Description'], loglikelihood, k)
-likelihoods_t_neg, weights_t_neg = likelihoods_epitopes(df_ts[~mask]['Epitope', 'Description'], loglikelihood, k)
-#df_bs = load_iedb_bcellepitopes(human_only=True)
-#df_b = df_bs[~df_bs['Epitope', 'Parent Species'].str.contains('Homo sapiens', na=False)]
-#likelihoods_b, weights_b = likelihoods_epitopes(df_b['Epitope', 'Description'], loglikelihood, k)
-
-print(len(likelihood_human), len(likelihoods_t))#, len(likelihoods_b))
-
-fig, ax = plt.subplots()
-ps = [likelihood_human, likelihoods_t]#, likelihoods_t_neg]#, likelihoods_b]
-labels = ['Human proteins', 'IEDB+ T cell epitopes']#, 'IEDB negative']#, 'B epitopes']
-weights = [np.ones(len(likelihood_human)), weights_t]#, weights_t_neg]#, weights_b]
-plot_histograms(ps, labels, weights=weights, xmin=-14.1, xmax=-8.9, ax=ax, nbins=35)
-ax.set_xlim(-14, -9)
-ax.set_ylabel('Frequency')
-ax.set_xlabel('$log_{10}$ Likelihood under human proteome statistics')
-ax.legend(title='Peptide')
-#plt.title('all')
-fig.tight_layout()
-plt.show()
-fig.savefig('plots/likelihoodprofile-all-%s-k%i.png' % (likelihoodname, k), dpi=300)
-fig.savefig('main.png')
-fig.savefig('../../paper/images/likelihoodprofile-iedb-tcell.pdf')
-
-```
 #### tripletmodelparams.py
 
 ```python
@@ -429,6 +440,42 @@ tripletlogp = np.log10(count).to_dict()
 modelparams = dict(charlogp=charlogp, doubletlogp=doubletlogp, tripletlogp=tripletlogp)
 with open('../data/triplet-%s.json'%name, 'w') as f:
     json.dump(modelparams, f, indent=4)
+
+```
+#### plot-cancer.py
+
+```python
+import json
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.style.use('../peptidome.mplstyle')
+
+import sys
+sys.path.append('..')
+
+from lib import *
+
+k = 9
+ref = 'human'
+
+likelihood_human = pd.read_csv('data/proteome-ref%s-k%i-Human.zip'%(ref, k))['likelihoods']
+likelihood_virus = pd.read_csv('data/proteome-ref%s-k%i-Viruses.zip'%(ref, k))['likelihoods']
+likelihood_frameshifts = pd.read_csv('data/proteome-ref%s-k%i-frameshifts.zip'%(ref, k))['likelihoods']
+likelihood_pb1ufo = pd.read_csv('data/proteome-ref%s-k%i-pb1ufo.zip'%(ref, k))['likelihoods']
+
+fig, ax = plt.subplots(figsize=(3.4, 2.0))
+ps = [likelihood_human, likelihood_virus, likelihood_frameshifts, likelihood_pb1ufo]
+labels = ['human', 'viruses', 'frameshifts', 'pb1 ufo']
+plot_histograms(ps, labels, xmin=-14.1, xmax=-8.9, ax=ax, nbins=35)
+ax.set_xlim(-14, -9)
+ax.set_ylim(0.0)
+ax.set_ylabel('probability density')
+ax.set_xlabel('$log_2$ likelihood')
+fig.tight_layout()
+plt.show()
+fig.savefig('plots/likelihoodprofile-Cancer-%s-k%i.png' % (ref, k), dpi=300)
+fig.savefig('../../paper/images/cancer.pdf', dpi=300)
 
 ```
 #### plot-viruses.py
@@ -477,6 +524,7 @@ labels = ['human', 'viruses', 'T cell epitopes', 'B cell epitopes']
 weights = [np.ones(len(likelihood_human)), np.ones(len(likelihood_virus)), weights_t, weights_b]
 plot_histograms(ps, labels, weights=weights, xmin=-14.1, xmax=-8.9, ax=ax, nbins=35)
 ax.set_xlim(-14, -9)
+ax.set_ylim(0.0)
 ax.set_ylabel('probability density')
 ax.set_xlabel('$log_2$ likelihood')
 fig.tight_layout()
