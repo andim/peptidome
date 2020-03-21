@@ -41,6 +41,7 @@ labels = ['human', 'viruses', 'T cell epitopes', 'B cell epitopes']
 weights = [np.ones(len(likelihood_human)), np.ones(len(likelihood_virus)), weights_t, weights_b]
 plot_histograms(ps, labels, weights=weights, xmin=-14.1, xmax=-8.9, ax=ax, nbins=35)
 ax.set_xlim(-14, -9)
+ax.set_ylim(0.0)
 ax.set_ylabel('probability density')
 ax.set_xlabel('$log_2$ likelihood')
 fig.tight_layout()
