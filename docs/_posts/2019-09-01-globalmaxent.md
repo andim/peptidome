@@ -10,8 +10,6 @@ Infering and benchmarking of Maxent models with global couplings.
 ### Code 
 #### globalmaxent.ipynb
 
-
-
 ```python
 import sys
 sys.path.append('..')
@@ -429,8 +427,6 @@ plt.yscale('log')
 ```
 #### benchmark-aacounting.ipynb
 
-
-
 ```python
 import numpy as np
 import pandas as pd
@@ -508,7 +504,7 @@ def aacounts_cython(np.ndarray[np.int64_t, ndim=1] seq):
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Cython: _cython_magic_d8cff81e055fca030227c03a77197d1e.pyx</title>
     <style type="text/css">
-    
+
 body.cython { font-family: courier; font-size: 12; }
 
 .cython.tag  {  }

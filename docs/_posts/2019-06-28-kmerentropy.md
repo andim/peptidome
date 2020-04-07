@@ -17,8 +17,6 @@ Entropy of the kmer distributions for different proteomes.
 ### Code 
 #### kmerentropy.ipynb
 
-
-
 ```python
 import sys
 sys.path.append('..')

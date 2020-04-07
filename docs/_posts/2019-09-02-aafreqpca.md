@@ -10,8 +10,6 @@ A comparison of proteins based on their amino acid frequencies. A minimal protei
 ### Code 
 #### pca.ipynb
 
-
-
 ```python
 import sys
 sys.path.append('..')

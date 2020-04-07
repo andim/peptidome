@@ -10,8 +10,6 @@ ROC analysis of a simple likelihood based classifier based on triplet statistics
 ### Code 
 #### analysis.ipynb
 
-
-
 ```python
 import glob, json
 import numpy as np

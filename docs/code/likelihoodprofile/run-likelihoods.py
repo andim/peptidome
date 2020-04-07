@@ -15,14 +15,20 @@ with open(datadir+ 'triplet-%s.json'%ref, 'r') as f:
 loglikelihood = lambda seq, k: loglikelihood_triplet(seq, **tripletparams, k=k)
 likelihoodname = 'triplet'
 
-def run(name, path, proteinname=True):
+def run(name, path, proteinname=True, sequence=False):
     print(name)
     likelihoods = np.array([loglikelihood(seq[i:i+k], k) for h, seq in fasta_iter(path) for i in range(len(seq)-k+1) ])
+    if sequence:
+        sequence = np.array([seq[i:i+k] for h, seq in fasta_iter(path) for i in range(len(seq)-k+1)])
     if proteinname:
         protein = np.array([h.split('|')[1] for h, seq in fasta_iter(path) for i in range(len(seq)-k+1) ])
     else:
         protein = np.array([ind for ind, (h, seq) in enumerate(fasta_iter(path)) for i in range(len(seq)-k+1) ])
-    df = pd.DataFrame.from_dict(dict(likelihoods=likelihoods, protein=protein))
+    if sequence:
+        df = pd.DataFrame.from_dict(dict(likelihoods=likelihoods, protein=protein, sequence=sequence))
+    else:
+        df = pd.DataFrame.from_dict(dict(likelihoods=likelihoods, protein=protein))
+    df.dropna(inplace=True)
     df.to_csv('data/proteome-ref%s-k%i-%s.zip'%(ref, k, name), compression='zip', index=False, float_format='%.4f')
 
 # All viruses
@@ -36,6 +42,15 @@ filenames = ['frameshifts.fasta.gz', 'pb1ufo.fasta.gz']
 for filename in filenames:
     name = filename.split('.')[0]
     path = datadir+'cancer/' + filename
+    pathout = 'data/proteome-ref%s-k%i-%s.zip'%(ref, k, name)
+    if not os.path.exists(pathout):
+        run(name, path, proteinname=False)
+
+# SARS CoV 2 dataset
+filenames = ['SARSCoV2.fasta']
+for filename in filenames:
+    name = filename.split('.')[0]
+    path = datadir + filename
     pathout = 'data/proteome-ref%s-k%i-%s.zip'%(ref, k, name)
     if not os.path.exists(pathout):
         run(name, path, proteinname=False)

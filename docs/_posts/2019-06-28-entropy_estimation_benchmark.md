@@ -10,8 +10,6 @@ A comparison of MLE, Grassberger and NSB estimators for entropy calculations.
 ### Code 
 #### entropy_estimation_benchmark.ipynb
 
-
-
 ```python
 import numpy as np
 import pandas as pd

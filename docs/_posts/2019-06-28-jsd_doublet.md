@@ -10,8 +10,6 @@ No statistical modeling, only direct sampling. Are there clusters?
 ### Code 
 #### dkls-comparison.ipynb
 
-
-
 ```python
 import sys, copy
 sys.path.append('..')

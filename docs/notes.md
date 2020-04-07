@@ -4,6 +4,27 @@ title: Notes
 order: 3
 ---
 
+# 2020-03-26: Discussion with Ivan Marazzi / Ben G
+
+- Only 2-3 amino acids from human, than ~10-15 aa from UTR, than canonical or overprinted (different reading frame) protein
+- Order 1% of all peptides made from UFOs. 
+- Do UTRs from other viruses that do not produce UFOs also show weird statistics? 
+- What about statistics of pseudogenes? These are no longer functional so should no longer have the same constraints in terms of evolution. But some of them are still sometimes expressed. Are they ignored as self?
+
+# 2020-03-23: Discussion with Ben
+
+I asked elodie if there were any recent dna cross species viruses in human and she said its rarer (with all sampling caveats) and this was the only one she could recall: https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?lvl=0&id=743300
+
+Look at overall differences in statistics between dna viruses and rna viruses. It seems like dna viruses (CMV, HSV1, HCMV) are closer to human statistics than RNA viruses (Flu A, Flu B, SARS-Cov-2). SARS has about 3-fold to 10-fold lower error rate than flu.
+
+# 2020-03-23: SARS-CoV 2 protein sequence
+
+Download fasta from https://www.ncbi.nlm.nih.gov/protein?term=txid2697049[All%20Fields]%20AND%20refseq[filter]&format=fasta
+
+Could programmatically download using eutils:
+https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=protein&term=txid2697049+AND+refseq[filter]
+https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=protein&id=1820616061&rettype=fasta&retmode=text
+
 # 2019-12-18: Sum up and next steps
 
 We are trying to answer the question of how protein statistics might have shaped the organization of adaptive immune defenses. To do so we are characterizing the statistical structure of small peptides drawn from host or pathogen proteomes. Based on our analyses so far there seems to be a more limited amount of statistical structure for short peptides than one might have naively thought (1). Furthermore a large fraction of this structure is universal, i.e. shared between pathogens and their hosts. This seems to indicate that the immune system cannot as a matter of principle distinguish self and non-self in a purely statistical manner (2). Instead the solution it employs is to "overfit", i.e. it learns to ignore the sparse set of self peptides. The primary evolutionary pressure shaping the immune repertoire then is to cover the universally more dense regions of peptide space more, and any preference for regions enriched in non-self peptides might be secondary. We have found some evidence that indeed the immune system does recognize peptides that are close to self at least as likely (if not slightly at higher rates) than peptides that are far from any self peptides (3).

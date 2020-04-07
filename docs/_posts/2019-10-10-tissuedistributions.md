@@ -11,8 +11,6 @@ Do the average protein features vary accross tissues?
 ### Code 
 #### tissuedistribution.ipynb
 
-
-
 ```python
 import numpy as np
 import pandas as pd

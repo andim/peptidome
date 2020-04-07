@@ -400,12 +400,17 @@ def plot_histograms(valuess, labels, weights=None, nbins=40, ax=None,
         xmax  = round(mean+5*std)
     bins = np.linspace(xmin, xmax, nbins)
     for i, (values, label) in enumerate(zip(valuess, labels)):
-        if weights:
-            counts, bins = np.histogram(values, bins=bins, weights=weights[i])
-            counts /= np.sum(weights[i])
+        # filter nans
+        values = np.asarray(values)
+        mask = ~np.isnan(values)
+        values = values[mask]
+        if (not weights is None) and (not weights[i] is None):
+            weight = weights[i][mask]
+            counts, bins = np.histogram(values, bins=bins, weights=weight)
+            counts /= np.sum(weight)
         else:
             counts, bins = np.histogram(values, bins=bins)
-            counts = counts/len(values)
+            counts = counts/np.sum(counts)
         ax.plot(0.5*(bins[:-1]+bins[1:]), counts,
                 label=label, **kwargs)
     ax.legend()

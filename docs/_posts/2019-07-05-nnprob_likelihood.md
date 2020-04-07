@@ -14,7 +14,6 @@ Practically this finding helps us relate our findings in terms of likelihoods to
 ### Code 
 #### math.ipynb
 
-
 # How does neighbor density relate to likelihoods ?
 
 

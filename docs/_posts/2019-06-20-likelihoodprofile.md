@@ -16,8 +16,6 @@ Likelihoods of peptides under different models.
 ### Code 
 #### resample.ipynb
 
-
-
 ```python
 import json
 import numpy as np
@@ -218,6 +216,41 @@ if (len(likelihoods_t) > 100) or (len(likelihoods_b) > 100):
     plt.close()
 
 ```
+#### plot-cov.py
+
+```python
+import json
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.style.use('../peptidome.mplstyle')
+
+import sys
+sys.path.append('..')
+
+from lib import *
+
+k = 9
+ref = 'human'
+
+likelihood_human = pd.read_csv('data/proteome-ref%s-k%i-Human.zip'%(ref, k))['likelihoods']
+likelihood_virus = pd.read_csv('data/proteome-ref%s-k%i-Viruses.zip'%(ref, k))['likelihoods']
+likelihood_cov2 = pd.read_csv('data/proteome-ref%s-k%i-SARSCoV2.zip'%(ref, k))['likelihoods']
+likelihood_flua = pd.read_csv('data/proteome-ref%s-k%i-InfluenzaA.zip'%(ref, k))['likelihoods']
+
+fig, ax = plt.subplots(figsize=(3.4, 2.0))
+ps = [likelihood_human, likelihood_virus, likelihood_cov2, likelihood_flua]
+labels = ['human', 'viruses (averaged)', 'SARS-CoV-2', 'InfluenzaA']
+plot_histograms(ps, labels, xmin=-14.1, xmax=-8.9, ax=ax, nbins=35)
+ax.set_xlim(-14, -9)
+ax.set_ylim(0.0)
+ax.set_ylabel('probability density')
+ax.set_xlabel('$log_2$ likelihood')
+fig.tight_layout()
+plt.show()
+fig.savefig('plots/likelihoodprofile-SARSCoV2-%s-k%i.png' % (ref, k), dpi=300)
+
+```
 #### plot-iedb-tcell-epitopes.py
 
 ```python
@@ -292,14 +325,20 @@ with open(datadir+ 'triplet-%s.json'%ref, 'r') as f:
 loglikelihood = lambda seq, k: loglikelihood_triplet(seq, **tripletparams, k=k)
 likelihoodname = 'triplet'
 
-def run(name, path, proteinname=True):
+def run(name, path, proteinname=True, sequence=False):
     print(name)
     likelihoods = np.array([loglikelihood(seq[i:i+k], k) for h, seq in fasta_iter(path) for i in range(len(seq)-k+1) ])
+    if sequence:
+        sequence = np.array([seq[i:i+k] for h, seq in fasta_iter(path) for i in range(len(seq)-k+1)])
     if proteinname:
         protein = np.array([h.split('|')[1] for h, seq in fasta_iter(path) for i in range(len(seq)-k+1) ])
     else:
         protein = np.array([ind for ind, (h, seq) in enumerate(fasta_iter(path)) for i in range(len(seq)-k+1) ])
-    df = pd.DataFrame.from_dict(dict(likelihoods=likelihoods, protein=protein))
+    if sequence:
+        df = pd.DataFrame.from_dict(dict(likelihoods=likelihoods, protein=protein, sequence=sequence))
+    else:
+        df = pd.DataFrame.from_dict(dict(likelihoods=likelihoods, protein=protein))
+    df.dropna(inplace=True)
     df.to_csv('data/proteome-ref%s-k%i-%s.zip'%(ref, k, name), compression='zip', index=False, float_format='%.4f')
 
 # All viruses
@@ -313,6 +352,15 @@ filenames = ['frameshifts.fasta.gz', 'pb1ufo.fasta.gz']
 for filename in filenames:
     name = filename.split('.')[0]
     path = datadir+'cancer/' + filename
+    pathout = 'data/proteome-ref%s-k%i-%s.zip'%(ref, k, name)
+    if not os.path.exists(pathout):
+        run(name, path, proteinname=False)
+
+# SARS CoV 2 dataset
+filenames = ['SARSCoV2.fasta']
+for filename in filenames:
+    name = filename.split('.')[0]
+    path = datadir + filename
     pathout = 'data/proteome-ref%s-k%i-%s.zip'%(ref, k, name)
     if not os.path.exists(pathout):
         run(name, path, proteinname=False)
@@ -440,6 +488,41 @@ tripletlogp = np.log10(count).to_dict()
 modelparams = dict(charlogp=charlogp, doubletlogp=doubletlogp, tripletlogp=tripletlogp)
 with open('../data/triplet-%s.json'%name, 'w') as f:
     json.dump(modelparams, f, indent=4)
+
+```
+#### plot-chicken.py
+
+```python
+import json
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.style.use('../peptidome.mplstyle')
+
+import sys
+sys.path.append('..')
+
+from lib import *
+
+k = 9
+ref = 'human'
+
+likelihood_human = pd.read_csv('data/proteome-ref%s-k%i-Human.zip'%(ref, k))['likelihoods']
+likelihood_flua = pd.read_csv('data/proteome-ref%s-k%i-InfluenzaA.zip'%(ref, k))['likelihoods']
+likelihood_flub = pd.read_csv('data/proteome-ref%s-k%i-InfluenzaB.zip'%(ref, k))['likelihoods']
+likelihood_chicken = pd.read_csv('data/proteome-ref%s-k%i-Chicken.zip'%(ref, k))['likelihoods']
+
+fig, ax = plt.subplots(figsize=(3.4, 2.0))
+ps = [likelihood_human, likelihood_flua, likelihood_flub, likelihood_chicken]
+labels = ['human', 'Influenza A', 'Influenza B', 'Chicken']
+plot_histograms(ps, labels, xmin=-14.1, xmax=-8.9, ax=ax, nbins=35)
+ax.set_xlim(-14, -9)
+ax.set_ylim(0.0)
+ax.set_ylabel('probability density')
+ax.set_xlabel('$log_2$ likelihood')
+fig.tight_layout()
+plt.show()
+fig.savefig('plots/likelihoodprofile-Chicken-%s-k%i.png' % (ref, k), dpi=300)
 
 ```
 #### plot-cancer.py
