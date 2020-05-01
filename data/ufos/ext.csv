@@ -1,0 +1,31 @@
+Acc	Description	Size	AA_seq	Unique_ID
+NC_002019	Influenza A virus (A/Puerto Rico/8/1934(H1N1)) segment 5, complete sequence.	17	MSKSRVDNHSLSDIKI	NC_002019.f0.EXT
+NC_002023	Influenza A virus (A/Puerto Rico/8/1934(H1N1)) segment 1, complete sequence.	11	MSESRSIIFN	NC_002023.f0.EXT
+NC_006307	Influenza C virus (C/Ann Arbor/1/50) PB2 gene for polymerase 2, complete cds.	9	MSRSRGLE	NC_006307.f0.EXT
+NC_006309	Influenza C virus (C/Ann Arbor/1/50) P3 gene for polymerase 3, complete cds.	9	MSRSRGSE	NC_006309.f0.EXT
+NC_006310	Influenza C virus (C/Ann Arbor/1/50) HEF gene for hemagglutinin-esterase-fusion, complete cds.	9	MSRSRGLI	NC_006310.f0.EXT
+NC_006506	Thogoto virus segment 4, complete sequence.	7	MSKNKQ	NC_006506.f0.EXT
+NC_004108	La Crosse virus segment L, complete genome.	22	MVVYPYLQNLQKIQSYHNICI	NC_004108.f1.EXT
+NC_005219	Hantaan virus, complete genome.	15	MSSRHRKRKQSISN	NC_005219.f1.EXT
+NC_006312	Influenza C virus (C/Ann Arbor/1/50) M1, CM2 genes for matrix protein, CM2 protein, complete cds.	142	MAEAGDFKTMAHEILIAETEAFLKNVAPETRTAIISAITGGKSACKSAAKLIKNEHLPLMSGEATTMHIVMRCLYPEIKPWKKASDMLNKATSSLKKSEGRDIRKQMKAAGDFLGVESMMKMRAFRDDQIMEMVEEVYDHP	NC_006312.f1.EXT
+NC_006495	Thogoto virus segment 2, complete sequence.	10	MAKTGAPNT	NC_006495.f1.EXT
+NC_002017	Influenza A virus (A/Puerto Rico/8/1934(H1N1)) segment 4, complete sequence.	12	MQKQGKIKTTK	NC_002017.f2.EXT
+NC_002018	Influenza A virus (A/Puerto Rico/8/1934(H1N1)) segment 6, complete sequence.	8	MRKQGFK	NC_002018.f2.EXT
+NC_002020	Influenza A virus (A/Puerto Rico/8/1934(H1N1)) segment 8, complete sequence.	10	MQKQGDKDI	NC_002020.f2.EXT
+NC_006306	Influenza C virus (C/Ann Arbor/1/50) segment 7, complete sequence.	10	MQKQGYFSK	NC_006306.f2.EXT
+NC_006308	Influenza C virus (C/Ann Arbor/1/50) PB1 gene for polymerase 1, complete cds.	7	MQKQRI	NC_006308.f2.EXT
+NC_006496	Thogoto virus segment 3, complete sequence.	8	MQKQALD	NC_006496.f2.EXT
+NC_006504	Thogoto virus segment 6, complete sequence.	8	MWKQAVE	NC_006504.f2.EXT
+NC_006507	Thogoto virus segment 5, complete sequence.	8	MQKQAVK	NC_006507.f2.EXT
+NC_006508	Thogoto virus segment 1, complete sequence.	6	MQKQA	NC_006508.f2.EXT
+NC_004292	Tacaribe virus segment L, complete sequence.	25	MRTGDPRRYVHSSLLGWITQNFSS	NC_004292.25.EXT
+NC_004292	Tacaribe virus segment L, complete sequence.	12	MRTVDPRRHLT	NC_004292.12.EXT
+NC_004291	Lymphocytic choriomeningitis virus segment L, complete sequence.	9	MPGDAHQS	NC_004291.9.EXT
+NC_004293	Tacaribe virus segment S, complete sequence.	27	MAQWILGKLSNSFTELFFEILALIAI	NC_004293.27.EXT
+NC_004296	Lassa virus segment S, complete sequence.	20	MRTGDPRHFWLRNSSVLFK	NC_004296.20.EXT
+FBseg1	B/Wisconsin/1/2010 Segment 1	9	MSRSGAFK	FBseg1.f0.EXT
+FBseg4	B/Wisconsin/1/2010 Segment 4	13	MSRSRAFSNIHK	FBseg4.f0.EXT
+FBseg5	B/Wisconsin/1/2010 Segment 5	22	MSRSTAFSCELQAPVKELKIK	FBseg5.f0.EXT
+FBseg7	B/Wisconsin/1/2010 Segment 7	10	MSRSTHFLK	FBseg7.f0.EXT
+FBseg2	B/Wisconsin/1/2010 Segment 2	9	MQKRSVFK	FBseg2.f2.EXT
+FBseg8	B/Wisconsin/1/2010 Segment 8	16	MQKQRICLVTGKQEK	FBseg8.f2.EXT

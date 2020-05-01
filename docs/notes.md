@@ -10,6 +10,7 @@ order: 3
 - Order 1% of all peptides made from UFOs. 
 - Do UTRs from other viruses that do not produce UFOs also show weird statistics? 
 - What about statistics of pseudogenes? These are no longer functional so should no longer have the same constraints in terms of evolution. But some of them are still sometimes expressed. Are they ignored as self?
+- Different statistics as a function of position along the UFO.
 
 # 2020-03-23: Discussion with Ben
 

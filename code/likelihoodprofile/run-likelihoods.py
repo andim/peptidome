@@ -1,5 +1,6 @@
 import os.path
 import json
+import glob
 import numpy as np
 import pandas as pd
 
@@ -45,6 +46,19 @@ for filename in filenames:
     pathout = 'data/proteome-ref%s-k%i-%s.zip'%(ref, k, name)
     if not os.path.exists(pathout):
         run(name, path, proteinname=False)
+
+# Ufo datasets
+filenames = glob.glob(datadir + 'ufos/*.csv')
+for filename in filenames:
+    name = filename.split('/')[-1].split('.')[0]
+    print(name)
+    df_in = pd.read_csv(filename, sep='\t')
+    sequences = np.array([seq[i:i+k] for seq in df_in['AA_seq'] for i in range(len(seq)-k+1)])
+    likelihoods = np.array([loglikelihood(seq, k) for seq in sequences])
+    df = pd.DataFrame.from_dict(dict(likelihoods=likelihoods, sequence=sequences))
+    df.dropna(inplace=True)
+    df.to_csv('data/proteome-ref%s-k%i-%s.zip'%(ref, k, name), compression='zip', index=False, float_format='%.4f')
+
 
 # SARS CoV 2 dataset
 filenames = ['SARSCoV2.fasta']
