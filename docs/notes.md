@@ -4,6 +4,18 @@ title: Notes
 order: 3
 ---
 
+# 2020-05-12: Email to Ivan M and Ben G
+
+I finally found some time to further look into the statistics of the Ufos. I am now using the updated list of ufos that Ben send and have also performed the same analysis for the extension peptides.
+
+As regards the points we've discussed last time I have done the following:
+
+- I checked that I get similar statistics for peptides when excluding the start region of the ufos (first 10 amino acids, red line in the attached likelihood plot).
+
+- As I mentioned last time the primary determinant of the likelihood distributions are the amino acid usage statistics. As expected from the difference in the shape of the distribution the amino acid frequencies within the ufos are only weekly correlated with the amino acid frequencies within human peptides (see aafreqsUfo.png in the attachment). The correlations are much weaker than for many other sources of peptides, including for peptides drawn at random with equal nucleotide usage. This raises a potentially interesting question of how nucleotide statistics within UTRs differ to cause these differences in amino acids seen within the UFOs.
+
+I have also taken a look at the amino acid diversity within ufos as a function of distance from the 5' end. Interestingly it seems that there is a restricted diversity of the amino acids seen close to the 5' end beyond what is seen in human proteins. This seems to suggest the existence of a mechanism during either the cap snatching or expression that has some sequence specificity beyond simply the requirement of having an AUG start codon.
+
 # 2020-03-26: Discussion with Ivan Marazzi / Ben G
 
 - Only 2-3 amino acids from human, than ~10-15 aa from UTR, than canonical or overprinted (different reading frame) protein
