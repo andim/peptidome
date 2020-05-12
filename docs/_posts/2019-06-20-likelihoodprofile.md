@@ -310,6 +310,7 @@ fig.savefig('../../paper/images/likelihoodprofile-iedb-tcell.pdf')
 ```python
 import os.path
 import json
+import glob
 import numpy as np
 import pandas as pd
 
@@ -356,6 +357,19 @@ for filename in filenames:
     if not os.path.exists(pathout):
         run(name, path, proteinname=False)
 
+# Ufo datasets
+filenames = glob.glob(datadir + 'ufos/*.csv')
+for filename in filenames:
+    name = filename.split('/')[-1].split('.')[0]
+    print(name)
+    df_in = pd.read_csv(filename, sep='\t')
+    sequences = np.array([seq[i:i+k] for seq in df_in['AA_seq'] for i in range(len(seq)-k+1)])
+    likelihoods = np.array([loglikelihood(seq, k) for seq in sequences])
+    df = pd.DataFrame.from_dict(dict(likelihoods=likelihoods, sequence=sequences))
+    df.dropna(inplace=True)
+    df.to_csv('data/proteome-ref%s-k%i-%s.zip'%(ref, k, name), compression='zip', index=False, float_format='%.4f')
+
+
 # SARS CoV 2 dataset
 filenames = ['SARSCoV2.fasta']
 for filename in filenames:
@@ -372,6 +386,46 @@ for name, row in proteomes.iterrows():
     pathout = 'data/proteome-ref%s-k%i-%s.zip'%(ref, k, name)
     if not os.path.exists(pathout):
         run(name, path)
+
+```
+#### plot-ufo.py
+
+```python
+import json
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.style.use('../peptidome.mplstyle')
+
+import sys
+sys.path.append('..')
+
+from lib import *
+
+k = 9
+ref = 'human'
+
+
+likelihood_human = pd.read_csv('data/proteome-ref%s-k%i-Human.zip'%(ref, k))['likelihoods']
+likelihood_virus = pd.read_csv('data/proteome-ref%s-k%i-Viruses.zip'%(ref, k))['likelihoods']
+likelihood_ufo = pd.read_csv('data/proteome-ref%s-k%i-ufo.zip'%(ref, k))['likelihoods']
+likelihood_ext = pd.read_csv('data/proteome-ref%s-k%i-ext.zip'%(ref, k))['likelihoods']
+
+#df_ext = pd.read_csv('data/proteome-ref%s-k%i-ext.zip'%(ref, k))
+#likelihood_ext_noM = df_ext[~df_ext['sequence'].str.startswith('M')]['likelihoods']
+#print(df_ext)
+
+fig, ax = plt.subplots(figsize=(3.4, 2.0))
+ps = [likelihood_human, likelihood_virus, likelihood_ufo, likelihood_ext]
+labels = ['human', 'viruses', 'ufo', 'ext']
+plot_histograms(ps, labels, xmin=-14.1, xmax=-8.9, ax=ax, nbins=35)
+ax.set_xlim(-14, -9)
+ax.set_ylim(0.0)
+ax.set_ylabel('probability density')
+ax.set_xlabel('$log_2$ likelihood')
+fig.tight_layout()
+plt.show()
+fig.savefig('plots/likelihoodprofile-Ufo-%s-k%i.png' % (ref, k), dpi=300)
 
 ```
 #### plot-likelihoodprofiles.py

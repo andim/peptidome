@@ -33,18 +33,29 @@ def compare(path, name):
     fig, ax = plt.subplots(figsize=(4, 4))
     xmin, xmax = 0.5*np.amin(dfmerged['freq_human']), 2*np.amax(dfmerged['freq_human'])
     x = np.logspace(np.log10(xmin), np.log10(xmax))
-    ax.plot(x, x, 'k', lw=3)
-    ax.plot(x, x*2, '--k', lw=3)
+    linecolor = 'gray'
+    ax.plot(x, x, '-', lw=3, color=linecolor)
+    ax.plot(x, x*2, '--', lw=3, color=linecolor)
+    ax.plot(x, x/2, '--', lw=3, color=linecolor)
     ax.set_xlim(xmin, xmax)
     ax.set_ylim(xmin, xmax)
-    ax.plot(x, x/2, '--k', lw=3)
     dfmerged.plot(x='freq_human', y='freq_pathogen', kind='scatter', logx=True, logy=True, ax=ax);
+    print(dfmerged)
+    for index, row in dfmerged.iterrows():
+        x, y, label = row['freq_human'], row['freq_pathogen'], row['seq']
+        ax.annotate(label, # this is the text
+                    (x,y), # this is the point to label
+                    textcoords="offset points", # how to position the text
+                    xytext=(0,0), # distance from text to points (x,y)
+                    ha='center', va='center')
     ax.set_xlabel('frequency human')
     ax.set_ylabel('frequency ' + name)
     fig.tight_layout()
     fig.savefig('aafreqs%s.png' % name, dpi=300)
 
 compare(datadir+'human-viruses-uniref90.fasta', 'Viruses')
+compare(datadir+'ufos/ufo.fasta', 'Ufo')
+compare(datadir+'ufos/ext.fasta', 'Ufo-ext')
 
 for name, row in proteomes.iterrows():
     path = datadir+row['path']
