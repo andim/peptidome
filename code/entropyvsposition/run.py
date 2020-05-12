@@ -5,16 +5,8 @@ import pandas as pd
 
 from lib import *
 
-name = 'human'
-proteome = human
-#name = 'mouse'
-#proteome = mouse
-#name = 'yeast'
-#proteome = yeast
-#name = 'malaria'
-#proteome = malaria
-#name = 'viruses'
-#proteome = datadir + 'human-viruses-uniref90_nohiv.fasta'
+name = sys.argv[1]
+proteome = proteome_path(name)
 
 entropyestimator = entropy_grassberger
 

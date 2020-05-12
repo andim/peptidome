@@ -59,6 +59,14 @@ for filename in filenames:
     df.dropna(inplace=True)
     df.to_csv('data/proteome-ref%s-k%i-%s.zip'%(ref, k, name), compression='zip', index=False, float_format='%.4f')
 
+    # only middle part
+    sequences = np.array([seq[i:i+k] for seq in df_in['AA_seq'] for i in range(10, min(len(seq)-k+1, 51))])
+    likelihoods = np.array([loglikelihood(seq, k) for seq in sequences])
+    df = pd.DataFrame.from_dict(dict(likelihoods=likelihoods, sequence=sequences))
+    df.dropna(inplace=True)
+    df.to_csv('data/proteome-ref%s-k%i-%s-middle.zip'%(ref, k, name), compression='zip', index=False, float_format='%.4f')
+
+
 
 # SARS CoV 2 dataset
 filenames = ['SARSCoV2.fasta']
