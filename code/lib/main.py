@@ -43,6 +43,10 @@ def load_proteomes(only_pathogens=False):
     return proteomes
 
 def proteome_path(name):
+    if name == 'ufo':
+        return datadir + 'ufos/ufo.fasta'
+    if name == 'ext':
+        return datadir + 'ufos/ext.fasta'
     proteomes = load_proteomes()
     return datadir + proteomes.loc[name]['path']
 

@@ -4,6 +4,7 @@ import shutil
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import scipy.stats
 
 from lib import *
 
@@ -28,6 +29,9 @@ def compare(path, name):
     ax.set_ylim(xmin, xmax)
     dfmerged.plot(x='freq_human', y='freq_pathogen', kind='scatter', logx=True, logy=True, ax=ax);
     print(dfmerged)
+    x, y = dfmerged['freq_human'], dfmerged['freq_pathogen'],
+    slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(x, y)
+    ax.set_title('$r^2={0:.2f}$'.format(r_value**2))
     for index, row in dfmerged.iterrows():
         x, y, label = row['freq_human'], row['freq_pathogen'], row['seq']
         ax.annotate(label, # this is the text

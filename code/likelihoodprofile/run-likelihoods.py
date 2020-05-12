@@ -9,7 +9,7 @@ sys.path.append('..')
 
 from lib import *
 
-k = 9
+k = 5
 ref = 'human'
 with open(datadir+ 'triplet-%s.json'%ref, 'r') as f:
     tripletparams = json.load(f)
@@ -39,7 +39,7 @@ if not os.path.exists(pathout):
     run('Viruses', path, proteinname=False)
 
 # Cancer datasets
-filenames = ['frameshifts.fasta.gz', 'pb1ufo.fasta.gz']
+filenames = ['frameshifts.fasta.gz']
 for filename in filenames:
     name = filename.split('.')[0]
     path = datadir+'cancer/' + filename
