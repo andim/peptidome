@@ -33,7 +33,7 @@ commit: copycode
 	mkdir _posts
 	python code_to_posts.py
 	git add _posts/*md
-	git add code/*/*png code/*/*py notebook_files/*png
+	git add code/*/*png code/*/*py notebook_files/*png code/*/*/*png
 
 clean:
 	rm -rf build *.c *.so *.pyc

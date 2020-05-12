@@ -16,6 +16,7 @@ ref = 'human'
 likelihood_human = pd.read_csv('data/proteome-ref%s-k%i-Human.zip'%(ref, k))['likelihoods']
 likelihood_virus = pd.read_csv('data/proteome-ref%s-k%i-Viruses.zip'%(ref, k))['likelihoods']
 likelihood_ufo = pd.read_csv('data/proteome-ref%s-k%i-ufo.zip'%(ref, k))['likelihoods']
+likelihood_ufo_middle = pd.read_csv('data/proteome-ref%s-k%i-ufo-middle.zip'%(ref, k))['likelihoods']
 likelihood_ext = pd.read_csv('data/proteome-ref%s-k%i-ext.zip'%(ref, k))['likelihoods']
 
 #df_ext = pd.read_csv('data/proteome-ref%s-k%i-ext.zip'%(ref, k))
@@ -23,13 +24,17 @@ likelihood_ext = pd.read_csv('data/proteome-ref%s-k%i-ext.zip'%(ref, k))['likeli
 #print(df_ext)
 
 fig, ax = plt.subplots(figsize=(3.4, 2.0))
-ps = [likelihood_human, likelihood_virus, likelihood_ufo, likelihood_ext]
-labels = ['human', 'viruses', 'ufo', 'ext']
-plot_histograms(ps, labels, xmin=-14.1, xmax=-8.9, ax=ax, nbins=35)
-ax.set_xlim(-14, -9)
+ps = [likelihood_human, likelihood_virus, likelihood_ufo, likelihood_ufo_middle, likelihood_ext]
+labels = ['human', 'viruses', 'ufo', 'ufo [10:50]', 'ext']
+if k == 9:
+    xmin, xmax, nbins = -14.1, -8.9, 35
+elif k == 5:
+    xmin, xmax, nbins = -8.1, -4.1, 30
+plot_histograms(ps, labels, xmin=xmin, xmax=xmax, ax=ax, nbins=nbins)
+ax.set_xlim(xmin, xmax)
 ax.set_ylim(0.0)
 ax.set_ylabel('probability density')
-ax.set_xlabel('$log_2$ likelihood')
+ax.set_xlabel('$log_{10}$ likelihood')
 fig.tight_layout()
 plt.show()
 fig.savefig('plots/likelihoodprofile-Ufo-%s-k%i.png' % (ref, k), dpi=300)

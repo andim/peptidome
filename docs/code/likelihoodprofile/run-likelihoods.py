@@ -9,7 +9,7 @@ sys.path.append('..')
 
 from lib import *
 
-k = 9
+k = 5
 ref = 'human'
 with open(datadir+ 'triplet-%s.json'%ref, 'r') as f:
     tripletparams = json.load(f)
@@ -39,7 +39,7 @@ if not os.path.exists(pathout):
     run('Viruses', path, proteinname=False)
 
 # Cancer datasets
-filenames = ['frameshifts.fasta.gz', 'pb1ufo.fasta.gz']
+filenames = ['frameshifts.fasta.gz']
 for filename in filenames:
     name = filename.split('.')[0]
     path = datadir+'cancer/' + filename
@@ -58,6 +58,14 @@ for filename in filenames:
     df = pd.DataFrame.from_dict(dict(likelihoods=likelihoods, sequence=sequences))
     df.dropna(inplace=True)
     df.to_csv('data/proteome-ref%s-k%i-%s.zip'%(ref, k, name), compression='zip', index=False, float_format='%.4f')
+
+    # only middle part
+    sequences = np.array([seq[i:i+k] for seq in df_in['AA_seq'] for i in range(10, min(len(seq)-k+1, 51))])
+    likelihoods = np.array([loglikelihood(seq, k) for seq in sequences])
+    df = pd.DataFrame.from_dict(dict(likelihoods=likelihoods, sequence=sequences))
+    df.dropna(inplace=True)
+    df.to_csv('data/proteome-ref%s-k%i-%s-middle.zip'%(ref, k, name), compression='zip', index=False, float_format='%.4f')
+
 
 
 # SARS CoV 2 dataset

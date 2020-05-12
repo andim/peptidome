@@ -16,17 +16,18 @@ dfs = {name: pd.read_csv('data/doubletfoldenrichment-%g-%s.csv'%(gap, name), ind
 flattened = {name: np.asarray(dfs[name]).flatten() for name in dfs}
 
 fig, axes = plt.subplots(figsize=(8, 2), ncols=4, sharex=True, sharey=True)
-lim = 1.2
+lim = 1.3
 for i, name in enumerate(names[1:]):
     x = flattened['Human']
     y = flattened[name]
-    sns.regplot(x, y, ax=axes[i])
+    sns.regplot(x, y, ax=axes[i], scatter_kws=dict(s=3))
     mask = ~np.isnan(y)
     slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(x[mask], y[mask])
     print(r_value**2, p_value, slope)
     axes[i].set_ylabel(name)
     axes[i].set_xlabel('Human')
-    axes[i].text(1.0, 1.0, '$R^2={0:.2f}$'.format(r_value**2), va='top', ha='right', transform=axes[i].transAxes)
+    axes[i].text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.2f}$'.format(r_value**2, slope),
+            va='top', ha='left', transform=axes[i].transAxes)
     axes[i].set_xlim(-lim, lim)
     axes[i].set_ylim(-lim, lim)
 fig.savefig('logfoldenrichment_correlation.png')
