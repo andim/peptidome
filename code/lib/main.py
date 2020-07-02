@@ -188,6 +188,14 @@ def scrambled(iterable):
         shuffled = ''.join(l)
         yield shuffled
 
+def to_kmers(seqs, k):
+    """Generator yielding all possible kmers from a set of sequences."""
+    for seq in seqs:
+        for i in range(len(seq)-k+1):
+            s = seq[i:i+k]
+            if isvalidaa(s):
+                yield s
+
 class Counter(defaultdict):
 
     def __init__(self, iterable, k, gap=0, **kwargs):
@@ -420,8 +428,17 @@ def plot_histograms(valuess, labels, weights=None, nbins=40, ax=None,
     ax.legend()
     return ax
 
-def mcmcsampler(x0, energy, jump, nsteps, nburnin=0, nsample=1, prng=None):
-    "Markov chain Monte carlo sampler"
+def mcmcsampler(x0, energy, jump, nsteps=1000, nburnin=0, nsample=1, prng=None):
+    """Markov chain Monte carlo sampler.
+
+    x0: starting position (array)
+    energy(x): function for calculating energy
+    jump(x): function for calculating a proposed new position
+    nburnin: burnin period in which states are not saved
+    nsample: sample interval for saving states
+    
+    returns array of states
+    """
     if prng is None:
         prng = np.random
     nsteps, nburnin, nsample = int(nsteps), int(nburnin), int(nsample)
