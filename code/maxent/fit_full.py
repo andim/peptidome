@@ -11,10 +11,10 @@ from lib.maxent import *
 output = True
 N = 9
 q = naminoacids
-niter = 30
+niter = 50
 stepsize = 0.1
-nsteps = 1e7
-nsample = 10
+nsample = N
+nsteps = 5e7
 
 proteome = proteome_path('Human')
 seed = 1234

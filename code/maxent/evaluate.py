@@ -12,4 +12,7 @@ for dataset in ['train', 'test', 'model']:
     fi = frequencies(matrix, num_symbols=naminoacids)
     fij = pair_frequencies(matrix, num_symbols=naminoacids, fi=fi)
     cij = compute_covariance_matrix(fi, fij)
-    np.savez('data/%s_observables.npz'%dataset, fi=fi, cij=cij)
+    fijk = triplet_frequencies(matrix, num_symbols=naminoacids)
+    cijk = compute_cijk(fijk, fij, fi)
+    fold_ijk = compute_fold_ijk(fijk, fi)
+    np.savez('data/%s_observables.npz'%dataset, fi=fi, cij=cij, cijk=cijk, fold_ijk=fold_ijk)

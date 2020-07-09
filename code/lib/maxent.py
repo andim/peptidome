@@ -359,3 +359,72 @@ def _flatten_index(i, alpha, num_symbols):
     """
     return i * (num_symbols - 1) + alpha
 
+@jit(nopython=True)
+def triplet_frequencies(matrix, num_symbols=2, pseudocount=0):
+    """
+    Calculate triplet frequencies of symbols.
+
+    Parameters
+    ----------
+    matrix : np.array
+        N x L matrix containing N sequences of length L.
+        Matrix must be mapped to range(0, num_symbols) using
+        map_matrix function
+    num_symbols : int
+        Number of different symbols contained in alignment
+    fi : np.array
+        Matrix of size L x num_symbols containing relative
+        column frequencies of all characters.
+
+    Returns
+    -------
+    np.array
+        Matrix of size L x L x L x num_symbols x num_symbols x num_symbols containing
+        relative triplet frequencies of all character combinations
+    """
+    N, L = matrix.shape
+    fijk = pseudocount*np.ones((L, L, L, num_symbols, num_symbols, num_symbols))
+    for s in range(N):
+        for i in range(L):
+            for j in range(L):
+                for k in range(L):
+                    fijk[i, j, k, matrix[s, i], matrix[s, j], matrix[s, k]] += 1
+
+    # normalize frequencies by the number
+    # of sequences
+    fijk /= (N+pseudocount)
+
+    return fijk
+
+def compute_cijk(fijk, fij, fi):
+    #https://en.wikipedia.org/wiki/Ursell_function
+    # fijk - fi fjk - fj fik - fk fij + 2*fi fj fk
+    return (fijk
+            - (fi[:, np.newaxis, np.newaxis, :, np.newaxis, np.newaxis]
+               * fij[np.newaxis, :, :, np.newaxis, :, :])
+            - (fi[np.newaxis, :, np.newaxis, np.newaxis, :, np.newaxis]
+               * fij[:, np.newaxis, :, :, np.newaxis, :])
+            - (fi[np.newaxis, np.newaxis :, np.newaxis, np.newaxis, :]
+                * fij[:, :, np.newaxis, :, :, np.newaxis])
+            + (2*fi[:, np.newaxis, np.newaxis, :, np.newaxis, np.newaxis] *
+                fi[np.newaxis, :, np.newaxis, np.newaxis, :, np.newaxis] *
+                fi[np.newaxis, np.newaxis :, np.newaxis, np.newaxis, :]))
+
+def compute_fold_ijk(fijk, fi):
+    return fijk / (fi[:, np.newaxis, np.newaxis, :, np.newaxis, np.newaxis] *
+                fi[np.newaxis, :, np.newaxis, np.newaxis, :, np.newaxis] *
+                fi[np.newaxis, np.newaxis :, np.newaxis, np.newaxis, :])
+
+
+def flatten_ijk(cijk):
+    L = cijk.shape[0]
+    num_symbols = cijk.shape[3]
+    flattened = []
+    for i in range(L):
+        for j in range(i+1, L):
+            for k in range(j+1, L):
+                for alpha in range(num_symbols):
+                    for beta in range(num_symbols):
+                        for gamma in range(num_symbols):
+                            flattened.append(cijk[i, j, k, alpha, beta, gamma])
+    return np.array(flattened)
