@@ -120,6 +120,7 @@ def fit_potts(f1, f2s, niter=1, nmcmc=1e6, epsilon=0.1, Jk=None, prng=None, outp
     return h, Jk
 
 def fit_full_potts(fi, fij, sampler, niter=1, epsilon=0.1, pseudocount=1.0, prng=None, output=False):
+    """ sampler(x0, energy, jump, prng=prng): function returning samples from the distribution """
     if prng is None:
         prng = np.random
     hi = np.log(fi)

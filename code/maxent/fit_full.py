@@ -38,7 +38,9 @@ hi, Jij = fit_full_potts(fi, fij, sampler=sampler, niter=niter,
 
 jump = lambda x: local_jump(x, q)
 x0 = prng.randint(q, size=N)
-model_matrix = sampler(x0, lambda x: energy_potts(x, hi, Jij), jump, prng=prng)
+nsteps_generate = int(matrix.shape[0]/nsample)
+model_matrix = mcmcsampler(x0, lambda x: energy_potts(x, hi, Jij), jump,
+                           nsteps=nsteps_generate, nsample=nsample, prng=prng)
 np.savetxt('data/model_matrix.csv.gz', model_matrix, fmt='%i')
 
 np.savez('data/Human_full_k%g.npz'%N, hi=hi, Jij=Jij)

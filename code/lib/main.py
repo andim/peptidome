@@ -445,7 +445,7 @@ def mcmcsampler(x0, energy, jump, nsteps=1000, nburnin=0, nsample=1, prng=None):
     x = x0
     Ex = energy(x)
     states = []
-    for i in range(nsteps):
+    for i in range(1, nsteps+1):
         xp = jump(x)
         Exp = energy(xp)
         if prng.rand() < np.exp(-Exp+Ex):
