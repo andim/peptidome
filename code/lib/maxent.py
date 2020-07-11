@@ -372,9 +372,6 @@ def triplet_frequencies(matrix, num_symbols=2, pseudocount=0):
         map_matrix function
     num_symbols : int
         Number of different symbols contained in alignment
-    fi : np.array
-        Matrix of size L x num_symbols containing relative
-        column frequencies of all characters.
 
     Returns
     -------
@@ -396,6 +393,43 @@ def triplet_frequencies(matrix, num_symbols=2, pseudocount=0):
 
     return fijk
 
+@jit(nopython=True)
+def quadruplet_frequencies(matrix, num_symbols=2, pseudocount=0):
+    """
+    Calculate quadruplet frequencies of symbols.
+
+    Parameters
+    ----------
+    matrix : np.array
+        N x L matrix containing N sequences of length L.
+        Matrix must be mapped to range(0, num_symbols) using
+        map_matrix function
+    num_symbols : int
+        Number of different symbols contained in alignment
+
+    Returns
+    -------
+    np.array
+        Matrix of size L x L x L x L x num_symbols x num_symbols x num_symbols x num_symbols containing
+        relative frequencies of all character combinations
+    """
+    N, L = matrix.shape
+    fijkl = pseudocount*np.ones((L, L, L, L, num_symbols, num_symbols, num_symbols, num_symbols))
+    for s in range(N):
+        for i in range(L):
+            for j in range(L):
+                for k in range(L):
+                    for l in range(L):
+                        fijkl[i, j, k, l, matrix[s, i], matrix[s, j], matrix[s, k], matrix[s, l]] += 1
+
+    # normalize frequencies by the number
+    # of sequences
+    fijkl /= (N+pseudocount)
+
+    return fijkl
+
+
+
 def compute_cijk(fijk, fij, fi):
     #https://en.wikipedia.org/wiki/Ursell_function
     # fijk - fi fjk - fj fik - fk fij + 2*fi fj fk
@@ -415,6 +449,9 @@ def compute_fold_ijk(fijk, fi):
                 fi[np.newaxis, :, np.newaxis, np.newaxis, :, np.newaxis] *
                 fi[np.newaxis, np.newaxis :, np.newaxis, np.newaxis, :])
 
+def flatten_ij(cij):
+    mask = ~np.eye(cij.shape[0], dtype=bool)
+    return cij[mask].flatten()
 
 def flatten_ijk(cijk):
     L = cijk.shape[0]

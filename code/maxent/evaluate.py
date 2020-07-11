@@ -15,4 +15,6 @@ for dataset in ['train', 'test', 'model']:
     fijk = triplet_frequencies(matrix, num_symbols=naminoacids)
     cijk = compute_cijk(fijk, fij, fi)
     fold_ijk = compute_fold_ijk(fijk, fi)
-    np.savez('data/%s_observables.npz'%dataset, fi=fi, cij=cij, cijk=cijk, fold_ijk=fold_ijk)
+    np.savez('data/%s_observables.npz'%dataset,
+             fi=fi, fij=fij, cij=cij,
+             cijk=cijk, fijk=fijk, fold_ijk=fold_ijk)
