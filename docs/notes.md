@@ -4,6 +4,18 @@ title: Notes
 order: 3
 ---
 
+# 2020-07-10: Literature reading
+
+Weidmann ... Lipas: Where Natural Protein Sequences Stand out From Randomness. Compare protein sequences to simple models based on the distribution of pairwise distances and find that local compositional biases can account for most of the observed structure. Unclear quantification though in terms of residuals of the distance distribution.
+
+# 2020-07-08: Skype w/ Ben
+
+A number of thoughts that we have talked about before but that we might want to pick up again in more detail:
+
+- Error model for how sloppy viral replication would generate new peptides. 
+- Virus of ~10000 kmers, immune system seems to base its decision on a subset of maybe 10 peptides (immunodominance). What is the immune system picking?
+- Extreme value distribution for outliers?
+
 # 2020-05-12: Email to Ivan M and Ben G
 
 I finally found some time to further look into the statistics of the Ufos. I am now using the updated list of ufos that Ben send and have also performed the same analysis for the extension peptides.

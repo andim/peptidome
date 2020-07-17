@@ -35,7 +35,7 @@ for name, row in proteomes.iterrows():
         dfgap2 = pseudocount_f2(train, 2, 2, df0) 
 
         print('fit')
-        h, Jk = fit_ising(df0, [df1, dfgap1, dfgap2], nmcmc=1e5, niter=20, epsilon=0.1, prng=prng, output=output, N=N)
+        h, Jk = fit_potts(df0, [df1, dfgap1, dfgap2], nmcmc=1e5, niter=20, epsilon=0.1, prng=prng, output=output, N=N)
 
         print('compare on 4mers')
         k = 4
