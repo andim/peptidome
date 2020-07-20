@@ -14,4 +14,4 @@
 #SBATCH --output=test.out
 
 echo $SLURM_ARRAY_TASK_ID $HOSTNAME 
-python fit_all.py $SLURM_ARRAY_TASK_ID
+time python fit_all.py $SLURM_ARRAY_TASK_ID
