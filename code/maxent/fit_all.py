@@ -23,7 +23,7 @@ proteomes = load_proteomes()
 if len(sys.argv) < 2:
     print(proteomes.shape[0])
 else:
-    row = proteomes.iloc[int(sys.argv[1])]
+    row = proteomes.iloc[int(sys.argv[1])-1]
     name = row.name
     print(name)
 
