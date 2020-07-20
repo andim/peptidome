@@ -221,7 +221,7 @@ def frequencies(matrix, num_symbols, pseudocount=0):
         column frequencies of all characters
     """
     N, L = matrix.shape
-    fi = pseudocount * np.ones((L, num_symbols))
+    fi = pseudocount/num_symbols * np.ones((L, num_symbols))
     for s in range(N):
         for i in range(L):
             fi[i, matrix[s, i]] += 1.0
@@ -271,7 +271,7 @@ def pair_frequencies(matrix, num_symbols, fi, pseudocount=0):
         relative pairwise frequencies of all character combinations
     """
     N, L = matrix.shape
-    fij = pseudocount*np.ones((L, L, num_symbols, num_symbols))
+    fij = pseudocount/num_symbols**2 * np.ones((L, L, num_symbols, num_symbols))
     for s in range(N):
         for i in range(L):
             for j in range(i + 1, L):
