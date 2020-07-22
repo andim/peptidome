@@ -22,8 +22,10 @@ def entropy_thermodynamic_integration(hi, Jij, integration_intervals=1,
     jump = lambda x: local_jump(x, q)
     x0 = prng.randint(q, size=N)
     matrix = mcmcsampler(x0, lambda x: energy_potts(x, hi, Jij), jump, **mcmc_kwargs)
-    energy_mean = np.mean([energy_potts(x, hi, Jij) for x in matrix])
-    energy_human = np.mean([energy_potts(x, hi_human, Jij_human) for x in matrix])
+    energy = np.array([energy_potts(x, hi, Jij) for x in matrix])
+    energy_human = np.array([energy_potts(x, hi_human, Jij_human) for x in matrix])
+    energy_mean = np.mean(energy)
+    deltaE = np.mean(energy_human-energy)
     
     def Fprime(alpha):
         jump = lambda x: local_jump(x, q)
@@ -37,13 +39,14 @@ def entropy_thermodynamic_integration(hi, Jij, integration_intervals=1,
    
     F = F0 + Fint
     S = energy_mean - F
-    return S, energy_mean, F, energy_human
+    return S, energy_mean, F, deltaE
 
 proteomes = load_proteomes()
 if len(sys.argv) < 2:
     print(proteomes.shape[0])
 else:
-    row = proteomes.iloc[int(sys.argv[1])-1]
+    idx = idx 
+    row = proteomes.iloc[idx]
     name = row.name
     path = 'data/%s_%g.npz'%(name, L)
     params = np.load(path)
@@ -53,3 +56,4 @@ else:
             integration_intervals=integration_intervals, mcmc_kwargs=mcmc_kwargs)
     with open('data/entropies.csv', 'a') as f:
         f.write(','.join([str(s) for s in [name, S, E, F, Ehuman]]))
+        f.write('\n')
