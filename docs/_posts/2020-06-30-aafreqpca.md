@@ -95,6 +95,86 @@ fig.tight_layout()
 ```python
 
 ```
+#### nonlinear-embedding.ipynb
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import sklearn.decomposition, sklearn.manifold
+import umap
+
+import sys
+sys.path.append('..')
+from lib import *
+plt.style.use('../peptidome.mplstyle')
+```
+
+
+```python
+data = np.load('data/data.npz')
+
+aa_human = data['human']
+aa_viruses = data['viruses']
+aa_viruses = aa_viruses[np.random.randint(0, len(aa_viruses), len(aa_human))]
+print(aa_viruses.shape, aa_human.shape)
+```
+
+    (20111, 20) (20111, 20)
+
+
+
+```python
+samples = np.vstack([aa_human, aa_viruses])
+sample_origins = np.concatenate([np.ones(aa_human.shape[0]), 2*np.ones(aa_viruses.shape[0])])
+indices = np.random.randint(0, samples.shape[0], 5000)
+samples = samples[indices]
+sample_origins = sample_origins[indices]
+```
+
+
+```python
+transformed_dict = {}
+for label, reducer in [('pca', sklearn.decomposition.PCA(n_components=2)),
+                       ('umap', umap.UMAP(n_components=2, n_neighbors=10)),
+                       ('tsne', sklearn.manifold.TSNE(n_components=2, init='pca'))]:
+    transformed_dict[label] = reducer.fit_transform(samples)
+```
+
+    /home/amayer/.conda/envs/py3/lib/python3.6/site-packages/numba/typed_passes.py:271: NumbaPerformanceWarning: [1m
+    The keyword argument 'parallel=True' was specified but no transformation for parallel execution was possible.
+    
+    To find out why, try turning on parallel diagnostics, see http://numba.pydata.org/numba-doc/latest/user/parallel.html#diagnostics for help.
+    [1m
+    File "../../../../.conda/envs/py3/lib/python3.6/site-packages/umap/nndescent.py", line 47:[0m
+    [1m    @numba.njit(parallel=True)
+    [1m    def nn_descent(
+    [0m    [1m^[0m[0m
+    [0m
+      state.func_ir.loc))
+
+
+
+```python
+fig, axes = plt.subplots(figsize=(7.5, 2.5), ncols=3, sharex=False, sharey=False)
+for i, label in enumerate(transformed_dict.keys()):
+    transformed = transformed_dict[label]
+    axes[i].scatter(transformed[:, 0], transformed[:, 1], c=sample_origins, cmap='viridis', s=.25, alpha=.5)
+    axes[i].set_title(label)
+    axes[i].set_xticks([])
+    axes[i].set_yticks([])
+fig.tight_layout()
+fig.savefig('nonlinear_embedding.png')
+```
+
+
+![png](notebook_files/nonlinear-embedding_4_0.png)
+
+
+
+```python
+
+```
 #### run_malaria_antigen.py
 
 ```python
