@@ -4,6 +4,17 @@ title: Notes
 order: 3
 ---
 
+# 2020-07-20: Maxent code on the web
+
+A couple of python maxent codes on the web:
+
+- https://github.com/debbiemarkslab/EVcouplings/
+- https://github.com/KIT-MBS/pydca
+- https://github.com/eltrompetero/coniii/
+
+Matlab plm code:
+- https://github.com/magnusekeberg/plmDCA
+
 # 2020-07-10: Literature reading
 
 Weidmann ... Lipas: Where Natural Protein Sequences Stand out From Randomness. Compare protein sequences to simple models based on the distribution of pairwise distances and find that local compositional biases can account for most of the observed structure. Unclear quantification though in terms of residuals of the distance distribution.
