@@ -4,6 +4,13 @@ title: Notes
 order: 3
 ---
 
+#  Old literature on evolution of adaptive immune recognition
+
+Percus, Percus, Perelson PNAS 1993:
+
+"Evolution has shaped the repertoires of immunoglobulin and TCR genes found in vertebrates. Here we suppose that frequently encountered pathogens provide an evolutionary driving force for recognition of epitopes that are common to large classes of microorganisms, for example, polysaccharides found in bacterial cell walls. Evidence that at least some of these antigens are treated specifically by the immune system is found in the fact that polysaccharides stimulate B cells in the absence of T-cell help. At the same time, some epitopes may be expected to be found on self-molecules and on foreign molecules. Although deletion or inactivation of self-reactive clones is known to occur during B-cell and T-cell development, it still seems reasonable that over evolutionary time genes coding for the recognition of common self- antigens would tend to be eliminated and mechanisms would be discovered to minimize interactions with common self- antigens. Thus, we suggest that repertoires are shaped to recognize common features of pathogens that are not simul- taneously present on self-molecules. Work by Chalufour et al. (6) and Claverie et al. (7), in which the sequences ofknown epitopes were compared with sequences of self-proteins, indicates that epitopes are sequences that are unusually "rare" in known proteins. Similar results have been obtained by Ohno (8). Since only a small fraction ofproteins have been sequenced so far, this result is still prelimninary but is supportive of our general hypothesis."
+
+
 # 2020-07-20: Maxent code on the web
 
 A couple of python maxent codes on the web:
