@@ -12,6 +12,9 @@ import scipy.stats
 import matplotlib.pyplot as plt
 from Bio import SeqIO
 
+from numba import jit
+
+
 from . import nsb
 
 
@@ -687,3 +690,43 @@ def dict_to_array(dict_):
     "return an array from a dictionary by sorting the keys"
     keys = sorted(dict_.keys())
     return np.array([dict_[key] for key in keys])
+
+from operator import ne
+def disthamming(seqa, seqb):
+    """Calculate Hamming distance between two sequences."""
+    return sum(map(ne, seqa, seqb))
+
+def pairwise_distances(data, N=100, distance=disthamming, data2=None,
+                       weights=None, weights2=None,
+                       warning=True, prng=np.random):
+    """Pairwise distances between N randomly picked pairs from data."""
+    N = int(N)
+    data = np.asarray(data)
+    if data2 is None:
+        data2 = data
+    else:
+        data2 = np.asarray(data2)
+    distances = np.zeros(N)
+    if weights is not None:
+        weights = np.asarray(weights)
+        dweights = np.zeros(N)
+        if weights2 is None:
+            weights2 = weights
+        else:
+            weights2 = np.asarray(weights2)
+    if warning and (len(data)*len(data2) < 10 * N):
+        print('warning: low amount of data, %g vs. %g', (len(data)*len(data2), N))
+    randints1 = prng.randint(len(data), size=N)
+    randints2 = prng.randint(len(data2), size=N)
+    for i in range(N):
+        inda, indb = randints1[i], randints2[i]
+        while inda == indb:
+            inda, indb = prng.randint(len(data)), prng.randint(len(data2))
+        seqa, seqb = data[inda], data2[indb]
+        distances[i] = distance(seqa, seqb)
+        if weights is not None:
+            dweights[i] = weights[inda] * weights2[indb]
+    if weights is not None:
+        return distances, dweights
+    return distances
+
