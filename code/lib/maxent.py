@@ -7,8 +7,15 @@ from . import clib
 import numba
 from numba import jit
 
-def aacounts(seq):
+def aacounts_str(seq):
     return aacounts_int(map_aatonumber(seq))
+
+@jit(nopython=True)
+def aacounts_int_jit(seq):
+    counter = np.zeros(len(aminoacids), dtype=np.int64)
+    for c in seq:
+        counter[c] += 1
+    return counter
 
 try:
     from .clib import aacounts_int
@@ -74,6 +81,16 @@ def global_jump(x, q, prng=None):
 def local_jump(x, q, prng=None):
     if prng is None:
         prng = np.random
+    xnew = x.copy()
+    index = prng.randint(len(x))
+    xnew[index] = prng.randint(q)
+    return xnew
+
+@jit(nopython=True)
+def local_jump_jit(x, q, seed=None):
+    if not (seed is None):
+        np.random.seed(seed)
+    prng = np.random
     xnew = x.copy()
     index = prng.randint(len(x))
     xnew[index] = prng.randint(q)
