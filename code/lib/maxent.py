@@ -83,17 +83,17 @@ def local_jump(x, q, prng=None):
         prng = np.random
     xnew = x.copy()
     index = prng.randint(len(x))
-    xnew[index] = prng.randint(q)
+    xnew[index] = (x[index] + prng.randint(1, q))%q
     return xnew
 
 @jit(nopython=True)
 def local_jump_jit(x, q, seed=None):
+    prng = np.random
     if not (seed is None):
         np.random.seed(seed)
-    prng = np.random
     xnew = x.copy()
     index = prng.randint(len(x))
-    xnew[index] = prng.randint(q)
+    xnew[index] = (x[index] + prng.randint(1, q))%q
     return xnew
 
 def fit_potts(f1, f2s, niter=1, nmcmc=1e6, epsilon=0.1, Jk=None, prng=None, output=False):
@@ -153,7 +153,7 @@ def fit_full_potts(fi, fij, sampler, niter=1, epsilon=0.1, pseudocount=1.0, prng
         x0 = global_jump(np.zeros(len(fi)), q, prng=prng)
 
         def jump(x):
-            return local_jump(x, q)
+            return local_jump_jit(x, q)
         def energy(x):
             return energy_potts(x, hi, Jij)
 

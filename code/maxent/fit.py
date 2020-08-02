@@ -36,7 +36,7 @@ def sampler(*args, **kwargs):
 hi, Jij = fit_full_potts(fi, fij, sampler=sampler, niter=niter,
                          epsilon=stepsize, prng=prng, output=output)
 
-jump = lambda x: local_jump(x, q)
+jump = lambda x: local_jump_jit(x, q)
 x0 = prng.randint(q, size=N)
 nsteps_generate = int(matrix.shape[0]*nsample)
 model_matrix = mcmcsampler(x0, lambda x: energy_potts(x, hi, Jij), jump,

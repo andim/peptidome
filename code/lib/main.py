@@ -696,6 +696,10 @@ def disthamming(seqa, seqb):
     """Calculate Hamming distance between two sequences."""
     return sum(map(ne, seqa, seqb))
 
+@jit(nopython=True)
+def hammingdist_jit(seqa, seqb):
+    return np.sum(seqa != seqb)
+
 def pairwise_distances(data, N=100, distance=disthamming, data2=None,
                        weights=None, weights2=None,
                        warning=True, prng=np.random):
