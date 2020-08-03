@@ -431,8 +431,9 @@ def plot_histograms(valuess, labels, weights=None, nbins=40, ax=None,
     ax.legend()
     return ax
 
-def mcmcsampler(x0, energy, jump, nsteps=1000, nburnin=0, nsample=1, prng=None):
-    """Markov chain Monte carlo sampler.
+@jit
+def mcmcsampler(x0, energy, jump, nsteps=1000, nburnin=0, nsample=1):
+    """Markov chain Monte carlo sampler (JIT enabled).
 
     x0: starting position (array)
     energy(x): function for calculating energy
@@ -442,21 +443,22 @@ def mcmcsampler(x0, energy, jump, nsteps=1000, nburnin=0, nsample=1, prng=None):
     
     returns array of states
     """
-    if prng is None:
-        prng = np.random
+    prng = np.random
     nsteps, nburnin, nsample = int(nsteps), int(nburnin), int(nsample)
     x = x0
     Ex = energy(x)
-    states = []
+    samples = np.zeros(((nsteps-nburnin)//nsample, x0.shape[0]), dtype=np.int64)
+    counter = 0
     for i in range(1, nsteps+1):
         xp = jump(x)
         Exp = energy(xp)
-        if prng.rand() < np.exp(-Exp+Ex):
+        if (Exp < Ex) or (prng.rand() < np.exp(-Exp+Ex)):
             x = xp
             Ex = Exp
         if (i > nburnin) and (i % nsample == 0):
-            states.append(x)
-    return np.array(states)
+            samples[counter] = x
+            counter += 1
+    return samples
 
 def energy_ising(s, h, Jk):
     "energy of a translation invariant ising model"
