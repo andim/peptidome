@@ -24,8 +24,7 @@ seqs = [s for s in fasta_iter(proteome, returnheader=False)]
 train, test = train_test_split(seqs, test_size=0.5, random_state=prng)
 
 for label, data in [('train', train), ('test', test)]:
-    arr =  np.array([list(kmer) for kmer in to_kmers(data, k=N)])
-    matrix = map_matrix(arr, map_)
+    matrix = kmers_to_matrix(to_kmers(data, k=N))
     np.savetxt('data/%s_matrix.csv.gz'%label, matrix, fmt='%i')
     if label == 'train':
         fi = frequencies(matrix, num_symbols=q, pseudocount=1e-3)

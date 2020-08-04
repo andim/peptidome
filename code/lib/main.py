@@ -113,6 +113,45 @@ def to_kmers(seqs, k):
             if isvalidaa(s):
                 yield s
 
+
+aamap = {c: i for i, c in enumerate(aminoacids)}
+
+def map_matrix(matrix, map_=aamap):
+    """
+    Remap elements in a numpy array 
+
+    Parameters
+    ----------
+    array : np.array
+        Matrix to be remapped
+    map_ : dict
+        Map to be applied to matrix elements
+
+    Returns
+    -------
+    np.array
+        Remapped matrix
+    """
+    return np.vectorize(map_.__getitem__)(matrix)
+
+def kmers_to_matrix(kmers):
+    """"
+    Map a list of str kmers to an integer numpy array.
+
+    Parameters
+    ----------
+    kmers : iterable of strings
+        kmers to be converted
+    Returns
+    -------
+    np.array
+        Mapped array
+    """
+    matrix_str =  np.array([list(kmer) for kmer in kmers])
+    matrix = map_matrix(matrix_str)
+    return matrix
+
+
 class Counter(defaultdict):
 
     def __init__(self, iterable, k, gap=0, **kwargs):

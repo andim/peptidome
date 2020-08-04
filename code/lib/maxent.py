@@ -244,26 +244,6 @@ def frequencies(matrix, num_symbols, pseudocount=0):
             fi[i, matrix[s, i]] += 1.0
     return fi / (N+pseudocount)
 
-map_ = map_ = {c: i for i, c in enumerate(aminoacids)}
-
-def map_matrix(matrix, map_):
-    """
-    Map elements in a numpy array using alphabet
-
-    Parameters
-    ----------
-    matrix : np.array
-        Matrix that should be remapped
-    map_ : defaultdict
-        Map that will be applied to matrix elements
-
-    Returns
-    -------
-    np.array
-        Remapped matrix
-    """
-    return np.vectorize(map_.__getitem__)(matrix)
-
 @jit(nopython=True)
 def pair_frequencies(matrix, num_symbols, fi, pseudocount=0):
     """
