@@ -15,7 +15,6 @@ pseudocount = 1e-3
 niter = 30
 stepsize = 0.1
 mcmc_kwargs = dict(nsteps=1e6, nsample=20, nburnin=1e4)
-seed = 1234
 
 proteomes = load_proteomes()
 if len(sys.argv) < 2:
@@ -26,13 +25,11 @@ else:
     print(name)
 
     proteome = proteome_path(name)
-    seqs = [s for s in fasta_iter(proteome, returnheader=False)]
-    arr =  np.array([list(kmer) for kmer in to_kmers(seqs, k=L)])
-    matrix = map_matrix(arr, map_)
+    matrix = kmers_to_matrix(to_kmers(fasta_iter(proteome, returnheader=False), k=L))
     fi = frequencies(matrix, num_symbols=q, pseudocount=pseudocount)
     fij = pair_frequencies(matrix, num_symbols=q, fi=fi, pseudocount=pseudocount)
 
-    prng = np.random.RandomState(seed)
+    prng = np.random
     def sampler(*args, **kwargs):
         mcmc_kwargs.update(kwargs)
         return mcmcsampler(*args, **mcmc_kwargs)

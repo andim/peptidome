@@ -1,45 +1,45 @@
 import itertools, json
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
 
 import sys
 sys.path.append('..')
 from lib import *
 from lib.maxent import *
 
+from numba import njit
+
 output = True
-N = 9
+L = 9
 q = naminoacids
-niter = 50
+pseudocount = 1.0
+niter = 30
 stepsize = 0.1
-nsample = N
-nsteps = 5e7
+nsteps = 1e7
+nsample = L
+nburnin = 1e3
 
-proteome = proteome_path('Human')
-seed = 1234
-prng = np.random.RandomState(seed)
+prng = np.random
 
-seqs = [s for s in fasta_iter(proteome, returnheader=False)]
-train, test = train_test_split(seqs, test_size=0.5, random_state=prng)
-
-for label, data in [('train', train), ('test', test)]:
-    matrix = kmers_to_matrix(to_kmers(data, k=N))
-    np.savetxt('data/%s_matrix.csv.gz'%label, matrix, fmt='%i')
-    if label == 'train':
-        fi = frequencies(matrix, num_symbols=q, pseudocount=1e-3)
-        fij = pair_frequencies(matrix, num_symbols=q, fi=fi, pseudocount=1e-3)
+matrix = load_matrix('data/train_matrix.csv.gz')
+fi = frequencies(matrix, num_symbols=q, pseudocount=pseudocount)
+fij = pair_frequencies(matrix, num_symbols=q, fi=fi, pseudocount=pseudocount)
 
 def sampler(*args, **kwargs):
-    return mcmcsampler(*args, nsteps=nsteps, nsample=nsample, **kwargs)
+    return mcmcsampler(*args, nsteps=nsteps, nsample=nsample, nburnin=nburnin)
 hi, Jij = fit_full_potts(fi, fij, sampler=sampler, niter=niter,
                          epsilon=stepsize, prng=prng, output=output)
 
-jump = lambda x: local_jump_jit(x, q)
-x0 = prng.randint(q, size=N)
+@njit
+def jump(x):
+    return local_jump_jit(x, q)
+@njit
+def energy(x):
+    return energy_potts(x, hi, Jij)
+x0 = prng.randint(q, size=L)
 nsteps_generate = int(matrix.shape[0]*nsample)
-model_matrix = mcmcsampler(x0, lambda x: energy_potts(x, hi, Jij), jump,
-                           nsteps=nsteps_generate, nsample=nsample, prng=prng)
+model_matrix = mcmcsampler(x0, energy, jump, nsteps=nsteps_generate,
+                           nsample=nsample, nburnin=nburnin)
 np.savetxt('data/model_matrix.csv.gz', model_matrix, fmt='%i')
 
-np.savez('data/Human_full_k%g.npz'%N, hi=hi, Jij=Jij)
+np.savez('data/Human_reference_%g.npz'%(L), hi=hi, Jij=Jij)

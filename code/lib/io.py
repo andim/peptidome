@@ -90,6 +90,8 @@ def load_proteome_as_df(name):
     df = pd.DataFrame(dict(Gene=genes, Accession=accessions, Sequence=seqs))
     return df
 
+def load_matrix(path):
+    return np.array(pd.read_csv(path, sep=' ', header=None))
 
 human = proteome_path('Human')
 

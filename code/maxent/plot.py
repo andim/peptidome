@@ -43,5 +43,6 @@ for model_type in ['model', 'model_global']:
         ax.ticklabel_format(style='sci', scilimits=(0,0))
 
     fig.tight_layout()
+
     fig.savefig('main.png' if model_type == 'model' else 'model_global.png')
     plt.show()

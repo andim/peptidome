@@ -12,7 +12,7 @@ import scipy.stats
 import matplotlib.pyplot as plt
 from Bio import SeqIO
 
-from numba import jit
+from numba import jit, njit
 
 
 from . import nsb
@@ -113,10 +113,29 @@ def to_kmers(seqs, k):
             if isvalidaa(s):
                 yield s
 
+_aatonumber = {c: i for i, c in enumerate(aminoacids)}
+_numbertoaa = {i: c for i, c in enumerate(aminoacids)}
 
-aamap = {c: i for i, c in enumerate(aminoacids)}
+def map_aatonumber(seq):
+    """
+    Map sequence to array of number
+    """
+    seq = np.array(list(seq))
+    return np.vectorize(_aatonumber.__getitem__)(seq)
 
-def map_matrix(matrix, map_=aamap):
+def map_numbertoaa(seq):
+    """
+    Map integer to amino acid sequence
+    """
+    seq = list(seq)
+    return np.vectorize(_numbertoaa.__getitem__)(seq)
+
+
+def aatonumber(char):
+    return _aatonumber[char]
+
+
+def map_matrix(matrix, map_=_aatonumber):
     """
     Remap elements in a numpy array 
 
@@ -408,7 +427,7 @@ def mcmcsampler(x0, energy, jump, nsteps=1000, nburnin=0, nsample=1):
         if (Exp < Ex) or (prng.rand() < np.exp(-Exp+Ex)):
             x = xp
             Ex = Exp
-        if (i > nburnin) and (i % nsample == 0):
+        if (i > nburnin) and ((i-nburnin) % nsample == 0):
             samples[counter] = x
             counter += 1
     return samples
@@ -421,27 +440,6 @@ def energy_ising(s, h, Jk):
             energy += J[s[i]][s[i+k+1]]
     return -energy
 
-
-_aatonumber = {c: i for i, c in enumerate(aminoacids)}
-_numbertoaa = {i: c for i, c in enumerate(aminoacids)}
-
-def map_aatonumber(seq):
-    """
-    Map sequence to array of number
-    """
-    seq = np.array(list(seq))
-    return np.vectorize(_aatonumber.__getitem__)(seq)
-
-def map_numbertoaa(seq):
-    """
-    Map integer to amino acid sequence
-    """
-    seq = list(seq)
-    return np.vectorize(_numbertoaa.__getitem__)(seq)
-
-
-def aatonumber(char):
-    return _aatonumber[char]
 
 def falling_factorial(x, n):
     "returns x (x-1) ... (x-n+1)"
@@ -526,4 +524,25 @@ def pairwise_distances(data, N=100, distance=disthamming, data2=None,
     if weights is not None:
         return distances, dweights
     return distances
-
+    
+@njit
+def pairwise_distances_jit(data, N=100, data2=None, normalize=False):
+    N = int(N)
+    data = np.asarray(data)
+    if data2 is None:
+        data2 = data
+    else:
+        data2 = np.asarray(data2)
+    num_rows = 2*int(N**.5)
+    indices = np.random.choice(data.shape[0], num_rows, replace=False)
+    data = data[indices[:num_rows//2]]
+    data2 = data2[indices[num_rows//2:]]
+    L = data.shape[1]
+    hist = np.zeros(L+1)
+    for i in range(len(data)):
+        for j in range(len(data2)):
+            dist = hammingdist_jit(data[i, :], data2[j, :])
+            hist[dist] += 1
+    if normalize:
+        hist /= len(data)*len(data2)
+    return hist

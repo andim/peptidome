@@ -5,7 +5,7 @@ from . import *
 from . import clib
 
 import numba
-from numba import jit
+from numba import jit, njit
 
 def aacounts_str(seq):
     return aacounts_int(map_aatonumber(seq))
@@ -152,12 +152,14 @@ def fit_full_potts(fi, fij, sampler, niter=1, epsilon=0.1, pseudocount=1.0, prng
 
         x0 = global_jump(np.zeros(len(fi)), q, prng=prng)
 
+        @njit
         def jump(x):
             return local_jump_jit(x, q)
+        @njit
         def energy(x):
             return energy_potts(x, hi, Jij)
 
-        samples = sampler(x0, energy, jump, prng=prng)
+        samples = sampler(x0, energy, jump)
 
         fi_model = frequencies(samples, q, pseudocount=pseudocount)
         fij_model = pair_frequencies(samples, q, fi_model, pseudocount=pseudocount)
@@ -207,17 +209,16 @@ def count(seqs, *args, **kwargs):
     return df
 
 
-@jit(nopython=True)
+@njit
 def energy_potts(x, hi, Jij):
     e = 0
     for i in range(len(x)):
         e -= hi[i, x[i]]
-    for i in range(len(x)):
         for j in range(i+1, len(x)):
             e -= Jij[i, j, x[i], x[j]]
     return e
 
-@jit(nopython=True)
+@njit
 def frequencies(matrix, num_symbols, pseudocount=0):
     """
     Calculate single-site frequencies
@@ -226,8 +227,6 @@ def frequencies(matrix, num_symbols, pseudocount=0):
     ----------
     matrix : np.array
         N x L matrix containing N sequences of length L.
-        Matrix must be mapped to range(0, num_symbols) using
-        map_matrix function
     num_symbols : int
         Number of different symbols
 
@@ -244,7 +243,7 @@ def frequencies(matrix, num_symbols, pseudocount=0):
             fi[i, matrix[s, i]] += 1.0
     return fi / (N+pseudocount)
 
-@jit(nopython=True)
+@njit
 def pair_frequencies(matrix, num_symbols, fi, pseudocount=0):
     """
     Calculate pairwise frequencies of symbols.
@@ -253,10 +252,8 @@ def pair_frequencies(matrix, num_symbols, fi, pseudocount=0):
     ----------
     matrix : np.array
         N x L matrix containing N sequences of length L.
-        Matrix must be mapped to range(0, num_symbols) using
-        map_matrix function
     num_symbols : int
-        Number of different symbols contained in alignment
+        Number of different symbols
     fi : np.array
         Matrix of size L x num_symbols containing relative
         column frequencies of all characters.
@@ -293,7 +290,7 @@ def compute_covariance_matrix(fi, fij):
     return cij
 
 
-@numba.jit(nopython=True)
+@njit
 def compute_flattened_covariance_matrix(f_i, f_ij):
     """
     Compute the covariance matrix in a flat format for mean-field inversion.
@@ -338,7 +335,7 @@ def compute_flattened_covariance_matrix(f_i, f_ij):
 
     return covariance_matrix
 
-@numba.jit(nopython=True)
+@njit
 def _flatten_index(i, alpha, num_symbols):
     """
     Map position and symbol to index in
@@ -356,7 +353,7 @@ def _flatten_index(i, alpha, num_symbols):
     """
     return i * (num_symbols - 1) + alpha
 
-@jit(nopython=True)
+@njit
 def triplet_frequencies(matrix, num_symbols=2, pseudocount=0):
     """
     Calculate triplet frequencies of symbols.
@@ -365,10 +362,8 @@ def triplet_frequencies(matrix, num_symbols=2, pseudocount=0):
     ----------
     matrix : np.array
         N x L matrix containing N sequences of length L.
-        Matrix must be mapped to range(0, num_symbols) using
-        map_matrix function
     num_symbols : int
-        Number of different symbols contained in alignment
+        Number of different symbols
 
     Returns
     -------
@@ -390,7 +385,7 @@ def triplet_frequencies(matrix, num_symbols=2, pseudocount=0):
 
     return fijk
 
-@jit(nopython=True)
+@njit
 def quadruplet_frequencies(matrix, num_symbols=2, pseudocount=0):
     """
     Calculate quadruplet frequencies of symbols.
@@ -399,10 +394,8 @@ def quadruplet_frequencies(matrix, num_symbols=2, pseudocount=0):
     ----------
     matrix : np.array
         N x L matrix containing N sequences of length L.
-        Matrix must be mapped to range(0, num_symbols) using
-        map_matrix function
     num_symbols : int
-        Number of different symbols contained in alignment
+        Number of different symbols
 
     Returns
     -------
@@ -425,7 +418,12 @@ def quadruplet_frequencies(matrix, num_symbols=2, pseudocount=0):
 
     return fijkl
 
-
+def zero_sum_gauge(J_ij):
+    J_ij_0 = (J_ij
+              - np.mean(J_ij, axis=2)[:, :, np.newaxis, :]
+              - np.mean(J_ij, axis=3)[:, :, :, np.newaxis]
+              + np.mean(J_ij, axis=(2,3))[:, :, np.newaxis, np.newaxis])
+    return J_ij_0
 
 def compute_cijk(fijk, fij, fi):
     #https://en.wikipedia.org/wiki/Ursell_function

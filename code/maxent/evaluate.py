@@ -11,7 +11,7 @@ for dataset in ['train', 'test', 'model', 'model_global']:
     print(dataset)
     path = 'data/%s_observables.npz'%dataset
     if not os.path.exists(path):
-        matrix = np.loadtxt('data/%s_matrix.csv.gz'%dataset, dtype=np.int64)
+        matrix = load_matrix('data/%s_matrix.csv.gz'%dataset)
         fi = frequencies(matrix, num_symbols=naminoacids)
         fij = pair_frequencies(matrix, num_symbols=naminoacids, fi=fi)
         cij = compute_covariance_matrix(fi, fij)
