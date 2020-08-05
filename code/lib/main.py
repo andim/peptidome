@@ -105,13 +105,25 @@ def scrambled(iterable):
         shuffled = ''.join(l)
         yield shuffled
 
-def to_kmers(seqs, k):
-    """Generator yielding all possible kmers from a set of sequences."""
-    for seq in seqs:
-        for i in range(len(seq)-k+1):
-            s = seq[i:i+k]
-            if isvalidaa(s):
-                yield s
+def to_kmers(seqs, k, return_index=False):
+    """Generator yielding all possible kmers from a set of sequences.
+
+    seqs: list of sequences
+    k: length of kmer
+    return_index: if true yield tuple seq, index
+    """
+    if return_index:
+        for index, seq in enumerate(seqs):
+                for i in range(len(seq)-k+1):
+                    s = seq[i:i+k]
+                    if isvalidaa(s):
+                        yield s, index
+    else:
+        for seq in seqs:
+            for i in range(len(seq)-k+1):
+                s = seq[i:i+k]
+                if isvalidaa(s):
+                    yield s
 
 _aatonumber = {c: i for i, c in enumerate(aminoacids)}
 _numbertoaa = {i: c for i, c in enumerate(aminoacids)}

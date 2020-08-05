@@ -219,7 +219,7 @@ def energy_potts(x, hi, Jij):
     return e
 
 @njit
-def frequencies(matrix, num_symbols, pseudocount=0):
+def frequencies(matrix, num_symbols, pseudocount=0, weights=None):
     """
     Calculate single-site frequencies
 
@@ -229,6 +229,8 @@ def frequencies(matrix, num_symbols, pseudocount=0):
         N x L matrix containing N sequences of length L.
     num_symbols : int
         Number of different symbols
+    weights: np.array
+        Vector of length N of relative weights of different sequences
 
     Returns
     -------
@@ -238,13 +240,20 @@ def frequencies(matrix, num_symbols, pseudocount=0):
     """
     N, L = matrix.shape
     fi = pseudocount/num_symbols * np.ones((L, num_symbols))
-    for s in range(N):
-        for i in range(L):
-            fi[i, matrix[s, i]] += 1.0
+    if weights is None:
+        for s in range(N):
+            for i in range(L):
+                fi[i, matrix[s, i]] += 1.0
+        return fi / (N+pseudocount)
+    else:
+        normalized_weights = N*weights/np.sum(weights)
+        for s in range(N):
+            for i in range(L):
+                fi[i, matrix[s, i]] += normalized_weights[s]
     return fi / (N+pseudocount)
 
 @njit
-def pair_frequencies(matrix, num_symbols, fi, pseudocount=0):
+def pair_frequencies(matrix, num_symbols, fi, pseudocount=0, weights=None):
     """
     Calculate pairwise frequencies of symbols.
 
@@ -257,6 +266,8 @@ def pair_frequencies(matrix, num_symbols, fi, pseudocount=0):
     fi : np.array
         Matrix of size L x num_symbols containing relative
         column frequencies of all characters.
+    weights: np.array
+        Vector of length N of relative weights of different sequences
 
     Returns
     -------
@@ -266,12 +277,25 @@ def pair_frequencies(matrix, num_symbols, fi, pseudocount=0):
     """
     N, L = matrix.shape
     fij = pseudocount/num_symbols**2 * np.ones((L, L, num_symbols, num_symbols))
-    for s in range(N):
-        for i in range(L):
-            for j in range(i + 1, L):
-                fij[i, j, matrix[s, i], matrix[s, j]] += 1
-                fij[j, i, matrix[s, j], matrix[s, i]] = fij[i, j, matrix[s, i], matrix[s, j]]
+    if weights is None:
+        for s in range(N):
+            for i in range(L):
+                for j in range(i + 1, L):
+                    fij[i, j, matrix[s, i], matrix[s, j]] += 1
+    else:
+        normalized_weights = N*weights/np.sum(weights)
+        for s in range(N):
+            for i in range(L):
+                for j in range(i + 1, L):
+                    fij[i, j, matrix[s, i], matrix[s, j]] += normalized_weights[s]
 
+    # symmetrize matrix
+    for i in range(L):
+        for j in range(i + 1, L):
+            for alpha in range(num_symbols):
+                for beta in range(num_symbols):
+                    fij[j, i, beta, alpha] = fij[i, j, alpha, beta]
+ 
     # normalize frequencies by the number
     # of sequences
     fij /= (N+pseudocount)
@@ -291,39 +315,34 @@ def compute_covariance_matrix(fi, fij):
 
 
 @njit
-def compute_flattened_covariance_matrix(f_i, f_ij):
+def compute_flattened_covariance_matrix(fi, fij):
     """
     Compute the covariance matrix in a flat format for mean-field inversion.
 
     Parameters
     ----------
-    f_i : np.array
+    fi : np.array
         Matrix of size L x num_symbols
-        containing column frequencies.
-    f_ij : np.array
+        containing frequencies.
+    fij : np.array
         Matrix of size L x L x num_symbols x
         num_symbols containing pair frequencies.
 
     Returns
     -------
     np.array
-        Matrix of size L x (num_symbols-1) x
-        L x (num_symbols-1) containing
-        covariance values.
+        Covariance matrix of size L x (num_symbols-1) x L x (num_symbols-1) 
+        
     """
-    L, num_symbols = f_i.shape
-
+    L, num_symbols = fi.shape
     # The covariance values concerning the last symbol
     # are required to equal zero and are not represented
     # in the covariance matrix (important for taking the
     # inverse) - resulting in a matrix of size
     # (L * (num_symbols-1)) x (L * (num_symbols-1))
     # rather than (L * num_symbols) x (L * num_symbols).
-    covariance_matrix = np.zeros((
-        L * (num_symbols - 1),
-        L * (num_symbols - 1)
-    ))
-
+    covariance_matrix = np.zeros((L * (num_symbols - 1),
+                                  L * (num_symbols - 1)))
     for i in range(L):
         for j in range(L):
             for alpha in range(num_symbols - 1):
@@ -331,8 +350,7 @@ def compute_flattened_covariance_matrix(f_i, f_ij):
                     covariance_matrix[
                         _flatten_index(i, alpha, num_symbols),
                         _flatten_index(j, beta, num_symbols),
-                    ] = f_ij[i, j, alpha, beta] - f_i[i, alpha] * f_i[j, beta]
-
+                    ] = fij[i, j, alpha, beta] - fi[i, alpha] * fi[j, beta]
     return covariance_matrix
 
 @njit
@@ -354,7 +372,7 @@ def _flatten_index(i, alpha, num_symbols):
     return i * (num_symbols - 1) + alpha
 
 @njit
-def triplet_frequencies(matrix, num_symbols=2, pseudocount=0):
+def triplet_frequencies(matrix, num_symbols, pseudocount=0, weights=None):
     """
     Calculate triplet frequencies of symbols.
 
@@ -364,6 +382,8 @@ def triplet_frequencies(matrix, num_symbols=2, pseudocount=0):
         N x L matrix containing N sequences of length L.
     num_symbols : int
         Number of different symbols
+    weights: np.array
+        Vector of length N of relative weights of different sequences
 
     Returns
     -------
@@ -372,12 +392,20 @@ def triplet_frequencies(matrix, num_symbols=2, pseudocount=0):
         relative triplet frequencies of all character combinations
     """
     N, L = matrix.shape
-    fijk = pseudocount*np.ones((L, L, L, num_symbols, num_symbols, num_symbols))
-    for s in range(N):
-        for i in range(L):
-            for j in range(L):
-                for k in range(L):
-                    fijk[i, j, k, matrix[s, i], matrix[s, j], matrix[s, k]] += 1
+    fijk = pseudocount/num_symbols**3*np.ones((L, L, L, num_symbols, num_symbols, num_symbols))
+    if weights is None:
+        for s in range(N):
+            for i in range(L):
+                for j in range(L):
+                    for k in range(L):
+                        fijk[i, j, k, matrix[s, i], matrix[s, j], matrix[s, k]] += 1
+    else:
+        normalized_weights = N*weights/np.sum(weights)
+        for s in range(N):
+            for i in range(L):
+                for j in range(L):
+                    for k in range(L):
+                        fijk[i, j, k, matrix[s, i], matrix[s, j], matrix[s, k]] += normalized_weights[s]
 
     # normalize frequencies by the number
     # of sequences
@@ -386,7 +414,7 @@ def triplet_frequencies(matrix, num_symbols=2, pseudocount=0):
     return fijk
 
 @njit
-def quadruplet_frequencies(matrix, num_symbols=2, pseudocount=0):
+def quadruplet_frequencies(matrix, num_symbols, pseudocount=0):
     """
     Calculate quadruplet frequencies of symbols.
 
@@ -400,11 +428,14 @@ def quadruplet_frequencies(matrix, num_symbols=2, pseudocount=0):
     Returns
     -------
     np.array
-        Matrix of size L x L x L x L x num_symbols x num_symbols x num_symbols x num_symbols containing
-        relative frequencies of all character combinations
+        Matrix of size L x L x L x L x num_symbols x num_symbols
+        x num_symbols x num_symbols containing
+        relative frequencies of character combinations
     """
     N, L = matrix.shape
-    fijkl = pseudocount*np.ones((L, L, L, L, num_symbols, num_symbols, num_symbols, num_symbols))
+    fijkl = pseudocount/num_symbols**4 * np.ones((L, L, L, L,
+                                            num_symbols, num_symbols,
+                                            num_symbols, num_symbols))
     for s in range(N):
         for i in range(L):
             for j in range(L):
