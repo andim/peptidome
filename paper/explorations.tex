@@ -63,6 +63,15 @@ where the index 0 refers to the normalization constraints. Taking the derivative
     P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ -\sum_{\mu=1}^K \lambda_\mu f_\mu(\boldsymbol \sigma) \right]
 \end{equation}
 
+\subsection{Numerical minimization}
+Taking the derivative with respect to the remaining Lagrange multipliers we obtain
+\begin{equation}
+    \frac{\partial \mathcal{L}}{\partial \lambda_\mu} = \langle f_\mu(\boldsymbol \sigma) \rangle - f_\mu^{emp}
+\end{equation}
+
+Iterative scaling instead updates parameters with the log of the ratio.
+
+
 
 \section{Approach to a lognormal distribution}
 

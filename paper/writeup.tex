@@ -92,6 +92,7 @@ Under the heading of immunopeptidomics and MHC ligandomics efforts are underway 
 
 \section{Results}
 
+
 \subsection{Proteins are surprisingly random}
 
 \begin{figure}
@@ -222,6 +223,49 @@ OnchocercaVolvulus&0.03&0.069\\
 %    \label{figviruses}
 %    }
 %\end{figure}
+
+
+
+\subsection{A mathematical framework to model peptide statistics} 
+
+The distribution of all possible peptides $P(\B \sigma)$ is highly undersampled for even moderate length peptides. We instead pursue a statistical approach and assign a probability to each peptide that measures how likely such a peptide is on average given the underlying proteome statistics.
+
+We constrain some statistical observables $\langle f_\mu(\boldsymbol \sigma)\rangle$ to be equal to their empirical values, while otherwise keeping the probability distribution as random as possible. In mathematical terms this means that we are looking for the probability distribution that maximizizes the Shannon entropy
+\begin{equation}
+    S[P(\B \sigma)] = - \sum_{\B \sigma} P(\B \sigma) \log P(\B \sigma),
+\end{equation}
+subject to a normalization constraint and a constraint
+\begin{equation}
+\langle f_\mu(\boldsymbol \sigma)\rangle = \sum_{\boldsymbol \sigma} P(\boldsymbol \sigma) f_\mu(\boldsymbol \sigma) = f_\mu^{emp},
+\end{equation}
+for each observable.
+The constrained optimization with respect to the normalization constraint can be performed analytically, which yields a Boltzmann distribution of the following form
+\begin{equation}
+    P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ -\sum_{\mu=1}^K \lambda_\mu f_\mu(\boldsymbol \sigma) \right].
+\end{equation}
+Here, $Z = \sum_{\B \sigma} \exp\left[ -\sum_{\mu=1}^K \lambda_\mu f_\mu(\boldsymbol \sigma) \right]$ is a normalization factor, called the partition function in statistical mechanics.
+A common choice is to constrain the one and two-point frequencies
+\begin{align}
+    f_i^\alpha(\B \sigma) &= \sigma_i^\alpha, \\
+    f_{ij}^{\alpha\beta}(\B \sigma) &= \sigma_i^\alpha \sigma_j^\beta,
+\end{align}
+where $\sigma_i^\alpha = 1$ if the amino acid at site i is of type $\alpha$ and zero otherwise.
+This leads to a maximum entropy probability distribution that takes the form
+\begin{equation}
+    P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ \sum_{i=1}^L \sum_{\alpha = 1}^{20} h_i^\alpha \sigma_i^\alpha + \sum_{i<j}^L \sum_{\alpha,\beta = 1}^{20} J_{ij}^{\alpha \beta}  \sigma_i^\alpha \sigma_j^\beta \right],
+\end{equation}
+which is known as a disordered Potts model.
+Given that many biases are compositional in nature we can also consider a simpler model that only involves a global constraint on the covariation of the total count of amino acids of different types:
+\begin{align}
+    n^\alpha(\B \sigma) &= \sum_i \sigma_i^\alpha, \\
+    n^{\alpha\beta}(\B \sigma) &= n^\alpha(\B \sigma) n^\beta(\B\sigma) = \left(\sum_{i=1}^L \sigma_i^\alpha\right) \left(\sum_{j=1}^L \sigma_j^\beta\right).
+\end{align}
+This leads to a maximum entropy probability distribution that takes the form
+\begin{equation}
+    P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ \sum_{\alpha=1}^{20} h^\alpha n^\alpha +  \sum_{\alpha,\beta = 1}^{20} J^{\alpha \beta} n^\alpha n^\beta \right].
+\end{equation}
+
+Regardless of the model formulation we can fit the models by estimating $\langle f_\mu(\B \sigma)\rangle$ using Monte Carlo methods and then perform gradient ascent or iterative scaling.
 
 
 \subsection{Features of immune epitopes}
