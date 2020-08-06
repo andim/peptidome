@@ -12,10 +12,12 @@ from lib import *
 k = 9
 ref = 'human'
 
-likelihood_human = pd.read_csv('data/proteome-ref%s-k%i-Human.zip'%(ref, k))['likelihoods']
-likelihood_virus = pd.read_csv('data/proteome-ref%s-k%i-Viruses.zip'%(ref, k))['likelihoods']
-likelihood_frameshifts = pd.read_csv('data/proteome-ref%s-k%i-frameshifts.zip'%(ref, k))['likelihoods']
-likelihood_pb1ufo = pd.read_csv('data/proteome-ref%s-k%i-pb1ufo.zip'%(ref, k))['likelihoods']
+likelihoodname = 'maxent'
+
+likelihood_human = pd.read_csv('data/proteome-ref%s-%s-k%i-Human.zip'%(ref, likelihoodname, k))['likelihoods']
+likelihood_virus = pd.read_csv('data/proteome-ref%s-%s-k%i-Viruses.zip'%(ref, likelihoodname, k))['likelihoods']
+likelihood_frameshifts = pd.read_csv('data/proteome-ref%s-%s-k%i-frameshifts.zip'%(ref, likelihoodname, k))['likelihoods']
+likelihood_pb1ufo = pd.read_csv('data/proteome-ref%s-%s-k%i-pb1ufo.zip'%(ref, likelihoodname, k))['likelihoods']
 
 fig, ax = plt.subplots(figsize=(3.4, 2.0))
 ps = [likelihood_human, likelihood_virus, likelihood_frameshifts, likelihood_pb1ufo]

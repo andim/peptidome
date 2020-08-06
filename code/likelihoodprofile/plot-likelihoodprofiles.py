@@ -11,8 +11,9 @@ plt.style.use('../peptidome.mplstyle')
 
 k = 9
 ref = 'human'
+likelihoodname = 'maxent'
 
-likelihoods_human = pd.read_csv('data/proteome-ref%s-k%i-Human.zip'%(ref, k))['likelihoods']
+likelihoods_human = pd.read_csv('data/proteome-ref%s-%s-k%i-Human.zip'%(ref, likelihoodname, k))['likelihoods']
 
 with open(datadir+ 'triplet-%s.json' % ref, 'r') as f:
     tripletparams = json.load(f)
