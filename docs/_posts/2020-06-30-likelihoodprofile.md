@@ -14,6 +14,164 @@ Likelihoods of peptides under different models.
 {% include post-image-gallery.html filter="likelihoodprofile/" %}
 
 ### Code 
+#### likelihood-maxent.ipynb
+
+```python
+import json
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+import sys
+sys.path.append('..')
+
+from lib import *
+from lib.maxent import *
+from lib.plotting import *
+plt.style.use('../peptidome.mplstyle')
+
+%load_ext autoreload
+%autoreload 2
+```
+
+
+```python
+k = 9
+ref = 'human'
+```
+
+
+```python
+matrix = load_matrix('../maxent/data/test_matrix.csv.gz')
+```
+
+
+```python
+params = np.load('../maxent/data/Human_reference_9.npz')
+hi = params['hi']
+Jij = params['Jij']
+```
+
+
+```python
+likelihood_human = np.array([-energy_potts(x, hi, Jij) for x in matrix])
+```
+
+
+```python
+with open(datadir+ 'triplet-%s.json' % ref, 'r') as f:
+    tripletparams = json.load(f)
+loglikelihood = lambda seq, k: -energy_potts(map_aatonumber(seq.upper()), hi, Jij)
+likelihoodname = 'maxent'
+```
+
+
+```python
+df_ts = load_iedb_tcellepitopes()
+```
+
+
+```python
+host = 'Homo sapiens'
+#host = 'Mus musculus'
+mask_host_host = df_ts['Host', 'Name'].str.contains(host, na=False)
+# no host epitopes or epitopes of unknown provenance
+mask_epitope_host = df_ts['Epitope', 'Parent Species'].str.contains(host, na=True)
+df_ts = df_ts[mask_host_host & (~mask_epitope_host)]
+```
+
+
+```python
+# uniquify epitopes by keeping only the first one
+df_ts = df_ts.groupby(('Epitope', 'Description')).apply(lambda x: x.iloc[0])
+```
+
+
+```python
+plt.hist(df_ts['Epitope', 'Description'].str.len(), bins=np.arange(1, 25, 1)-0.5)
+```
+
+
+
+
+    (array([0.0000e+00, 0.0000e+00, 1.0000e+00, 0.0000e+00, 7.0000e+00,
+            1.1000e+01, 1.6000e+01, 3.6900e+02, 8.5280e+03, 4.5240e+03,
+            3.8900e+02, 2.0290e+03, 8.9100e+02, 1.0910e+03, 4.3846e+04,
+            1.4740e+03, 2.2780e+03, 4.0540e+03, 5.3900e+02, 5.2120e+03,
+            2.8400e+02, 1.2700e+02, 9.4000e+01]),
+     array([ 0.5,  1.5,  2.5,  3.5,  4.5,  5.5,  6.5,  7.5,  8.5,  9.5, 10.5,
+            11.5, 12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5, 20.5, 21.5,
+            22.5, 23.5]),
+     <a list of 23 Patch objects>)
+
+
+
+
+![png](notebook_files/likelihood-maxent_9_1.png)
+
+
+
+```python
+xmin = likelihood_human.min()
+xmax = likelihood_human.max()
+hists_pos = {}
+hists_neg = {}
+lengths = [9, 15]
+for length in lengths:
+    positive = ~(df_ts['Assay', 'Qualitative Measure'] == 'Negative')
+    lengthmask = np.abs(df_ts['Epitope', 'Description'].str.len()-length)<2
+    likelihoods_t, weights_t = likelihoods_epitopes(df_ts[positive & lengthmask]['Epitope', 'Description'], loglikelihood, k)
+    likelihoods_t_neg, weights_t_neg = likelihoods_epitopes(df_ts[(~positive) & lengthmask]['Epitope', 'Description'], loglikelihood, k)
+
+    bins = list(np.linspace(xmin+3, xmax-8, 25))
+    bins.extend([xmin-0.1, xmax+0.1])
+    bins = np.array(sorted(bins))
+    binmids = (bins[1:]+bins[:-1])*0.5
+    hists_pos[length] = np.histogram(likelihoods_t, bins=bins, weights=weights_t)[0]
+    hists_neg[length]= np.histogram(likelihoods_t_neg, bins=bins, weights=weights_t_neg)[0]
+```
+
+
+```python
+fig, ax = plt.subplots()
+ps = [likelihood_human, likelihoods_t, likelihoods_t_neg]#, likelihoods_b]
+labels = ['Human proteins', 'IEDB$^+$ T cell epitopes', 'IEDB$^-$ T cell epitopes']#, 'B epitopes']
+weights = [np.ones(len(likelihood_human)), weights_t, weights_t_neg]#, weights_b]
+
+plot_histograms(ps, labels, weights=weights, xmin=xmin, xmax=xmax, ax=ax, nbins=30)
+ax.set_xlim(xmin, xmax)
+ax.set_ylabel('Frequency')
+ax.set_xlabel('Likelihood')
+ax.set_yscale('log')
+ax.legend(title='Peptide', loc='lower center')
+fig.tight_layout()
+```
+
+
+![png](notebook_files/likelihood-maxent_11_0.png)
+
+
+
+```python
+fig, ax = plt.subplots()
+for length in lengths:
+    hist_pos, hist_neg = hists_pos[length], hists_neg[length]
+    plot_proportion(binmids, hist_pos, hist_pos+hist_neg, ls='-', marker='.', ax=ax, label=length)
+ax.set_xlabel('Likelihood')
+ax.set_ylabel('Fraction positive')
+ax.legend()
+ax.set_ylim(0.0, 1.0)
+fig.savefig('maxent_iedb_fraction_positive.png')
+```
+
+
+![png](notebook_files/likelihood-maxent_12_0.png)
+
+
+
+```python
+
+```
 #### resample.ipynb
 
 ```python
@@ -318,15 +476,22 @@ import sys
 sys.path.append('..')
 
 from lib import *
+from lib.maxent import *
 
-k = 5
+k = 9
 ref = 'human'
-with open(datadir+ 'triplet-%s.json'%ref, 'r') as f:
-    tripletparams = json.load(f)
-loglikelihood = lambda seq, k: loglikelihood_triplet(seq, **tripletparams, k=k)
-likelihoodname = 'triplet'
+#with open(datadir+ 'triplet-%s.json'%ref, 'r') as f:
+#    tripletparams = json.load(f)
+#loglikelihood = lambda seq, k: loglikelihood_triplet(seq, **tripletparams, k=k)
+#likelihoodname = 'triplet'
 
-def run(name, path, proteinname=True, sequence=False):
+params = np.load('../maxent/data/Human_reference_9.npz')
+hi = params['hi']
+Jij = params['Jij']
+loglikelihood = lambda seq, k: -energy_potts(map_aatonumber(seq.upper()), hi, Jij) if isvalidaa(seq) else np.nan
+likelihoodname = 'maxent'
+
+def run(name, path, pathout, proteinname=True, sequence=False):
     print(name)
     likelihoods = np.array([loglikelihood(seq[i:i+k], k) for h, seq in fasta_iter(path) for i in range(len(seq)-k+1) ])
     if sequence:
@@ -340,22 +505,22 @@ def run(name, path, proteinname=True, sequence=False):
     else:
         df = pd.DataFrame.from_dict(dict(likelihoods=likelihoods, protein=protein))
     df.dropna(inplace=True)
-    df.to_csv('data/proteome-ref%s-k%i-%s.zip'%(ref, k, name), compression='zip', index=False, float_format='%.4f')
+    df.to_csv(pathout, compression='zip', index=False, float_format='%.4f')
 
 # All viruses
 path = datadir+'human-viruses-uniref90_nohiv.fasta'
-pathout = 'data/proteome-ref%s-k%i-%s.zip'%(ref, k, 'Viruses')
+pathout = 'data/proteome-ref%s-%s-k%i-%s.zip'%(ref, likelihoodname, k, 'Viruses')
 if not os.path.exists(pathout):
-    run('Viruses', path, proteinname=False)
+    run('Viruses', path, pathout, proteinname=False)
 
 # Cancer datasets
 filenames = ['frameshifts.fasta.gz']
 for filename in filenames:
     name = filename.split('.')[0]
     path = datadir+'cancer/' + filename
-    pathout = 'data/proteome-ref%s-k%i-%s.zip'%(ref, k, name)
+    pathout = 'data/proteome-ref%s-%s-k%i-%s.zip'%(ref, likelihoodname, k, name)
     if not os.path.exists(pathout):
-        run(name, path, proteinname=False)
+        run(name, path, pathout, proteinname=False)
 
 # Ufo datasets
 filenames = glob.glob(datadir + 'ufos/*.csv')
@@ -367,7 +532,8 @@ for filename in filenames:
     likelihoods = np.array([loglikelihood(seq, k) for seq in sequences])
     df = pd.DataFrame.from_dict(dict(likelihoods=likelihoods, sequence=sequences))
     df.dropna(inplace=True)
-    df.to_csv('data/proteome-ref%s-k%i-%s.zip'%(ref, k, name), compression='zip', index=False, float_format='%.4f')
+    pathout = 'data/proteome-ref%s-%s-k%i-%s.zip'%(ref, likelihoodname, k, name)
+    df.to_csv(pathout, compression='zip', index=False, float_format='%.4f')
 
     # only middle part
     sequences = np.array([seq[i:i+k] for seq in df_in['AA_seq'] for i in range(10, min(len(seq)-k+1, 51))])
@@ -383,17 +549,17 @@ filenames = ['SARSCoV2.fasta']
 for filename in filenames:
     name = filename.split('.')[0]
     path = datadir + filename
-    pathout = 'data/proteome-ref%s-k%i-%s.zip'%(ref, k, name)
+    pathout = 'data/proteome-ref%s-%s-k%i-%s.zip'%(ref, likelihoodname, k, name)
     if not os.path.exists(pathout):
-        run(name, path, proteinname=False)
+        run(name, path, pathout, proteinname=False)
 
 # Proteomes
 proteomes = load_proteomes()
 for name, row in proteomes.iterrows():
     path = datadir + row['path']
-    pathout = 'data/proteome-ref%s-k%i-%s.zip'%(ref, k, name)
+    pathout = 'data/proteome-ref%s-%s-k%i-%s.zip'%(ref, likelihoodname, k, name)
     if not os.path.exists(pathout):
-        run(name, path)
+        run(name, path, pathout, proteinname=False)
 
 ```
 #### plot-ufo.py
@@ -457,8 +623,9 @@ plt.style.use('../peptidome.mplstyle')
 
 k = 9
 ref = 'human'
+likelihoodname = 'maxent'
 
-likelihoods_human = pd.read_csv('data/proteome-ref%s-k%i-Human.zip'%(ref, k))['likelihoods']
+likelihoods_human = pd.read_csv('data/proteome-ref%s-%s-k%i-Human.zip'%(ref, likelihoodname, k))['likelihoods']
 
 with open(datadir+ 'triplet-%s.json' % ref, 'r') as f:
     tripletparams = json.load(f)
@@ -609,10 +776,12 @@ from lib import *
 k = 9
 ref = 'human'
 
-likelihood_human = pd.read_csv('data/proteome-ref%s-k%i-Human.zip'%(ref, k))['likelihoods']
-likelihood_virus = pd.read_csv('data/proteome-ref%s-k%i-Viruses.zip'%(ref, k))['likelihoods']
-likelihood_frameshifts = pd.read_csv('data/proteome-ref%s-k%i-frameshifts.zip'%(ref, k))['likelihoods']
-likelihood_pb1ufo = pd.read_csv('data/proteome-ref%s-k%i-pb1ufo.zip'%(ref, k))['likelihoods']
+likelihoodname = 'maxent'
+
+likelihood_human = pd.read_csv('data/proteome-ref%s-%s-k%i-Human.zip'%(ref, likelihoodname, k))['likelihoods']
+likelihood_virus = pd.read_csv('data/proteome-ref%s-%s-k%i-Viruses.zip'%(ref, likelihoodname, k))['likelihoods']
+likelihood_frameshifts = pd.read_csv('data/proteome-ref%s-%s-k%i-frameshifts.zip'%(ref, likelihoodname, k))['likelihoods']
+likelihood_pb1ufo = pd.read_csv('data/proteome-ref%s-%s-k%i-pb1ufo.zip'%(ref, likelihoodname, k))['likelihoods']
 
 fig, ax = plt.subplots(figsize=(3.4, 2.0))
 ps = [likelihood_human, likelihood_virus, likelihood_frameshifts, likelihood_pb1ufo]
@@ -641,17 +810,28 @@ import sys
 sys.path.append('..')
 
 from lib import *
+from lib.plotting import *
+from lib.maxent import *
 
 k = 9
 ref = 'human'
+likelihoodname = 'maxent'
 
-likelihood_human = pd.read_csv('data/proteome-ref%s-k%i-Human.zip'%(ref, k))['likelihoods']
-likelihood_virus = pd.read_csv('data/proteome-ref%s-k%i-Viruses.zip'%(ref, k))['likelihoods']
+likelihood_human = pd.read_csv('data/proteome-ref%s-%s-k%i-Human.zip'%(ref, likelihoodname, k))['likelihoods']
+likelihood_virus = pd.read_csv('data/proteome-ref%s-%s-k%i-Viruses.zip'%(ref, likelihoodname, k))['likelihoods']
 
-with open(datadir+ 'triplet-%s.json' % ref, 'r') as f:
-    tripletparams = json.load(f)
-loglikelihood = lambda seq, k: loglikelihood_triplet(seq, **tripletparams, k=k)
-likelihoodname = 'triplet'
+#with open(datadir+ 'triplet-%s.json' % ref, 'r') as f:
+#    tripletparams = json.load(f)
+#loglikelihood = lambda seq, k: loglikelihood_triplet(seq, **tripletparams, k=k)
+#likelihoodname = 'triplet'
+
+params = np.load('../maxent/data/Human_reference_9.npz')
+hi = params['hi']
+Jij = params['Jij']
+loglikelihood = lambda seq, k: -energy_potts(map_aatonumber(seq.upper()), hi, Jij) if isvalidaa(seq) else np.nan
+likelihoodname = 'maxent'
+
+
 
 df_ts = load_iedb_tcellepitopes(human_only=True)
 mask = ~df_ts['Epitope', 'Parent Species'].str.contains('Homo sapiens', na=False)
@@ -668,15 +848,18 @@ likelihoods_b, weights_b = likelihoods_epitopes(df_b['Epitope', 'Description'].u
 
 print(len(likelihood_human), len(likelihood_virus), len(likelihoods_t), len(likelihoods_b))
 
+xmin, xmax = likelihood_human.min(), likelihood_human.max()
+
 fig, ax = plt.subplots(figsize=(3.4, 2.0))
 ps = [likelihood_human, likelihood_virus, likelihoods_t, likelihoods_b]
 labels = ['human', 'viruses', 'T cell epitopes', 'B cell epitopes']
 weights = [np.ones(len(likelihood_human)), np.ones(len(likelihood_virus)), weights_t, weights_b]
-plot_histograms(ps, labels, weights=weights, xmin=-14.1, xmax=-8.9, ax=ax, nbins=35)
-ax.set_xlim(-14, -9)
+plot_histograms(ps, labels, weights=weights, xmin=xmin, xmax=xmax, ax=ax, nbins=100, step=False)
+ax.set_xlim(xmin, xmax)
+#ax.set_yscale('log')
 ax.set_ylim(0.0)
 ax.set_ylabel('probability density')
-ax.set_xlabel('$log_2$ likelihood')
+ax.set_xlabel('loglikelihood')
 fig.tight_layout()
 plt.show()
 fig.savefig('plots/likelihoodprofile-Viruses-%s-k%i.png' % (likelihoodname, k), dpi=300)

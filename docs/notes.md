@@ -4,6 +4,16 @@ title: Notes
 order: 3
 ---
 
+# Mapping between MHC types, length preference and T cell types
+
+Here is a small table for future reference
+
+| MHC type | T cell | Antigen origin           | Peptide length | HLA types        |
+| -------- | ------ | ------------------------ | -------------- | ---------------- |
+| I        | CD8    | intracellular (viruses)  | 9              | HLA-A/B/C/E/F/G/ | 
+| II       | CD4    | extracellular (bacteria) | 15             | HLA-D(M/O/P/Q/R) |
+
+
 #  Old literature on evolution of adaptive immune recognition
 
 Percus, Percus, Perelson PNAS 1993:

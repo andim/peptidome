@@ -5,10 +5,8 @@ import sys
 sys.path.append('..')
 from lib import *
 
-#with open('data/human_replaced.txt', 'r') as f:
-#    seqs = [s.strip() for s in f.readlines()]
-#proteome = seqs
-seqs = list(pd.read_csv('data/human_uniquedomains.csv')['seq'])
+filtering = 'notop20'
+seqs = list(pd.read_csv('data/human_%s.csv'%filtering)['Sequence'])
 
 mutualinformation = []
 mutualinformation_std = []
@@ -23,4 +21,4 @@ for gap in gaps:
 
 df = pd.DataFrame.from_dict(dict(gaps=gaps, mutualinformation=mutualinformation,
                                  mutualinformation_std=mutualinformation_std))
-df.to_csv('data/mutualinformation_uniquedomains.csv')
+df.to_csv('data/mutualinformation_%s.csv'%filtering)
