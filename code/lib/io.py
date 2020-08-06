@@ -8,6 +8,8 @@ import numpy as np
 import pandas as pd
 from Bio import SeqIO
 
+from .main import *
+
 # Define path variables
 repopath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
 datadir = os.path.join(repopath, 'data/')
@@ -108,7 +110,6 @@ def load_iedb_tcellepitopes(
         assay_method=None,
         assay_group=None,
         only_standard_amino_acids=True,
-        reduced_alphabet=None,  # 20 letter AA strings -> simpler alphabet
         nrows=None):
     """
     Load IEDB T-cell data without aggregating multiple entries for same epitope
@@ -133,8 +134,6 @@ def load_iedb_tcellepitopes(
     only_standard_amino_acids : bool, optional
         Drop sequences which use non-standard amino acids, anything outside
         the core 20, such as X or U (default = True)
-    reduced_alphabet: dictionary, optional
-        Remap amino acid letters to some other alphabet
     nrows: int, optional
         Don't load the full IEDB dataset but instead read only the first nrows
     """

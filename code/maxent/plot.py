@@ -15,11 +15,11 @@ for dataset in ['train', 'test', 'model', 'model_global']:
         observables_dict[observable][dataset] = params[observable]
 
 for model_type in ['model', 'model_global']:
-    fig, axes = plt.subplots(figsize=(8, 5), ncols=3, nrows=2)
+    fig, axes = plt.subplots(figsize=(6, 3.5), ncols=3, nrows=2)
 
     for j, (observable, label, lims, flattener) in enumerate([('fi', '$f_i$', (0, 0.12), np.ravel),
-                                                   ('cij', '$C_{ij}$', (-0.0035, 0.0035), flatten_ij),
-                                                   ('cijk', '$C_{ijk}$', (-7e-4, 7e-4), flatten_ijk)]):
+                                                   ('cij', '$C_{ij}$', (-0.0025, 0.0035), flatten_ij),
+                                                   ('cijk', '$C_{ijk}$', (-4e-4, 7e-4), flatten_ijk)]):
         for i, dataset in enumerate([model_type, 'train']):
             ax = axes[i, j]
             if observable in ['cij', 'cijk']:
@@ -45,4 +45,9 @@ for model_type in ['model', 'model_global']:
     fig.tight_layout()
 
     fig.savefig('main.png' if model_type == 'model' else 'model_global.png')
+    if model_type == 'model':
+        fig.savefig('../../paper/images/maxent_freqs.pdf')
+    else:
+        fig.savefig('../../paper/images/maxent_freqs_global.pdf')
+    plt.show()
     plt.show()

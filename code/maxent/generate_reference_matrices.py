@@ -16,4 +16,4 @@ train, test = train_test_split(seqs, test_size=0.5, random_state=prng)
 
 for label, data in [('train', train), ('test', test)]:
     matrix = kmers_to_matrix(to_kmers(data, k=L))
-    np.savetxt('data/%s_matrix.csv.gz'%label, matrix, fmt='%i')
+    np.savetxt('data/%s_matrix_L%i.csv.gz'%(label,L), matrix, fmt='%i')

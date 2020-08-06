@@ -386,34 +386,6 @@ def likelihoods_epitopes(epitopes, likelihood, k):
     weights = np.array([1.0/(len(seq)-k+1) for seq in epitopes for i in range(len(seq)-k+1)])
     return likelihoods, weights
 
-def plot_histograms(valuess, labels, weights=None, nbins=40, ax=None,
-                    xmin=None, xmax=None, **kwargs):
-    if not ax:
-        ax = plt.gca()
-    if (xmin is None) or (xmax is None):
-        mean = np.mean([np.mean(values) for values in valuess])
-        std = np.mean([np.std(values) for values in valuess])
-    if xmin is None:
-        xmin = round(mean-5*std)
-    if xmax is None:
-        xmax  = round(mean+5*std)
-    bins = np.linspace(xmin, xmax, nbins)
-    for i, (values, label) in enumerate(zip(valuess, labels)):
-        # filter nans
-        values = np.asarray(values)
-        mask = ~np.isnan(values)
-        values = values[mask]
-        if (not weights is None) and (not weights[i] is None):
-            weight = weights[i][mask]
-            counts, bins = np.histogram(values, bins=bins, weights=weight)
-            counts /= np.sum(weight)
-        else:
-            counts, bins = np.histogram(values, bins=bins)
-            counts = counts/np.sum(counts)
-        ax.plot(0.5*(bins[:-1]+bins[1:]), counts,
-                label=label, **kwargs)
-    ax.legend()
-    return ax
 
 @jit
 def mcmcsampler(x0, energy, jump, nsteps=1000, nburnin=0, nsample=1):
