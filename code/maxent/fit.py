@@ -9,13 +9,13 @@ from lib.maxent import *
 
 from numba import njit
 
-L = 15
+L = 9
 nsample = L
 output = True
 q = naminoacids
 pseudocount = 1.0
 niter = 30
-stepsize = 0.05
+stepsize = 1.0 
 nsteps = 1e7
 nburnin = 1e3
 

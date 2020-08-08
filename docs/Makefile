@@ -5,7 +5,7 @@ copycode:
 	cp ../code . -r
 	rm -f code/*/*.md
 	rm -f code/*/*.pdf
-	rm -f code/*/submit.sh
+	rm -f code/*/submit*.sh
 	rm -f code/*.md
 	rm -f code/requirements.txt
 	rm -f code/*/Makefile

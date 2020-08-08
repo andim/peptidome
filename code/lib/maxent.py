@@ -165,9 +165,11 @@ def fit_full_potts(fi, fij, sampler, niter=1, epsilon=0.1, pseudocount=1.0, prng
         fij_model = pair_frequencies(samples, q, fi_model, pseudocount=pseudocount)
 
         hi -= np.log(fi_model/fi)*epsilon
+        #hi += (fi-fi_model)*epsilon
         if output:
             print('f1', calc_jsd(fi_model[0], fi[0]))
         Jij -= np.log(fij_model/fij)*epsilon
+        #Jij += (fij-fij_model)*epsilon
         if output:
             print('f2', calc_jsd(fij_model[0, 1], fij[0, 1]))
     return hi, Jij

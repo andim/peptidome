@@ -173,47 +173,6 @@ The Kullback-Leibler divergence is exactly the expected log-likelihood ratio dra
 %In the limit of large $k$ 
 %Chernoff-Stein Lemma!
 
-\begin{table}
-    \begin{center}
-        \begin{tabular}{ c c c }
-            Organism&site $D_{KL}$&doublet $D_{KL}$\\
-            \hline
-Mouse&0.00023&0.00089\\
-Yeast&0.046&0.097\\
-Cockroach&0.015&0.033\\
-Cattle&0.00031&0.0011\\
-Chicken&0.0011&0.0038\\
-Wheat&0.012&0.029\\
-Soybean&0.013&0.033\\\hline
-Vaccinia&0.13&0.27\\
-InfluenzaB&0.043&0.17\\
-InfluenzaA&0.042&0.17\\
-CMV&0.035&0.085\\
-HCV&0.064&0.2\\
-HBV&0.078&0.28\\
-DENV&0.049&0.19\\
-HIV&0.043&0.19\\
-EBV&0.043&0.1\\ \hline
-Human viruses&0.015&0.038\\\hline
-Ebola&0.023&0.12\\
-Tuberculosis&0.11&0.23\\
-Listeria&0.071&0.15\\
-Burkholderia&0.1&0.23\\
-Meningococcus&0.039&0.1\\
-StreptococcusPyogenes&0.06&0.14\\
-Hpylori&0.077&0.19\\
-Lyme&0.19&0.38\\
-Tetanus&0.15&0.3\\ 
-Leprosy&0.077&0.17\\ \hline
-Malaria&0.36&0.71\\
-Chagas&0.017&0.051\\
-OnchocercaVolvulus&0.03&0.069\\
-        \end{tabular}
-    \end{center}
-    \caption{Kullback-Leibler divergence between amino acid frequencies (and doublet frequencies) in various proteomes and the human proteome (in bits). Human viruses: all viruses with human host from uniprot filtered for duplicates using the Uniref 90 criteria.}
-    \label{tabkldiv}
-\end{table}
-
 
 
 
@@ -228,18 +187,18 @@ OnchocercaVolvulus&0.03&0.069\\
 
 \subsection{A mathematical framework to model peptide statistics} 
 
-The distribution of all possible peptides $P(\B \sigma)$ is highly undersampled for even moderate length peptides. We instead pursue a statistical approach and assign a probability to each peptide that measures how likely such a peptide is on average given the underlying proteome statistics.
+The distribution $P(\B \sigma)$ of all possible peptides $\B \sigma$ within an organism is highly undersampled for even moderate length peptides. Still we can pursue a statistical approach and assign a probability to each peptide that measures how likely such a peptide is on average given the underlying proteome statistics.
 
-We constrain some statistical observables $\langle f_\mu(\boldsymbol \sigma)\rangle$ to be equal to their empirical values, while otherwise keeping the probability distribution as random as possible. In mathematical terms this means that we are looking for the probability distribution that maximizizes the Shannon entropy
+We constrain some statistical observables $\langle f_\mu(\boldsymbol \sigma)\rangle$ to be equal to their empirical values $\bar{f_\mu}$, while otherwise keeping the probability distribution as random as possible. In mathematical terms this means that we are looking for the probability distribution that maximizizes the Shannon entropy
 \begin{equation}
     S[P(\B \sigma)] = - \sum_{\B \sigma} P(\B \sigma) \log P(\B \sigma),
 \end{equation}
 subject to a normalization constraint and a constraint
 \begin{equation}
-\langle f_\mu(\boldsymbol \sigma)\rangle = \sum_{\boldsymbol \sigma} P(\boldsymbol \sigma) f_\mu(\boldsymbol \sigma) = f_\mu^{emp},
+    \langle f_\mu(\boldsymbol \sigma)\rangle = \sum_{\boldsymbol \sigma} P(\boldsymbol \sigma) f_\mu(\boldsymbol \sigma) = \bar{f_\mu},
 \end{equation}
 for each observable.
-The constrained optimization with respect to the normalization constraint can be performed analytically, which yields a Boltzmann distribution of the following form
+The optimization with respect to the normalization constraint can be performed analytically, which yields a Boltzmann distribution of the following form
 \begin{equation}
     P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ -\sum_{\mu=1}^K \lambda_\mu f_\mu(\boldsymbol \sigma) \right].
 \end{equation}
@@ -250,11 +209,10 @@ A common choice is to constrain the one and two-point frequencies
     f_{ij}^{\alpha\beta}(\B \sigma) &= \sigma_i^\alpha \sigma_j^\beta,
 \end{align}
 where $\sigma_i^\alpha = 1$ if the amino acid at site i is of type $\alpha$ and zero otherwise.
-This leads to a maximum entropy probability distribution that takes the form
+This leads to a maximum entropy probability distribution that takes the form of a disordered Potts model,
 \begin{equation}
-    P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ \sum_{i=1}^L \sum_{\alpha = 1}^{20} h_i^\alpha \sigma_i^\alpha + \sum_{i<j}^L \sum_{\alpha,\beta = 1}^{20} J_{ij}^{\alpha \beta}  \sigma_i^\alpha \sigma_j^\beta \right],
+    P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ \sum_{i=1}^L \sum_{\alpha = 1}^{20} h_i^\alpha \sigma_i^\alpha + \sum_{i<j}^L \sum_{\alpha,\beta = 1}^{20} J_{ij}^{\alpha \beta}  \sigma_i^\alpha \sigma_j^\beta \right].
 \end{equation}
-which is known as a disordered Potts model.
 Given that many biases are compositional in nature we can also consider a simpler model that only involves a global constraint on the covariation of the total count of amino acids of different types:
 \begin{align}
     n^\alpha(\B \sigma) &= \sum_i \sigma_i^\alpha, \\
@@ -265,8 +223,18 @@ This leads to a maximum entropy probability distribution that takes the form
     P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ \sum_{\alpha=1}^{20} h^\alpha n^\alpha +  \sum_{\alpha,\beta = 1}^{20} J^{\alpha \beta} n^\alpha n^\beta \right].
 \end{equation}
 
-Regardless of the model formulation we can fit the models by estimating $\langle f_\mu(\B \sigma)\rangle$ using Monte Carlo methods and then perform gradient ascent or iterative scaling.
+We can fit the model parameters using Boltzmann machine learning. To do so we estimate $\langle f_\mu(\B \sigma)\rangle$ using Monte Carlo methods for given model parameters. The parameters are then updated by gradient ascent,
+\begin{equation}
+    \lambda_\mu^{t+1} = \lambda_\mu^t + \epsilon_\mu^t \left(\langle f_\mu \rangle  - \bar{f_\mu}\right),
+\end{equation}
+where $\epsilon_mu^t$ represents a learning rate (which generally can be coordinate dependent and time-varying).
 
+\begin{figure*}
+    \includegraphics[width=\textwidth]{maxent_freqs}
+    \caption{Correlation between Maxent model and test set (upper row) and training and test set (lower row) for the first three connected correlation functions.
+    \label{figmaxent_freqs}
+    }
+\end{figure*}
 
 \subsection{Features of immune epitopes}
 
@@ -314,5 +282,55 @@ Consider that there is a number $N_T$ neighboring peptides that if they are in t
 
 
 \input{independentmodel}
+
+\begin{figure*}
+    \includegraphics[width=\textwidth]{maxent_freqs_global}
+    \caption{Correlation between compositional Maxent model and test set (upper row) and training and test set (lower row) for the first three connected correlation functions.
+    \label{figmaxent_freqs_global}
+    }
+\end{figure*}
+
+\begin{table}
+    \begin{center}
+        \begin{tabular}{ c c c }
+            Organism&site $D_{KL}$&doublet $D_{KL}$\\
+            \hline
+Mouse&0.00023&0.00089\\
+Yeast&0.046&0.097\\
+Cockroach&0.015&0.033\\
+Cattle&0.00031&0.0011\\
+Chicken&0.0011&0.0038\\
+Wheat&0.012&0.029\\
+Soybean&0.013&0.033\\\hline
+Vaccinia&0.13&0.27\\
+InfluenzaB&0.043&0.17\\
+InfluenzaA&0.042&0.17\\
+CMV&0.035&0.085\\
+HCV&0.064&0.2\\
+HBV&0.078&0.28\\
+DENV&0.049&0.19\\
+HIV&0.043&0.19\\
+EBV&0.043&0.1\\ \hline
+Human viruses&0.015&0.038\\\hline
+Ebola&0.023&0.12\\
+Tuberculosis&0.11&0.23\\
+Listeria&0.071&0.15\\
+Burkholderia&0.1&0.23\\
+Meningococcus&0.039&0.1\\
+StreptococcusPyogenes&0.06&0.14\\
+Hpylori&0.077&0.19\\
+Lyme&0.19&0.38\\
+Tetanus&0.15&0.3\\ 
+Leprosy&0.077&0.17\\ \hline
+Malaria&0.36&0.71\\
+Chagas&0.017&0.051\\
+OnchocercaVolvulus&0.03&0.069\\
+        \end{tabular}
+    \end{center}
+    \caption{Kullback-Leibler divergence between amino acid frequencies (and doublet frequencies) in various proteomes and the human proteome (in bits). Human viruses: all viruses with human host from uniprot filtered for duplicates using the Uniref 90 criteria.}
+    \label{tabkldiv}
+\end{table}
+
+
 
 \end{document}
