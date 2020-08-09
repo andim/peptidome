@@ -493,3 +493,88 @@ def flatten_ijk(cijk):
                         for gamma in range(num_symbols):
                             flattened.append(cijk[i, j, k, alpha, beta, gamma])
     return np.array(flattened)
+
+def Fpotts_thermodynamic_integration(hi, Jij, integration_intervals=1, mcmc_kwargs=dict()):
+    prng = np.random
+    L, q = hi.shape
+
+    def Fprime(alpha):
+        @njit
+        def jump(x):
+            return local_jump_jit(x, q)
+        @njit
+        def energy(x):
+            return energy_potts(x, hi, alpha*Jij)
+        x0 = prng.randint(q, size=L)
+        matrix = mcmcsampler(x0, energy, jump, **mcmc_kwargs)
+        return np.mean([energy_potts(x, np.zeros_like(hi), Jij) for x in matrix])
+
+    xs = np.linspace(0, 1, integration_intervals+1)
+    Fprimes = [Fprime(x) for x in xs]
+    Fint = scipy.integrate.simps(Fprimes, xs)
+    F0 = -np.sum(np.log(np.sum(np.exp(hi), axis=1)))
+    return F0 + Fint
+
+#### Code for global covariance model ####
+
+def to_aacounts(matrix):
+    return np.array([list(aacounts_int_jit(seq)) for seq in matrix])
+
+@njit
+def energy_cov(x, h, J):
+    counts = aacounts_int_jit(x)
+    q = len(h)
+    e = 0
+    for alpha in range(q):
+        e -= h[alpha]*counts[alpha]
+        for beta in range(alpha, q):
+            e -= J[alpha, beta]*counts[alpha]*counts[beta]
+    return e
+
+def calc_n1(aacounts):
+    return np.mean(aacounts, axis=0)
+
+@njit
+def calc_n2(matrix):
+    N, q = matrix.shape
+    n2 = np.zeros((q, q))
+    for s in range(N):
+        for alpha in range(q):
+            for beta in range(q):
+                n2[alpha, beta] += matrix[s, alpha]*matrix[s, beta]     
+    n2 /= N
+    return n2
+
+@njit
+def calc_n3(matrix):
+    N, q = matrix.shape
+    n3 = np.zeros((q, q, q))
+    for s in range(N):
+        for alpha in range(q):
+            for beta in range(q):
+                for gamma in range(q):
+                    n3[alpha, beta, gamma] += matrix[s, alpha]*matrix[s, beta]*matrix[s, gamma]
+    n3 /= N
+    return n3
+
+
+def Fcov_thermodynamic_integration(h, J, L, integration_intervals=1, mcmc_kwargs=dict()):
+    prng = np.random
+    q = h.shape[0]
+
+    def Fprime(alpha):
+        @njit
+        def jump(x):
+            return local_jump_jit(x, q)
+        @njit
+        def energy(x):
+            return energy_cov(x, h, alpha*J)
+        x0 = prng.randint(q, size=L)
+        matrix = mcmcsampler(x0, energy, jump, **mcmc_kwargs)
+        return np.mean([energy_cov(x, np.zeros_like(h), J) for x in matrix])
+
+    xs = np.linspace(0, 1, integration_intervals+1)
+    Fprimes = [Fprime(x) for x in xs]
+    Fint = scipy.integrate.simps(Fprimes, xs)
+    F0 = -L*np.log(np.sum(np.exp(h)))
+    return F0 + Fint

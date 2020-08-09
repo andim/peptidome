@@ -14,8 +14,8 @@ nsample = L
 output = True
 q = naminoacids
 pseudocount = 1.0
-niter = 30
-stepsize = 1.0 
+niter = 50
+stepsize = 0.1 
 nsteps = 1e7
 nburnin = 1e3
 
@@ -40,6 +40,6 @@ x0 = prng.randint(q, size=L)
 nsteps_generate = int(matrix.shape[0]*nsample)
 model_matrix = mcmcsampler(x0, energy, jump, nsteps=nsteps_generate,
                            nsample=nsample, nburnin=nburnin)
-np.savetxt('data/model_matrix%i.csv.gz'%L, model_matrix, fmt='%i')
+np.savetxt('data/model_matrix_L%i.csv.gz'%L, model_matrix, fmt='%i')
 
 np.savez('data/Human_reference_%i.npz'%L, hi=hi, Jij=Jij)

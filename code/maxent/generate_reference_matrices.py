@@ -7,7 +7,7 @@ sys.path.append('..')
 from lib import *
 from lib.maxent import *
 
-L = 9
+L = 4
 seed = 12345
 
 prng = np.random.RandomState(seed=seed)

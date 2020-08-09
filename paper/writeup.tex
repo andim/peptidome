@@ -84,7 +84,8 @@ Karlin and Bucher \cite{Karlin1992} have shown the existence of pairwise correla
 
 Another interesting line of work has involved low-complexity sequences within proteins (see \cite{Cascarina2018} and references therein).
 
-There has been some early work about peptide similarity in the context of immunology. Starting with work by Claverie and co-workers \cite{Claverie1988} and later by Burroughs, De Boer, and Kesmir \cite{Burroughs2004}. Interestingly, they demonstrate that the number of shared 9mers decreases with evolutionary distance, and is much lower for e.g. human and bacteria than for human and mouse, or human and drosophila. The paper also discusses some possible slight preference of the antigen processing pathway for non-self antigens. In a follow up work an overlapping set of authors build a tool for immunogenicity prediction based on small differences in amino acid usage in recognized epitopes \cite{Calis2013}. A more recent follow up by Wortel et al. \cite{Wortel2018} shows that self and foreign peptides are largely similar (much more similar then words from different languages). They then argue that under these conditions thymic selection should minimizie the co-occurrence of similar self-peptides for efficient self/non-self discrimination based on negative selection. 
+There has been some early work about peptide similarity in the context of immunology. Starting with work by Claverie and co-workers% \cite{Claverie1988}
+and later by Burroughs, De Boer, and Kesmir \cite{Burroughs2004}. Interestingly, they demonstrate that the number of shared 9mers decreases with evolutionary distance, and is much lower for e.g. human and bacteria than for human and mouse, or human and drosophila. The paper also discusses some possible slight preference of the antigen processing pathway for non-self antigens. In a follow up work an overlapping set of authors build a tool for immunogenicity prediction based on small differences in amino acid usage in recognized epitopes \cite{Calis2013}. A more recent follow up by Wortel et al. \cite{Wortel2018} shows that self and foreign peptides are largely similar (much more similar then words from different languages). They then argue that under these conditions thymic selection should minimizie the co-occurrence of similar self-peptides for efficient self/non-self discrimination based on negative selection. 
 
 Coevolution \cite{Bahir2009}.
 
@@ -200,9 +201,52 @@ subject to a normalization constraint and a constraint
 for each observable.
 The optimization with respect to the normalization constraint can be performed analytically, which yields a Boltzmann distribution of the following form
 \begin{equation}
-    P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ -\sum_{\mu=1}^K \lambda_\mu f_\mu(\boldsymbol \sigma) \right].
+    P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ -E(\B \sigma) \right].
 \end{equation}
-Here, $Z = \sum_{\B \sigma} \exp\left[ -\sum_{\mu=1}^K \lambda_\mu f_\mu(\boldsymbol \sigma) \right]$ is a normalization factor, called the partition function in statistical mechanics.
+with 
+\begin{equation}
+ E(\B \sigma) = \sum_{\mu=1}^K \lambda_\mu f_\mu(\boldsymbol \sigma)
+\end{equation}
+and 
+\begin{equation}
+    Z = \sum_{\B \sigma} \exp \left[ - E(\B \sigma) \right]
+\end{equation}
+    is a normalization factor, called the partition function in statistical mechanics.
+We fit the model parameters using Boltzmann machine learning. To do so we estimate $\langle f_\mu(\B \sigma)\rangle$ using Monte Carlo methods for given model parameters. The parameters are then updated by gradient ascent,
+\begin{equation}
+    \lambda_\mu^{t+1} = \lambda_\mu^t + \epsilon_\mu^t \left(\langle f_\mu \rangle  - \bar{f_\mu}\right),
+\end{equation}
+where $\epsilon_mu^t$ represents a learning rate (which generally can be coordinate dependent and time-varying).
+
+Once we have fitted the model parameters we can calculate the entropy of the distribution $P(\B \sigma)$. To do so we use the identity
+\begin{align}
+    S &= - \sum_{\B \sigma}  P(\B \sigma) \log P(\B \sigma),  \\
+      &= \langle E(\B \sigma) \rangle - F, \quad F = - \log Z.
+\end{align}
+The mean energy can be calculated directly from Monte Carlo samples. To calculate the free energy we use thermodynamic integration as follows \cite{Marchi2019}. We express the energy with respect to a reference energy $E_{ref}(\B \sigma)$ as $E(\B \sigma) = E_{ref}(\B \sigma) + \Delta E(\B\sigma)$, where the reference energy is choosen such that $F_{ref}$ can be calculated analytically. We define the perturbed energy function
+\begin{equation}
+    E_\alpha(\B \sigma) = E_{ref}(\B \sigma) + \alpha \Delta E(\B\sigma),
+\end{equation}
+which scales the contribution of the energy beyond the reference model.
+To obtain the free energy we use the identity
+\begin{equation}
+    F(1) = F_{ref} + \int_0^1 \ud \alpha F'(\alpha).
+\end{equation}
+Note that
+\begin{equation}
+    F'(\alpha) = - \langle \Delta E(\B \sigma) \rangle_{\alpha},
+\end{equation}
+which allows us to approximate the integrand by Monte Carlo simulations. We numerically evaluate $F'(\alpha)$ for evenly spaced $\alpha \in [0, 1]$ and calculate the integral by Simpson's rule.
+
+\begin{figure*}
+    \includegraphics[width=\textwidth]{maxent_freqs}
+    \caption{Correlation between Maxent model and test set (upper row) and training and test set (lower row) for the first three connected correlation functions.
+    \label{figmaxent_freqs}
+    }
+\end{figure*}
+
+
+
 A common choice is to constrain the one and two-point frequencies
 \begin{align}
     f_i^\alpha(\B \sigma) &= \sigma_i^\alpha, \\
@@ -223,18 +267,14 @@ This leads to a maximum entropy probability distribution that takes the form
     P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ \sum_{\alpha=1}^{20} h^\alpha n^\alpha +  \sum_{\alpha,\beta = 1}^{20} J^{\alpha \beta} n^\alpha n^\beta \right].
 \end{equation}
 
-We can fit the model parameters using Boltzmann machine learning. To do so we estimate $\langle f_\mu(\B \sigma)\rangle$ using Monte Carlo methods for given model parameters. The parameters are then updated by gradient ascent,
-\begin{equation}
-    \lambda_\mu^{t+1} = \lambda_\mu^t + \epsilon_\mu^t \left(\langle f_\mu \rangle  - \bar{f_\mu}\right),
-\end{equation}
-where $\epsilon_mu^t$ represents a learning rate (which generally can be coordinate dependent and time-varying).
-
-\begin{figure*}
-    \includegraphics[width=\textwidth]{maxent_freqs}
-    \caption{Correlation between Maxent model and test set (upper row) and training and test set (lower row) for the first three connected correlation functions.
-    \label{figmaxent_freqs}
+\begin{figure}
+    \includegraphics{diversity_reduction}
+    \caption{Contribution of different constraint to diversity reduction.
+    \label{figdiversity_reduction}
     }
-\end{figure*}
+\end{figure}
+
+
 
 \subsection{Features of immune epitopes}
 
