@@ -20,20 +20,20 @@ for model_type in ['model', 'model_global']:
     for j, (observable, label, lims, flattener) in enumerate([('fi', '$f_i$', (0, 0.12), np.ravel),
                                                    ('cij', '$C_{ij}$', (-0.0025, 0.0035), flatten_ij),
                                                    ('cijk', '$C_{ijk}$', (-4e-4, 7e-4), flatten_ijk)]):
-        for i, dataset in enumerate([model_type, 'train']):
+        for i, dataset in enumerate([model_type, 'test']):
             ax = axes[i, j]
             if observable in ['cij', 'cijk']:
-                plotting.density_scatter(flattener(observables_dict[observable]['test']),
+                plotting.density_scatter(flattener(observables_dict[observable]['train']),
                                          flattener(observables_dict[observable][dataset]),
                                          norm=colors.LogNorm(vmin=1),
                                          s=0.5,
                                          bins=50, ax=ax)
             else:
-                ax.plot(flattener(observables_dict[observable]['test']),
+                ax.plot(flattener(observables_dict[observable]['train']),
                         flattener(observables_dict[observable][dataset]),
                         'o', ms=2 if observable == 'fi' else 1)
 
-            ax.set_xlabel('test %s'%label)
+            ax.set_xlabel('train %s'%label)
             ax.set_ylabel('%s %s'%(dataset, label))
             ax.plot(lims, lims, 'k')
             ax.set_xlim(*lims)
@@ -42,6 +42,7 @@ for model_type in ['model', 'model_global']:
     for ax in axes[:, 1:].flatten():
         ax.ticklabel_format(style='sci', scilimits=(0,0))
 
+    label_axes(fig, labelstyle='%s')
     fig.tight_layout()
 
     fig.savefig('main.png' if model_type == 'model' else 'model_global.png')
