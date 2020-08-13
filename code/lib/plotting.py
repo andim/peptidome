@@ -57,7 +57,7 @@ def density_scatter(x, y, ax=None, sort=True, bins=20, trans=None, **kwargs):
     return ax
 
 def plot_histograms(valuess, labels, weights=None, nbins=40, ax=None,
-                    xmin=None, xmax=None, step=True, **kwargs):
+                    xmin=None, xmax=None, step=True, scaley=1.0, **kwargs):
     if not ax:
         ax = plt.gca()
     if (xmin is None) or (xmax is None):
@@ -81,12 +81,11 @@ def plot_histograms(valuess, labels, weights=None, nbins=40, ax=None,
             counts, bins = np.histogram(values, bins=bins)
             counts = counts/np.sum(counts)
         if step:
-            ax.step(bins[:-1], counts, label=label, where='mid', **kwargs)
+            ax.step(bins[:-1], counts*scaley, label=label, where='mid', **kwargs)
         else:
-            ax.plot(0.5*(bins[:-1]+bins[1:]), counts, label=label, **kwargs)
+            ax.plot(0.5*(bins[:-1]+bins[1:]), counts*scaley, label=label, **kwargs)
     ax.legend()
     return ax
-
 
 def plot_proportion(x, counts, totalcounts, label=None, ax=None, **kwargs):
     """ Plot proportions with errorbars.

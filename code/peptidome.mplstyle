@@ -6,7 +6,7 @@ figure.dpi: 300
 text.color: .0
 text.usetex: False
 
-image.cmap: Greys
+image.cmap: viridis
 font.size: 9.0
 font.family: sans-serif
 font.serif: cm

@@ -29,26 +29,32 @@ for ind, row in proteomes.iterrows():
                 print('%s not found in Pfam'%row['speciesid'])
 
 
-# Download proteome of all viruses with human host
-path = datadir+'human-viruses-uniref90.fasta'
-if not os.path.exists(path):
-    url = r"https://www.uniprot.org/uniref/?query=uniprot%3A(host%3A%22Homo+sapiens+(Human)+[9606]%22)+AND+identity%3A0.9&sort=score&format=fasta"
-    print(url)
-    try:
-        urllib.request.urlretrieve(url, path)
-    except:
-        print('could not download human viruses')
+# Download proteome of all viruses with human host filtered at 90% or 50% sequence identity level
+path_urls = [
+        ('human-viruses-uniref90.fasta', 
+         r"https://www.uniprot.org/uniref/?query=uniprot%3A(host%3A%22Homo+sapiens+(Human)+[9606]%22)+AND+identity%3A0.9&sort=score&format=fasta"),
+        ('human-viruses-uniref50.fasta', 
+         r"https://www.uniprot.org/uniref/?query=uniprot%3A(host%3A%22Homo+sapiens+(Human)+[9606]%22)+AND+identity%3A0.5&sort=score&format=fasta")
+        ]
+for path, url in path_urls:
+    if not os.path.exists(datadir+path):
+        try:
+            urllib.request.urlretrieve(url, datadir+path)
+        except:
+            print('could not download %s'%path)
 
 # filter HIV1 proteins from the combined proteome
-path_nohiv = datadir + 'human-viruses-uniref90_nohiv.fasta'
-if not os.path.exists(path_nohiv):
-    def load(fasta_name):
-        with open(fasta_name) as fastain:
-            for seq in SeqIO.parse(fastain, 'fasta'):
-                if not ('Human immunodeficiency virus 1' in seq.description):
-                    yield seq
-    with open(path_nohiv, "w") as fastaout:
-        SeqIO.write(list(load(path)), fastaout, "fasta")
+paths = [('human-viruses-uniref90.fasta', 'human-viruses-uniref90_nohiv.fasta'),
+         ('human-viruses-uniref50.fasta', 'human-viruses-uniref50_nohiv.fasta')]
+for pathin, pathout in paths:
+    if not os.path.exists(datadir+pathout):
+        def load(fasta_name):
+            with open(fasta_name) as fastain:
+                for seq in SeqIO.parse(fastain, 'fasta'):
+                    if not ('Human immunodeficiency virus 1' in seq.description):
+                        yield seq
+        with open(datadir+pathout, "w") as fastaout:
+            SeqIO.write(list(load(datadir+pathin)), fastaout, "fasta")
 
 
 path_urls = [

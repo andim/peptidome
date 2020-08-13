@@ -5,7 +5,8 @@ from matplotlib import colors
 import sys
 sys.path.append('..')
 from lib import *
-from lib.maxent import *
+plt.style.use('../peptidome.mplstyle')
+
 
 observables = ['fi', 'cij', 'cijk']
 observables_dict = {key: dict() for key in observables}
