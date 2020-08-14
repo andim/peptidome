@@ -218,6 +218,55 @@ We fit the model parameters using Boltzmann machine learning. To do so we estima
 \end{equation}
 where $\epsilon_mu^t$ represents a learning rate (which generally can be coordinate dependent and time-varying).
 
+
+\begin{figure*}
+    \includegraphics[width=\textwidth]{maxent_freqs}
+    \caption{Connected correlation functions of a maximum entropy model based on 1 and 2-point frequencies ressemble those of the training test set (upper row) within the training and test set error (lower row). Color indicates local density in regions with overplotting.
+    \label{figmaxent_freqs}
+    }
+\end{figure*}
+
+A common choice is to constrain the one and two-point frequencies
+\begin{align}
+    f_i^\alpha(\B \sigma) &= \sigma_i^\alpha, \\
+    f_{ij}^{\alpha\beta}(\B \sigma) &= \sigma_i^\alpha \sigma_j^\beta,
+\end{align}
+where $\sigma_i^\alpha = 1$ if the amino acid at site i is of type $\alpha$ and zero otherwise.
+This leads to a maximum entropy probability distribution that takes the form of a disordered Potts model,
+\begin{equation}
+    E(\boldsymbol \sigma) = - \sum_{i=1}^L \sum_{\alpha = 1}^{20} h_i^\alpha \sigma_i^\alpha - \sum_{i<j}^L \sum_{\alpha,\beta = 1}^{20} J_{ij}^{\alpha \beta}  \sigma_i^\alpha \sigma_j^\beta.
+\end{equation}
+The fitted model reproduces the 1- and 2-point connected correlations indicating fit convergence (Fig.~\ref{figmaxent_freqs}A,B). The model predicted connected third order correlations follow a similar trend between model and data, but are generally underestimated (Fig.~\ref{figmaxent_freqs}C).
+
+Given that many biases are compositional in nature we can also consider a simpler model that only involves a global constraint on the covariation of the total count of amino acids of different types:
+\begin{align}
+    n^\alpha(\B \sigma) &= \sum_i \sigma_i^\alpha, \\
+    n^{\alpha\beta}(\B \sigma) &= n^\alpha(\B \sigma) n^\beta(\B\sigma) = \left(\sum_{i=1}^L \sigma_i^\alpha\right) \left(\sum_{j=1}^L \sigma_j^\beta\right).
+\end{align}
+This leads to a maximum entropy probability distribution that takes the form
+\begin{equation}
+    E(\boldsymbol \sigma) = - \sum_{\alpha=1}^{20} h^\alpha n^\alpha -  \sum_{\alpha,\beta = 1}^{20} J^{\alpha \beta} n^\alpha n^\beta,
+\end{equation}
+i.e. a model that only involves global couplings between amino acids independent of their distance.
+A model with such global couplings captures a large fraction of 2-point correlations (Fig.~\ref{figmaxent_freqs_global}B), in line with the expectation that many of the constraints on amino acid covariation reflect compositional differences between different classes of proteins.
+
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{dos}
+    \caption{Density of states with respect to the 2-point model energy function for kmers from the test set and model-drawn kmers.
+    \label{figdos}
+    }
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{hammingdist}
+    \caption{Distribution of hamming distances reveals further structure not captured by either of the models.
+    \label{fighammingdist}
+    }
+\end{figure}
+
+
+
 Once we have fitted the model parameters we can calculate the entropy of the distribution $P(\B \sigma)$. To do so we use the identity
 \begin{align}
     S &= - \sum_{\B \sigma}  P(\B \sigma) \log P(\B \sigma),  \\
@@ -238,41 +287,15 @@ Note that
 \end{equation}
 which allows us to approximate the integrand by Monte Carlo simulations. We numerically evaluate $F'(\alpha)$ for evenly spaced $\alpha \in [0, 1]$ and calculate the integral by Simpson's rule.
 
-\begin{figure*}
-    \includegraphics[width=\textwidth]{maxent_freqs}
-    \caption{Correlation between Maxent model and test set (upper row) and training and test set (lower row) for the first three connected correlation functions.
-    \label{figmaxent_freqs}
-    }
-\end{figure*}
-
-
-
-A common choice is to constrain the one and two-point frequencies
-\begin{align}
-    f_i^\alpha(\B \sigma) &= \sigma_i^\alpha, \\
-    f_{ij}^{\alpha\beta}(\B \sigma) &= \sigma_i^\alpha \sigma_j^\beta,
-\end{align}
-where $\sigma_i^\alpha = 1$ if the amino acid at site i is of type $\alpha$ and zero otherwise.
-This leads to a maximum entropy probability distribution that takes the form of a disordered Potts model,
-\begin{equation}
-    P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ \sum_{i=1}^L \sum_{\alpha = 1}^{20} h_i^\alpha \sigma_i^\alpha + \sum_{i<j}^L \sum_{\alpha,\beta = 1}^{20} J_{ij}^{\alpha \beta}  \sigma_i^\alpha \sigma_j^\beta \right].
-\end{equation}
-Given that many biases are compositional in nature we can also consider a simpler model that only involves a global constraint on the covariation of the total count of amino acids of different types:
-\begin{align}
-    n^\alpha(\B \sigma) &= \sum_i \sigma_i^\alpha, \\
-    n^{\alpha\beta}(\B \sigma) &= n^\alpha(\B \sigma) n^\beta(\B\sigma) = \left(\sum_{i=1}^L \sigma_i^\alpha\right) \left(\sum_{j=1}^L \sigma_j^\beta\right).
-\end{align}
-This leads to a maximum entropy probability distribution that takes the form
-\begin{equation}
-    P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ \sum_{\alpha=1}^{20} h^\alpha n^\alpha +  \sum_{\alpha,\beta = 1}^{20} J^{\alpha \beta} n^\alpha n^\beta \right].
-\end{equation}
-
 \begin{figure}
     \includegraphics{diversity_reduction}
-    \caption{Contribution of different constraint to diversity reduction.
+    \caption{Contribution of different constraint to diversity reduction in 9mers.
     \label{figdiversity_reduction}
     }
 \end{figure}
+
+
+
 
 
 

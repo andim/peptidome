@@ -17,7 +17,6 @@ from numba import jit, njit
 
 from . import nsb
 
-
 aminoacids = 'ACDEFGHIKLMNPQRSTVWY'
 aminoacids_set = set(aminoacids)
 naminoacids = len(aminoacids)
@@ -225,9 +224,6 @@ class Counter(defaultdict):
             df = pd.DataFrame(dict(seq=list(self.keys()), count=arr))
         df.sort_values('seq', inplace=True)
         return df
-
-def count_kmers_proteome(proteome, k, **kwargs):
-    return count_kmers_iterable(fasta_iter(proteome, returnheader=False), k, **kwargs)
 
 def count_kmers_iterable(iterable, k, clean=False, **kwargs):
     """

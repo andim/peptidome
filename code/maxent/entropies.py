@@ -4,7 +4,8 @@ import pandas as pd
 import sys
 sys.path.append('..')
 from lib import *
-from lib.maxent import *
+
+from fit_all import extra
 
 integration_intervals = 5
 L = 9
@@ -41,9 +42,12 @@ proteomes = load_proteomes()
 if len(sys.argv) < 2:
     print(proteomes.shape[0])
 else:
-    idx = int(sys.argv[1])
-    row = proteomes.iloc[idx]
-    name = row.name
+    idx = int(sys.argv[1])-1
+    if idx < proteomes.shape[0]:
+        row = proteomes.iloc[idx]
+        name = row.name
+    else:
+        proteome, name = extra[idx-proteomes.shape[0]] 
     path = 'data/%s_%g.npz'%(name, L)
     params = np.load(path)
     hi = params['hi']
@@ -53,4 +57,3 @@ else:
     print(name, S)
     with open('data/entropies.csv', 'a') as f:
         f.write(','.join([str(s) for s in [name, S, E, F, Ehuman]]))
-        f.write('\n')

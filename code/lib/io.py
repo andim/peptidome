@@ -61,6 +61,9 @@ def fasta_iter(fasta_name, returnheader=True, returndescription=False):
             else:
                 yield str(fasta.seq)
 
+def count_kmers_proteome(proteome, k, **kwargs):
+    return count_kmers_iterable(fasta_iter(proteome, returnheader=False), k, **kwargs)
+
 # Alternative code that does not rely on Biopython
 #def fasta_iter(fasta_name, returnheader=True):
 #    """
@@ -78,9 +81,10 @@ def fasta_iter(fasta_name, returnheader=True, returndescription=False):
 #        else:
 #            yield seq
 
-def load_proteome_as_df(name):
+def load_proteome_as_df_path(path):
     "Return proteome as dataframe given its name"
-    headers, seqs = list(zip(*[(h, seq) for h, seq in fasta_iter(proteome_path(name),                                                             returndescription=True, returnheader=False)]))
+    headers, seqs = list(zip(*[(h, seq) for h, seq in fasta_iter(path,
+        returndescription=True, returnheader=False)]))
     genes = []
     for h in headers:
         m = re.search('(?<=GN\=)[^\s]+', h)
@@ -91,6 +95,11 @@ def load_proteome_as_df(name):
     accessions = [h.split('|')[1] for h in headers] 
     df = pd.DataFrame(dict(Gene=genes, Accession=accessions, Sequence=seqs))
     return df
+
+
+def load_proteome_as_df(name):
+    "Return proteome as dataframe given its name"
+    return load_proteome_as_df_path(proteome_path(name))
 
 def load_matrix(path):
     return np.array(pd.read_csv(path, sep=' ', header=None))

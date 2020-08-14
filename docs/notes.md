@@ -4,6 +4,25 @@ title: Notes
 order: 3
 ---
 
+# Constructing datasets?
+
+NCBI taxonomy: https://www.ncbi.nlm.nih.gov/taxonomy
+
+Woolhouse et al. Human viruses: discovery and emergence, Phil. Trans. R. Soc. B (2012): Propose a list of 219 virus species known to infect humans 
+
+Follow up dataset: https://www.nature.com/articles/sdata201817#Sec8 list of 214 known human RNA viruses
+
+https://talk.ictvonline.org/ - International Committee on Taxonomy of Viruses: Provide taxonomic classification of viruses on multiple levels
+
+Virgin et al. Redefining Chronic Viral Infection Cell 2009: list of viruses causing chronic viral infections in humans
+
+Virgin The Virome in Mammalian Physiology and Disease Cell 2014: argues for the importance of viral interactions with host physiology
+
+PATRIC: BACTERIAL BIOINFORMATICS RESOURCE CENTER - https://patricbrc.org/ - unified set of bacterial genomes and annotations
+
+Ecohealth alliance list:
+https://zenodo.org/record/807517
+
 # Mapping between MHC types, length preference and T cell types
 
 Here is a small table for future reference

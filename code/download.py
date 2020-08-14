@@ -13,6 +13,7 @@ for ind, row in proteomes.iterrows():
         if row['speciesid']:
             url = r"ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/%s_%s.fasta.gz"%(row['proteomeid'], row['speciesid'])
         else:
+            # excluding isoforms (include=no)
             url = r"http://www.uniprot.org/uniprot/?query=proteome%3A"+row['proteomeid']+r"&format=fasta&include=no"
         urllib.request.urlretrieve(url, datadir+row['path'])
 
@@ -29,8 +30,11 @@ for ind, row in proteomes.iterrows():
                 print('%s not found in Pfam'%row['speciesid'])
 
 
-# Download proteome of all viruses with human host filtered at 90% or 50% sequence identity level
+# Download proteome of all viruses with human host
+# - all in Swiss-prot (manually annotated)
+# - filtered at 90% or 50% sequence identity level
 path_urls = [
+        ('human-viruses-swissprot.fasta', r'https://www.uniprot.org/uniprot/?query=host:9606&fil=reviewed%3Ayes&format=fasta&include=no'),
         ('human-viruses-uniref90.fasta', 
          r"https://www.uniprot.org/uniref/?query=uniprot%3A(host%3A%22Homo+sapiens+(Human)+[9606]%22)+AND+identity%3A0.9&sort=score&format=fasta"),
         ('human-viruses-uniref50.fasta', 
@@ -43,7 +47,7 @@ for path, url in path_urls:
         except:
             print('could not download %s'%path)
 
-# filter HIV1 proteins from the combined proteome
+# filter HIV1 proteins from the human viruse
 paths = [('human-viruses-uniref90.fasta', 'human-viruses-uniref90_nohiv.fasta'),
          ('human-viruses-uniref50.fasta', 'human-viruses-uniref50_nohiv.fasta')]
 for pathin, pathout in paths:
@@ -64,6 +68,8 @@ path_urls = [
              # Human protein atlas (tissue restriction, subcellular location)
              ('proteinatlas.tsv.zip', r'https://www.proteinatlas.org/download/proteinatlas.tsv.zip'),
              ('proteinatlas.xml.gz', r'https://www.proteinatlas.org/download/proteinatlas.xml.gz'),
+             # Viral Metadata repository
+             ('vmr.xlsx', r'https://talk.ictvonline.org/taxonomy/vmr/m/vmr-file-repository/9603/download'),
              # DNA sequence data
              ('dna_chr21.fa.gz', r'ftp://ftp.ensembl.org/pub/release-96/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.21.fa.gz'),
              ('dna_human_all.fa.gz', r'ftp://ftp.ensembl.org/pub/release-96/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz'),

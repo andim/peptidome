@@ -37,7 +37,7 @@ def aa_frequencies(proteome, min_length=1):
 aa_human, indices_human = aa_frequencies(proteome_path('Human'), min_length=min_length)
 aa_malaria, indices_malaria = aa_frequencies(proteome_path('Malaria'), min_length=min_length)
 aa_cmv, indices_cmv = aa_frequencies(proteome_path('CMV'), min_length=min_length)
-aa_viruses, indices_viruses = aa_frequencies(datadir+'human-viruses-uniref50_nohiv.fasta', min_length=min_length)
+aa_viruses, indices_viruses = aa_frequencies(datadir+'human-viruses-swissprot.fasta', min_length=min_length)
 
 np.savez('data/data.npz',
         human=aa_human, malaria=aa_malaria, cmv=aa_cmv, viruses=aa_viruses,
