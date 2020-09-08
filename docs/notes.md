@@ -23,6 +23,9 @@ PATRIC: BACTERIAL BIOINFORMATICS RESOURCE CENTER - https://patricbrc.org/ - unif
 Ecohealth alliance list:
 https://zenodo.org/record/807517
 
+New NCBI virus portal:
+https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/
+
 # Mapping between MHC types, length preference and T cell types
 
 Here is a small table for future reference

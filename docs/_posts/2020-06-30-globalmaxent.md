@@ -500,22 +500,16 @@ from numba import njit
 
 
 ```python
+L = 9
 datasets = ['train', 'test', 'model']
 sample_matrices = {}
 for dataset in datasets:
-    sample_matrices[dataset] =  load_matrix('../maxent/data/%s_matrix.csv.gz' % dataset)
+    sample_matrices[dataset] =  load_matrix('../maxent/data/%s_matrix_L%i.csv.gz' % (dataset, L))
 ```
 
 
 ```python
-L = sample_matrices['train'].shape[1]
 q = naminoacids
-```
-
-
-```python
-def to_aacounts(matrix):
-    return np.array([list(aacounts_int_jit(seq)) for seq in matrix])
 ```
 
 
@@ -562,7 +556,7 @@ fig.tight_layout()
 ```
 
 
-![png](notebook_files/cov_9_0.png)
+![png](notebook_files/cov_8_0.png)
 
 
 
@@ -588,7 +582,7 @@ ax.text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.2f}$'.format(r_value**2, slope),
 
 
 
-![png](notebook_files/cov_10_2.png)
+![png](notebook_files/cov_9_2.png)
 
 
 
@@ -599,16 +593,10 @@ fig.tight_layout()
 ```
 
 
-![png](notebook_files/cov_11_0.png)
+![png](notebook_files/cov_10_0.png)
 
 
 # Maxent fitting
-
-
-```python
-def calc_n1(aacounts):
-    return np.mean(aacounts, axis=0)
-```
 
 
 ```python
@@ -628,21 +616,7 @@ n1
 
 
 ```python
-@njit
-def calc_n2(matrix, L):
-    N, q = matrix.shape
-    n2 = np.zeros((q, q))
-    for s in range(N):
-        for alpha in range(q):
-            for beta in range(q):
-                n2[alpha, beta] += matrix[s, alpha]*matrix[s, beta]     
-    n2 /= N
-    return n2
-```
-
-
-```python
-n2 = calc_n2(aacounts, L)
+n2 = calc_n2(aacounts)
 ```
 
 
@@ -652,36 +626,14 @@ npt.assert_allclose(cov_kmer, (n2 - np.outer(n1, n1))/L**2, atol=1e-8)
 
 
 ```python
-@njit
-def energy_cov_sym(x, h, J):
-    counts = aacounts_int_jit(x)
-    return -(np.sum(h*counts)+np.sum(J*np.outer(counts, counts)))
-```
-
-
-```python
-@njit
-def energy_cov(x, h, J):
-    counts = aacounts_int_jit(x)
-    q = len(h)
-    e = 0
-    for alpha in range(q):
-        e -= h[alpha]*counts[alpha]
-        for beta in range(alpha, q):
-            e -= J[alpha, beta]*counts[alpha]*counts[beta]
-    return e
-```
-
-
-```python
 x0 = np.random.randint(q, size=L)
-energy_cov(x0, np.ones(q), np.zeros((q, q))), energy_cov_sym(x0, np.ones(q), np.zeros((q, q)))
+energy_cov(x0, np.ones(q), np.zeros((q, q)))
 ```
 
 
 
 
-    (-9.0, -9.0)
+    -9.0
 
 
 
@@ -713,7 +665,7 @@ def fit_cov(n1, n2, L, sampler, q=naminoacids,
         aacounts = to_aacounts(samples)
 
         n1_model = calc_n1(aacounts)
-        n2_model = calc_n2(aacounts, L)
+        n2_model = calc_n2(aacounts)
  
         h -= np.log(n1_model/n1)*epsilon
         J -= np.log(n2_model/n2)*epsilon
@@ -811,6 +763,7 @@ model_matrix = mcmcsampler(x0, energy, jump,
 aacounts_model = to_aacounts(model_matrix)
 cov_model = np.cov(aacounts_model.T/L)
 n1_model = calc_n1(aacounts_model)
+n2_model = calc_n2(aacounts_model)
 ```
 
 
@@ -845,7 +798,7 @@ fig.tight_layout()
 ```
 
 
-![png](notebook_files/cov_27_0.png)
+![png](notebook_files/cov_22_0.png)
 
 
 
@@ -860,18 +813,18 @@ ax.text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.2f}$'.format(r_value**2, slope),
         va='top', ha='left', transform=ax.transAxes)
 ```
 
-    0.9947041878529604 0.0 0.9815655867330878
+    0.9919535133524677 0.0 0.9307956024449778
 
 
 
 
 
-    Text(0.05, 1.0, 'slope$=0.98$\n$r^2=0.99$')
+    Text(0.05, 1.0, 'slope$=0.93$\n$r^2=0.99$')
 
 
 
 
-![png](notebook_files/cov_28_2.png)
+![png](notebook_files/cov_23_2.png)
 
 
 
@@ -886,7 +839,7 @@ ax.text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.2f}$'.format(r_value**2, slope),
         va='top', ha='left', transform=ax.transAxes)
 ```
 
-    0.9996540796544826 1.3156113206897612e-32 0.99457007248242
+    0.9992588119640597 1.2524936646632855e-29 0.986280554535421
 
 
 
@@ -897,7 +850,33 @@ ax.text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.2f}$'.format(r_value**2, slope),
 
 
 
-![png](notebook_files/cov_29_2.png)
+![png](notebook_files/cov_24_2.png)
+
+
+
+```python
+fig, ax = plt.subplots()
+x = n2.flatten()
+y = n2_model.flatten()
+sns.regplot(x, y, ax=ax, scatter_kws=dict(s=1))
+slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(x, y)
+print(r_value**2, p_value, slope)
+ax.text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.2f}$'.format(r_value**2, slope),
+        va='top', ha='left', transform=ax.transAxes)
+```
+
+    0.9994860511089362 0.0 0.98518132440638
+
+
+
+
+
+    Text(0.05, 1.0, 'slope$=0.99$\n$r^2=1.00$')
+
+
+
+
+![png](notebook_files/cov_25_2.png)
 
 
 # Compare with disordered maxent model
@@ -925,6 +904,10 @@ fig.tight_layout()
 ```
 
 
+![png](notebook_files/cov_29_0.png)
+
+
+
 ```python
 params = np.load('../maxent/data/Human_9.npz')
 hi = params['hi']
@@ -942,6 +925,20 @@ print(r_value**2, p_value, slope)
 ax.text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.2f}$'.format(r_value**2, slope),
         va='top', ha='left', transform=ax.transAxes)
 ```
+
+    0.9988577406112923 6.143007015022327e-28 1.0143513489458438
+
+
+
+
+
+    Text(0.05, 1.0, 'slope$=1.01$\n$r^2=1.00$')
+
+
+
+
+![png](notebook_files/cov_31_2.png)
+
 
 
 ```python
@@ -969,39 +966,120 @@ ax.text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.2f}$'.format(r_value**2, slope),
         va='top', ha='left', transform=ax.transAxes)
 ```
 
+    0.8321432879285802 1.465528308024156e-148 1.0508870331746092
+
+
+
+
+
+    Text(0.05, 1.0, 'slope$=1.05$\n$r^2=0.83$')
+
+
+
+
+![png](notebook_files/cov_34_2.png)
+
+
 # Higher order couplings
 
 
 ```python
-@njit
-def calc_n3(matrix, L):
-    N, q = matrix.shape
-    n3 = np.zeros((q, q, q))
-    for s in range(N):
-        for alpha in range(q):
-            for beta in range(q):
-                for gamma in range(q):
-                    n3[alpha, beta, gamma] += matrix[s, alpha]*matrix[s, beta]*matrix[s, gamma]
-    n3 /= N
-    return n3
-```
-
-
-```python
 aacounts = to_aacounts(sample_matrices['train'])
-n3 = calc_n3(aacounts, L)
+n3 = calc_n3(aacounts)
 ```
 
 
 ```python
 aacounts = to_aacounts(sample_matrices['test'])
-n3_test = calc_n3(aacounts, L)
+n3_test = calc_n3(aacounts)
 ```
 
 
 ```python
 plt.hist(((n3 - n3_test)/n3).flatten())
 ```
+
+
+
+
+    (array([  46.,  312.,  942., 1819., 2184., 1571.,  702.,  331.,   66.,
+              27.]),
+     array([-0.04584061, -0.03459433, -0.02334804, -0.01210175, -0.00085546,
+             0.01039083,  0.02163711,  0.0328834 ,  0.04412969,  0.05537598,
+             0.06662227]),
+     <a list of 10 Patch objects>)
+
+
+
+
+![png](notebook_files/cov_38_1.png)
+
+
+
+```python
+fig, ax = plt.subplots()
+x = n3.flatten()
+y = n3_test.flatten()
+sns.regplot(x, y, ax=ax, scatter_kws=dict(s=5))
+slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(x, y)
+print(r_value**2, ap_value, slope)
+ax.text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.2f}$'.format(r_value**2, slope),
+        va='top', ha='left', transform=ax.transAxes)
+```
+
+    0.9997411188135638 0.0 1.0063049544963758
+
+
+
+
+
+    Text(0.05, 1.0, 'slope$=1.01$\n$r^2=1.00$')
+
+
+
+
+![png](notebook_files/cov_39_2.png)
+
+
+
+```python
+n3_model = calc_n3(aacounts_model)
+```
+
+
+```python
+plt.hist(((n3_model - n3_test)/n3_test).flatten());
+```
+
+
+![png](notebook_files/cov_41_0.png)
+
+
+
+```python
+fig, ax = plt.subplots()
+x = n3.flatten()
+y = n3_model.flatten()
+sns.regplot(x, y, ax=ax, scatter_kws=dict(s=5))
+slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(x, y)
+print(r_value**2, p_value, slope)
+ax.text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.2f}$'.format(r_value**2, slope),
+        va='top', ha='left', transform=ax.transAxes)
+```
+
+    0.9987563441196157 0.0 0.9765281785895622
+
+
+
+
+
+    Text(0.05, 1.0, 'slope$=0.98$\n$r^2=1.00$')
+
+
+
+
+![png](notebook_files/cov_42_2.png)
+
 
 
 ```python
@@ -1054,8 +1132,8 @@ def fit_third(n1, n2, n3, L, sampler, h=None, J=None, q=naminoacids,
         aacounts = to_aacounts(samples)
 
         n1_model = calc_n1(aacounts)
-        n2_model = calc_n2(aacounts, L)
-        n3_model = calc_n3(aacounts, L)
+        n2_model = calc_n2(aacounts)
+        n3_model = calc_n3(aacounts)
  
         h -= np.log(n1_model/n1)*epsilon
         J -= np.log(n2_model/n2)*epsilon
@@ -1069,7 +1147,7 @@ prng = np.random
 niter = 30
 stepsize = 0.01
 nsample = L
-nsteps = 2e5
+nsteps = 1e6
 output = True
 ```
 
@@ -1083,15 +1161,78 @@ h_third, J_third, J2_third = fit_third(n1, n2, n3, L,
                                        epsilon=stepsize, prng=prng, output=output)
 ```
 
+    iteration 1/30
+    iteration 2/30
+    iteration 3/30
+    iteration 4/30
+    iteration 5/30
+    iteration 6/30
+    iteration 7/30
+    iteration 8/30
+    iteration 9/30
+    iteration 10/30
+    iteration 11/30
+    iteration 12/30
+    iteration 13/30
+    iteration 14/30
+    iteration 15/30
+    iteration 16/30
+    iteration 17/30
+    iteration 18/30
+    iteration 19/30
+    iteration 20/30
+    iteration 21/30
+    iteration 22/30
+    iteration 23/30
+    iteration 24/30
+    iteration 25/30
+    iteration 26/30
+    iteration 27/30
+    iteration 28/30
+    iteration 29/30
+    iteration 30/30
+
+
 
 ```python
 plt.hist([J2_third[i, i, i] for i in range(q)])
 ```
 
 
+
+
+    (array([2., 6., 3., 3., 2., 1., 0., 2., 0., 1.]),
+     array([0.00013418, 0.00137673, 0.00261928, 0.00386183, 0.00510439,
+            0.00634694, 0.00758949, 0.00883205, 0.0100746 , 0.01131715,
+            0.0125597 ]),
+     <a list of 10 Patch objects>)
+
+
+
+
+![png](notebook_files/cov_47_1.png)
+
+
+
 ```python
 plt.hist(J2_third.flatten())
 ```
+
+
+
+
+    (array([  36.,   66.,  267.,  969., 2250., 2269., 1476.,  478.,  168.,
+              21.]),
+     array([-0.02482474, -0.01995712, -0.01508949, -0.01022186, -0.00535423,
+            -0.00048661,  0.00438102,  0.00924865,  0.01411628,  0.0189839 ,
+             0.02385153]),
+     <a list of 10 Patch objects>)
+
+
+
+
+![png](notebook_files/cov_48_1.png)
+
 
 
 ```python
@@ -1120,11 +1261,6 @@ np.savez('data/Human_third_L%g.npz'%L, h=h_third, J=J_third, J2=J2_third)
 ```python
 aacounts = to_aacounts(sample_matrices['test'])
 n3_model = calc_n3(aacounts, L)
-```
-
-
-```python
-plt.hist(((n3_model - n3_test)/n3_test).flatten())
 ```
 
 

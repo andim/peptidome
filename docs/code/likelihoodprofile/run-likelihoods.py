@@ -40,7 +40,7 @@ def run(name, path, pathout, proteinname=True, sequence=False):
     df.to_csv(pathout, compression='zip', index=False, float_format='%.4f')
 
 # All viruses
-path = datadir+'human-viruses-uniref90_nohiv.fasta'
+path = datadir+'human-viruses-swissprot.fasta'
 pathout = 'data/proteome-ref%s-%s-k%i-%s.zip'%(ref, likelihoodname, k, 'Viruses')
 if not os.path.exists(pathout):
     run('Viruses', path, pathout, proteinname=False)

@@ -12,7 +12,7 @@ data = np.load('data/data.npz')
 
 aa_human = data['human']
 aa_viruses = data['viruses']
-aa_viruses = aa_viruses[np.random.randint(0, len(aa_viruses), len(aa_human))]
+aa_viruses = aa_viruses#[np.random.randint(0, len(aa_viruses), len(aa_human))]
 print(aa_viruses.shape, aa_human.shape)
 
 fig, ax = plt.subplots(figsize=(5, 5))#, ncols=2, sharex=True, sharey=True)

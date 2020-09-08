@@ -116,11 +116,11 @@ data = np.load('data/data.npz')
 
 aa_human = data['human']
 aa_viruses = data['viruses']
-aa_viruses = aa_viruses[np.random.randint(0, len(aa_viruses), len(aa_human))]
+aa_human = aa_human[np.random.randint(0, len(aa_human), 2*len(aa_viruses))]
 print(aa_viruses.shape, aa_human.shape)
 ```
 
-    (20111, 20) (20111, 20)
+    (5433, 20) (10866, 20)
 
 
 
@@ -152,6 +152,8 @@ for label, reducer in [('pca', sklearn.decomposition.PCA(n_components=2)),
     [0m    [1m^[0m[0m
     [0m
       state.func_ir.loc))
+    /home/amayer/.conda/envs/py3/lib/python3.6/site-packages/umap/spectral.py:229: UserWarning: Embedding a total of 2 separate connected components using meta-embedding (experimental)
+      n_components
 
 
 
@@ -280,7 +282,7 @@ def aa_frequencies(proteome, min_length=1):
 aa_human, indices_human = aa_frequencies(proteome_path('Human'), min_length=min_length)
 aa_malaria, indices_malaria = aa_frequencies(proteome_path('Malaria'), min_length=min_length)
 aa_cmv, indices_cmv = aa_frequencies(proteome_path('CMV'), min_length=min_length)
-aa_viruses, indices_viruses = aa_frequencies(datadir+'human-viruses-uniref90.fasta', min_length=min_length)
+aa_viruses, indices_viruses = aa_frequencies(datadir+'human-viruses-swissprot.fasta', min_length=min_length)
 
 np.savez('data/data.npz',
         human=aa_human, malaria=aa_malaria, cmv=aa_cmv, viruses=aa_viruses,
@@ -368,7 +370,7 @@ data = np.load('data/data.npz')
 
 aa_human = data['human']
 aa_viruses = data['viruses']
-aa_viruses = aa_viruses[np.random.randint(0, len(aa_viruses), len(aa_human))]
+aa_viruses = aa_viruses#[np.random.randint(0, len(aa_viruses), len(aa_human))]
 print(aa_viruses.shape, aa_human.shape)
 
 fig, ax = plt.subplots(figsize=(5, 5))#, ncols=2, sharex=True, sharey=True)
