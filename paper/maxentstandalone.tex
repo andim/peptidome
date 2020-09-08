@@ -1,0 +1,53 @@
+\documentclass[superscriptaddress,twocolumn,pre]{revtex4}
+\bibliographystyle{apsrev}
+
+\usepackage{ifthen}
+\newboolean{pnas}
+\setboolean{pnas}{false}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\graphicspath{{images/}}
+\usepackage{color}
+\usepackage[pdfstartview=FitH,
+            breaklinks=true,
+            bookmarksopen=false,
+            bookmarksnumbered=true,
+            colorlinks=true,
+            linkcolor=black,
+            citecolor=black,
+            urlcolor=black,
+            pdftitle={Peptidome},
+            pdfauthor={Andreas Mayer},
+            pdfsubject={}
+            ]{hyperref}
+\newcommand{\B}{\boldsymbol}
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\<}{\langle}
+\renewcommand{\>}{\rangle}
+
+\def\(({\left(}
+\def\)){\right)}                       
+\def\[[{\left[}
+\def\]]{\right]}
+
+\newcommand{\AM}[1]{{\color{blue}#1}}
+
+\begin{document}
+
+\title{A note on maxent modeling of 9mer statistics}
+\author{Andreas Mayer}
+\date{\today}
+
+\maketitle
+
+\input{maxent}
+
+\bibliography{library}
+
+\end{document}
