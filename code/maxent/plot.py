@@ -10,12 +10,13 @@ plt.style.use('../peptidome.mplstyle')
 
 observables = ['fi', 'cij', 'cijk']
 observables_dict = {key: dict() for key in observables}
-for dataset in ['train', 'test', 'model', 'model_global', 'model_third']:
+datasets = ['train', 'test', 'model', 'model_ncov', 'model_nskew', 'model_nskewdiag']
+for dataset in datasets:
     params = np.load('data/%s_observables.npz'%dataset)
     for observable in observables:
         observables_dict[observable][dataset] = params[observable]
 
-for model_type in ['model', 'model_global', 'model_third']:
+for model_type in datasets[2:]:
     fig, axes = plt.subplots(figsize=(6, 3.5), ncols=3, nrows=2)
 
     for j, (observable, label, lims, flattener) in enumerate([('fi', '$f_i$', (0, 0.12), np.ravel),

@@ -221,6 +221,19 @@ def fit_ncov(train_matrix, sampler,
         J -= np.log(n2_model/n2)*epsilon
     return h, J
 
+@njit
+def energy_nskew(x, h, J, J2):
+    counts = aacounts_int_jit(x)
+    q = len(h)
+    e = 0
+    for alpha in range(q):
+        e -= h[alpha]*counts[alpha]
+        for beta in range(alpha, q):
+            e -= J[alpha, beta]*counts[alpha]*counts[beta]
+            for gamma in range(beta, q):
+                e -= J2[alpha, beta, gamma]*counts[alpha]*counts[beta]*counts[gamma]
+    return e
+
 def fit_nskew(train_matrix, sampler, h=None, J=None, J2=None, q=naminoacids,
             niter=1, epsilon=0.1, pseudocount=1.0,
             prng=None, output=False):
@@ -273,6 +286,85 @@ def fit_nskew(train_matrix, sampler, h=None, J=None, J2=None, q=naminoacids,
         J2 -= np.log(n3_model/n3)*epsilon
     return h, J, J2
 
+### Diagonal global third-order couplings  ###
+
+@njit
+def calc_n3_diag(matrix):
+    N, q = matrix.shape
+    n3 = np.zeros(q)
+    for s in range(N):
+        for alpha in range(q):
+            n3[alpha] += matrix[s, alpha]**3
+    n3 /= N
+    return n3
+
+@njit
+def energy_nskewdiag(x, h, J, J2):
+    counts = aacounts_int_jit(x)
+    q = len(h)
+    e = 0
+    for alpha in range(q):
+        e -= h[alpha]*counts[alpha] + J2[alpha]*counts[alpha]**3
+        for beta in range(alpha, q):
+            e -= J[alpha, beta]*counts[alpha]*counts[beta]
+    return e
+
+def fit_nskewdiag(train_matrix, sampler, h=None, J=None, J2=None, q=naminoacids,
+            niter=1, epsilon=0.1, pseudocount=1.0,
+            prng=None, output=False):
+    """ sampler(x0, energy, jump, prng=prng): function returning samples from the distribution """
+
+    # calculate empirical observables
+    _, L = train_matrix.shape
+    aacounts = to_aacounts(train_matrix)
+    n1 = calc_n1(aacounts)
+    n2 = calc_n2(aacounts)
+    n3 = calc_n3_diag(aacounts)
+
+    if prng is None:
+        prng = np.random
+    if h is None:
+        h = np.log(n1/L)
+        h -= np.mean(h)
+    else:
+        h = h.copy()
+    if J is None:
+        J = np.zeros_like(n2)
+    else:
+        J = J.copy()
+    if J2 is None:
+        J2 = np.zeros_like(n3)
+    else:
+        J2 = J2.copy()
+    for iteration in range(niter):
+        if output:
+            print('iteration %g/%g'%(iteration+1,niter))
+
+        x0 = global_jump(np.zeros(L), q, prng=prng)
+        
+        @njit
+        def jump(x):
+            return local_jump_jit(x, q)
+        @njit
+        def energy(x):
+            return energy_nskewdiag(x, h, J, J2)
+
+        samples = sampler(x0, energy, jump)
+        aacounts = to_aacounts(samples)
+
+        n1_model = calc_n1(aacounts)
+        n2_model = calc_n2(aacounts)
+        n3_model = calc_n3_diag(aacounts)
+ 
+        h -= np.log(n1_model/n1)*epsilon
+        J -= np.log(n2_model/n2)*epsilon
+        J2 -= np.log(n3_model/n3)*epsilon
+
+    return h, J, J2
+
+### End diagonal global third order couplings ###
+
+
 def calc_logfold(df1, df2, **kwargs):
     default = dict(left_index=True, right_index=True)
     default.update(kwargs)
@@ -307,19 +399,6 @@ def count(seqs, *args, **kwargs):
     df = df.set_index('seq')
     df = df.sort_index()
     return df
-
-@njit
-def energy_nskew(x, h, J, J2):
-    counts = aacounts_int_jit(x)
-    q = len(h)
-    e = 0
-    for alpha in range(q):
-        e -= h[alpha]*counts[alpha]
-        for beta in range(alpha, q):
-            e -= J[alpha, beta]*counts[alpha]*counts[beta]
-            for gamma in range(beta, q):
-                e -= J2[alpha, beta, gamma]*counts[alpha]*counts[beta]*counts[gamma]
-    return e
 
 @njit
 def energy_potts(x, hi, Jij):

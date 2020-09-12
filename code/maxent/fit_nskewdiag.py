@@ -29,7 +29,7 @@ J = arr['J']
 
 def sampler(*args, **kwargs):
     return mcmcsampler(*args, nsteps=nsteps, nsample=nsample, nburnin=nburnin)
-h, J, J2 = fit_nskew(matrix, sampler=sampler, h=h, J=J,
+h, J, J2 = fit_nskewdiag(matrix, sampler=sampler, h=h, J=J,
                 niter=niter, pseudocount=pseudocount,
                 epsilon=stepsize, prng=prng, output=output)
 
@@ -38,10 +38,11 @@ def jump(x):
     return local_jump_jit(x, q)
 @njit
 def energy(x):
-    return energy_nskew(x, h, J, J2)
+    return energy_nskewdiag(x, h, J, J2)
 x0 = prng.randint(q, size=L)
 nsteps_generate = int(matrix.shape[0]*nsample)
 model_matrix = mcmcsampler(x0, energy, jump, nsteps=nsteps_generate,
                            nsample=nsample, nburnin=nburnin)
-np.savetxt('data/model_nskew_matrix_L%i.csv.gz'%L, model_matrix, fmt='%i')
-np.savez('data/Human_nskew_%i.npz'%L, h=h, J=J, J2=J2)
+
+np.savetxt('data/model_nskewdiag_matrix_L%i.csv.gz'%L, model_matrix, fmt='%i')
+np.savez('data/Human_nskewdiag_%i.npz'%L, h=h, J=J, J2=J2)
