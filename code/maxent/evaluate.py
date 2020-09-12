@@ -7,7 +7,7 @@ sys.path.append('..')
 from lib import *
 from lib.maxent import *
 
-for dataset in ['train', 'test', 'model', 'model_global']:
+for dataset in ['train', 'test', 'model', 'model_global', 'model_third']:
     print(dataset)
     path = 'data/%s_observables.npz'%dataset
     if not os.path.exists(path):

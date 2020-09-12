@@ -44,34 +44,6 @@ def prob_aa(aacountss, k, pseudocount=1.0):
     prob_aa_ks = np.array(prob_aa_ks)
     return prob_aa_ks
 
-def fit_global(fks, niter=1, nmcmc=1e6, epsilon=0.1, prng=None, output=False):
-    N = len(fks[0])-1
-    if prng is None:
-        prng = np.random
-    q = len(aminoacids)
-    aas_arr = np.array(list(aminoacids))
-    f1 = np.sum(np.arange(fks.shape[1])*fks, axis=1)/(fks.shape[1]-1)
-    h = np.array(np.log(f1))
-    h -= np.mean(h)
-    hks = h.reshape(20, 1)*np.arange(fks.shape[1])
-    #hks = np.zeros((q, N+1))
-    for i in range(niter):
-        if output:
-            print('iteration %g'%i)
-        def jump(x):
-            return prng.randint(q, size=N)
-        def energy(x):
-            return energy_global(aacounts_int(x), hks)
-        x0 = jump(None)
-        samples = mcmcsampler(x0, energy, jump, nmcmc, prng=prng)
-        aacountss = [aacounts_int(s) for s in samples]
-        prob_aa_ks = prob_aa(aacountss, N)
-        #print(fks, prob_aa_ks)
-        hks += (fks - prob_aa_ks)*epsilon
-        jsd = calc_jsd(fks, prob_aa_ks)
-        if output:
-            print(jsd)
-    return hks
 
 def global_jump(x, q, prng=None):
     if prng is None:
@@ -136,8 +108,44 @@ def fit_potts(f1, f2s, niter=1, nmcmc=1e6, epsilon=0.1, Jk=None, prng=None, outp
                 Jk[gap, aa1, aa2] += logfold * epsilon
     return h, Jk
 
-def fit_full_potts(fi, fij, sampler, niter=1, epsilon=0.1, pseudocount=1.0, prng=None, output=False):
+def fit_global(fks, niter=1, nmcmc=1e6, epsilon=0.1, prng=None, output=False):
+    N = len(fks[0])-1
+    if prng is None:
+        prng = np.random
+    q = len(aminoacids)
+    aas_arr = np.array(list(aminoacids))
+    f1 = np.sum(np.arange(fks.shape[1])*fks, axis=1)/(fks.shape[1]-1)
+    h = np.array(np.log(f1))
+    h -= np.mean(h)
+    hks = h.reshape(20, 1)*np.arange(fks.shape[1])
+    #hks = np.zeros((q, N+1))
+    for i in range(niter):
+        if output:
+            print('iteration %g'%i)
+        def jump(x):
+            return prng.randint(q, size=N)
+        def energy(x):
+            return energy_global(aacounts_int(x), hks)
+        x0 = jump(None)
+        samples = mcmcsampler(x0, energy, jump, nmcmc, prng=prng)
+        aacountss = [aacounts_int(s) for s in samples]
+        prob_aa_ks = prob_aa(aacountss, N)
+        #print(fks, prob_aa_ks)
+        hks += (fks - prob_aa_ks)*epsilon
+        jsd = calc_jsd(fks, prob_aa_ks)
+        if output:
+            print(jsd)
+    return hks
+
+def fit_full_potts(train_matrix, sampler, niter=1, epsilon=0.1,
+        q=naminoacids,
+        pseudocount=1.0, prng=None, output=False):
     """ sampler(x0, energy, jump, prng=prng): function returning samples from the distribution """
+
+    # calculate empirical observables
+    fi = frequencies(train_matrix, num_symbols=q, pseudocount=pseudocount)
+    fij = pair_frequencies(train_matrix, num_symbols=q, fi=fi, pseudocount=pseudocount)
+
     if prng is None:
         prng = np.random
     hi = np.log(fi)
@@ -145,7 +153,6 @@ def fit_full_potts(fi, fij, sampler, niter=1, epsilon=0.1, pseudocount=1.0, prng
     if output:
         print(hi)
     Jij = np.zeros_like(fij)
-    q = naminoacids
     for iteration in range(niter):
         if output:
             print('iteration %g'%iteration)
@@ -174,6 +181,97 @@ def fit_full_potts(fi, fij, sampler, niter=1, epsilon=0.1, pseudocount=1.0, prng
             print('f2', calc_jsd(fij_model[0, 1], fij[0, 1]))
     return hi, Jij
 
+def fit_ncov(train_matrix, sampler,
+             q=naminoacids,
+             niter=1, epsilon=0.1, pseudocount=1.0,
+             prng=None, output=False):
+    """ sampler(x0, energy, jump, prng=prng): function returning samples from the distribution """
+
+    # calculate empirical observables
+    _, L = train_matrix.shape
+    aacounts = to_aacounts(train_matrix)
+    n1 = calc_n1(aacounts)
+    n2 = calc_n2(aacounts)
+
+    if prng is None:
+        prng = np.random
+    h = np.log(n1/L)
+    h -= np.mean(h)
+    J = np.zeros_like(n2)
+    for iteration in range(niter):
+        if output:
+            print('iteration %g/%g'%(iteration+1,niter))
+
+        x0 = global_jump(np.zeros(L), q, prng=prng)
+        
+        @njit
+        def jump(x):
+            return local_jump_jit(x, q)
+        @njit
+        def energy(x):
+            return energy_ncov(x, h, J)
+
+        samples = sampler(x0, energy, jump)
+        aacounts = to_aacounts(samples)
+
+        n1_model = calc_n1(aacounts)
+        n2_model = calc_n2(aacounts)
+ 
+        h -= np.log(n1_model/n1)*epsilon
+        J -= np.log(n2_model/n2)*epsilon
+    return h, J
+
+def fit_nskew(train_matrix, sampler, h=None, J=None, J2=None, q=naminoacids,
+            niter=1, epsilon=0.1, pseudocount=1.0,
+            prng=None, output=False):
+    """ sampler(x0, energy, jump, prng=prng): function returning samples from the distribution """
+
+    # calculate empirical observables
+    _, L = train_matrix.shape
+    aacounts = to_aacounts(train_matrix)
+    n1 = calc_n1(aacounts)
+    n2 = calc_n2(aacounts)
+    n3 = calc_n3(aacounts)
+
+    if prng is None:
+        prng = np.random
+    if h is None:
+        h = np.log(n1/L)
+        h -= np.mean(h)
+    else:
+        h = h.copy()
+    if J is None:
+        J = np.zeros_like(n2)
+    else:
+        J = J.copy()
+    if J2 is None:
+        J2 = np.zeros_like(n3)
+    else:
+        J2 = J2.copy()
+    for iteration in range(niter):
+        if output:
+            print('iteration %g/%g'%(iteration+1,niter))
+
+        x0 = global_jump(np.zeros(L), q, prng=prng)
+        
+        @njit
+        def jump(x):
+            return local_jump_jit(x, q)
+        @njit
+        def energy(x):
+            return energy_nskew(x, h, J, J2)
+
+        samples = sampler(x0, energy, jump)
+        aacounts = to_aacounts(samples)
+
+        n1_model = calc_n1(aacounts)
+        n2_model = calc_n2(aacounts)
+        n3_model = calc_n3(aacounts)
+ 
+        h -= np.log(n1_model/n1)*epsilon
+        J -= np.log(n2_model/n2)*epsilon
+        J2 -= np.log(n3_model/n3)*epsilon
+    return h, J, J2
 
 def calc_logfold(df1, df2, **kwargs):
     default = dict(left_index=True, right_index=True)
@@ -210,6 +308,18 @@ def count(seqs, *args, **kwargs):
     df = df.sort_index()
     return df
 
+@njit
+def energy_nskew(x, h, J, J2):
+    counts = aacounts_int_jit(x)
+    q = len(h)
+    e = 0
+    for alpha in range(q):
+        e -= h[alpha]*counts[alpha]
+        for beta in range(alpha, q):
+            e -= J[alpha, beta]*counts[alpha]*counts[beta]
+            for gamma in range(beta, q):
+                e -= J2[alpha, beta, gamma]*counts[alpha]*counts[beta]*counts[gamma]
+    return e
 
 @njit
 def energy_potts(x, hi, Jij):
@@ -521,7 +631,7 @@ def to_aacounts(matrix):
     return np.array([list(aacounts_int_jit(seq)) for seq in matrix])
 
 @njit
-def energy_cov(x, h, J):
+def energy_ncov(x, h, J):
     counts = aacounts_int_jit(x)
     q = len(h)
     e = 0
