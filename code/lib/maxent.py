@@ -62,7 +62,7 @@ def local_jump(x, q, prng=None):
 def local_jump_jit(x, q, seed=None):
     prng = np.random
     if not (seed is None):
-        np.random.seed(seed)
+        prng.seed(seed)
     xnew = x.copy()
     index = prng.randint(len(x))
     xnew[index] = (x[index] + prng.randint(1, q))%q
@@ -221,6 +221,8 @@ def fit_ncov(train_matrix, sampler,
         J -= np.log(n2_model/n2)*epsilon
     return h, J
 
+### Global third-order couplings  ###
+
 @njit
 def energy_nskew(x, h, J, J2):
     counts = aacounts_int_jit(x)
@@ -362,7 +364,80 @@ def fit_nskewdiag(train_matrix, sampler, h=None, J=None, J2=None, q=naminoacids,
 
     return h, J, J2
 
-### End diagonal global third order couplings ###
+### Global third-order couplings + second order distance couplings ###
+
+@njit
+def energy_nskewfcov(x, h, J, J2, hi, Jij):
+    return energy_potts(x, hi, Jij) + energy_nskew(x, h, J, J2)
+
+def fit_nskewfcov(train_matrix, sampler, h=None, J=None, J2=None, q=naminoacids,
+            niter=1, epsilon=0.1, pseudocount=1.0,
+            prng=None, output=False):
+    """ sampler(x0, energy, jump, prng=prng): function returning samples from the distribution """
+
+    # calculate empirical observables
+    _, L = train_matrix.shape
+    aacounts = to_aacounts(train_matrix)
+    n1 = calc_n1(aacounts)
+    n2 = calc_n2(aacounts)
+    n3 = calc_n3(aacounts)
+
+    fi = frequencies(train_matrix, num_symbols=q, pseudocount=pseudocount)
+    fij = pair_frequencies(train_matrix, num_symbols=q, fi=fi, pseudocount=pseudocount)
+
+
+    if prng is None:
+        prng = np.random
+    if h is None:
+        h = np.log(n1/L)
+        h -= np.mean(h)
+    else:
+        h = h.copy()
+    if J is None:
+        J = np.zeros_like(n2)
+    else:
+        J = J.copy()
+    if J2 is None:
+        J2 = np.zeros_like(n3)
+    else:
+        J2 = J2.copy()
+    hi = np.zeros_like(fi)
+    Jij = np.zeros_like(fij)
+   
+    for iteration in range(niter):
+        if output:
+            print('iteration %g/%g'%(iteration+1,niter))
+
+        x0 = global_jump(np.zeros(L), q, prng=prng)
+        
+        @njit
+        def jump(x):
+            return local_jump_jit(x, q)
+        @njit
+        def energy(x):
+            return energy_nskewfcov(x, h, J, J2, hi, Jij)
+
+        samples = sampler(x0, energy, jump)
+        aacounts = to_aacounts(samples)
+
+        n1_model = calc_n1(aacounts)
+        n2_model = calc_n2(aacounts)
+        n3_model = calc_n3(aacounts)
+
+        fi_model = frequencies(samples, q, pseudocount=pseudocount)
+        fij_model = pair_frequencies(samples, q, fi_model, pseudocount=pseudocount)
+ 
+        h -= np.log(n1_model/n1)*epsilon
+        J -= np.log(n2_model/n2)*epsilon
+        J2 -= np.log(n3_model/n3)*epsilon
+
+        hi -= np.log(fi_model/fi)*epsilon
+        Jij -= np.log(fij_model/fij)*epsilon
+
+    return h, J, J2, hi, Jij
+
+
+### Other code ###
 
 
 def calc_logfold(df1, df2, **kwargs):
