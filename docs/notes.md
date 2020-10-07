@@ -4,6 +4,10 @@ title: Notes
 order: 3
 ---
 
+# Skype w/ Ben
+
+How many peptides would you need to make a reliable distinction between self and non-self? Relation to the order 10 peptides that are typically immunodominant?
+
 # Constructing datasets?
 
 NCBI taxonomy: https://www.ncbi.nlm.nih.gov/taxonomy
