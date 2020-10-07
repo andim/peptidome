@@ -9,9 +9,10 @@ from lib.maxent import *
 
 L = 9
 
-for dataset in ['train', 'test', 'model', 'model_ncov', 'model_nskew', 'model_nskewdiag', 'model_nskewfcov']:
+for dataset in ['train', 'test', 'flat', 'independent',
+        'model', 'model_ncov', 'model_nskew', 'model_nskewdiag', 'model_nskewfcov']:
     print(dataset)
-    path = 'data/%s_observables.npz'%dataset
+    path = 'data/%s_observables_L%i.npz'%(dataset, L)
     if not os.path.exists(path):
         matrix = load_matrix('data/%s_matrix_L%i.csv.gz'%(dataset, L))
         fi = frequencies(matrix, num_symbols=naminoacids)

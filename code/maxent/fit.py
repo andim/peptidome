@@ -25,7 +25,8 @@ matrix = load_matrix('data/train_matrix_L%i.csv.gz'%L)
 
 def sampler(*args, **kwargs):
     return mcmcsampler(*args, nsteps=nsteps, nsample=nsample, nburnin=nburnin)
-hi, Jij = fit_full_potts(matrix, sampler=sampler, niter=niter, pseudocount=pseudocount,
+hi, Jij = fit_full_potts(matrix, sampler=sampler,
+                         niter=niter, pseudocount=pseudocount,
                          epsilon=stepsize, prng=prng, output=output)
 
 @njit
@@ -39,5 +40,4 @@ nsteps_generate = int(matrix.shape[0]*nsample)
 model_matrix = mcmcsampler(x0, energy, jump, nsteps=nsteps_generate,
                            nsample=nsample, nburnin=nburnin)
 np.savetxt('data/model_matrix_L%i.csv.gz'%L, model_matrix, fmt='%i')
-
-np.savez('data/Human_reference_%i.npz'%L, hi=hi, Jij=Jij)
+np.savez('data/Human_model_%i.npz'%L, hi=hi, Jij=Jij)

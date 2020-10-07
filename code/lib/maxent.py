@@ -145,6 +145,7 @@ def fit_full_potts(train_matrix, sampler, niter=1, epsilon=0.1,
     # calculate empirical observables
     fi = frequencies(train_matrix, num_symbols=q, pseudocount=pseudocount)
     fij = pair_frequencies(train_matrix, num_symbols=q, fi=fi, pseudocount=pseudocount)
+    fij = pair_frequencies_average(fij)
 
     if prng is None:
         prng = np.random
@@ -170,6 +171,7 @@ def fit_full_potts(train_matrix, sampler, niter=1, epsilon=0.1,
 
         fi_model = frequencies(samples, q, pseudocount=pseudocount)
         fij_model = pair_frequencies(samples, q, fi_model, pseudocount=pseudocount)
+        fij_model = pair_frequencies_average(fij_model)
 
         hi -= np.log(fi_model/fi)*epsilon
         #hi += (fi-fi_model)*epsilon
@@ -375,6 +377,9 @@ def fit_nskewfcov(train_matrix, sampler, h=None, J=None, J2=None, q=naminoacids,
             prng=None, output=False):
     """ sampler(x0, energy, jump, prng=prng): function returning samples from the distribution """
 
+    if prng is None:
+        prng = np.random
+
     # calculate empirical observables
     _, L = train_matrix.shape
     aacounts = to_aacounts(train_matrix)
@@ -386,8 +391,8 @@ def fit_nskewfcov(train_matrix, sampler, h=None, J=None, J2=None, q=naminoacids,
     fij = pair_frequencies(train_matrix, num_symbols=q, fi=fi, pseudocount=pseudocount)
 
 
-    if prng is None:
-        prng = np.random
+
+    # initialize Lagrange multipliers
     if h is None:
         h = np.log(n1/L)
         h -= np.mean(h)
@@ -573,6 +578,17 @@ def pair_frequencies(matrix, num_symbols, fi, pseudocount=0, weights=None):
         for alpha in range(num_symbols):
             fij[i, i, alpha, alpha] = fi[i, alpha]
 
+    return fij
+
+def pair_frequencies_average(fij, copy=False):
+    """ Average pair frequencies to make them translation invariant """
+    if copy:
+        fij = np.copy(fij)
+    L = fij.shape[0]
+    fij_d = np.array([np.mean(np.array([list(fij[i, i+d]) for i in range(0, L-d)]), axis=0) for d in range(0, L)])
+    for i in range(L):
+        for j in range(L):
+            fij[i, j] = fij_d[np.abs(j-i)]
     return fij
 
 def compute_covariance_matrix(fi, fij):

@@ -9,14 +9,14 @@ from lib.maxent import *
 
 from numba import njit
 
-L = 9
+L = 4
 nsample = L
 output = True
 q = naminoacids
 pseudocount = 1.0
-niter = 50
+niter = 200
 stepsize = 0.01 
-nsteps = 1e6
+nsteps = 1e7
 nburnin = 1e3
 
 prng = np.random
@@ -45,4 +45,4 @@ nsteps_generate = int(matrix.shape[0]*nsample)
 model_matrix = mcmcsampler(x0, energy, jump, nsteps=nsteps_generate,
                            nsample=nsample, nburnin=nburnin)
 np.savetxt('data/model_nskewfcov_matrix_L%i.csv.gz'%L, model_matrix, fmt='%i')
-np.savez('data/Human_nskewfcov_%i.npz'%L, h=h, J=J, J2=J2)
+np.savez('data/Human_nskewfcov_%i.npz'%L, h=h, J=J, J2=J2, hi=hi, Jij=Jij)

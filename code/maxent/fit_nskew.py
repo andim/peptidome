@@ -9,7 +9,7 @@ from lib.maxent import *
 
 from numba import njit
 
-L = 9
+L = 4
 nsample = L
 output = True
 q = naminoacids
