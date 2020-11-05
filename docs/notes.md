@@ -4,6 +4,17 @@ title: Notes
 order: 3
 ---
 
+# Take homes October 29
+
+- non-self closer to self than what you might think
+- little room for a generic classifier, so you have to overfit
+- need about 10 peptides for collective decision making
+- training on self as a way to focus on generally important regions
+
+# Immunogenicity paper (Wells et al. Cell 2020)
+
+Assayed which parameters determine immunogenicity of tumor neoantigens. 
+
 # Skype w/ Ben
 
 How many peptides would you need to make a reliable distinction between self and non-self? Relation to the order 10 peptides that are typically immunodominant?

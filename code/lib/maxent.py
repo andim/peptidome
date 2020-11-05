@@ -848,10 +848,10 @@ def Fcov_thermodynamic_integration(h, J, L, integration_intervals=1, mcmc_kwargs
             return local_jump_jit(x, q)
         @njit
         def energy(x):
-            return energy_cov(x, h, alpha*J)
+            return energy_ncov(x, h, alpha*J)
         x0 = prng.randint(q, size=L)
         matrix = mcmcsampler(x0, energy, jump, **mcmc_kwargs)
-        return np.mean([energy_cov(x, np.zeros_like(h), J) for x in matrix])
+        return np.mean([energy_ncov(x, np.zeros_like(h), J) for x in matrix])
 
     xs = np.linspace(0, 1, integration_intervals+1)
     Fprimes = [Fprime(x) for x in xs]
