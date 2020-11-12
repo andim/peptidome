@@ -10,12 +10,13 @@ plt.style.use('../peptidome.mplstyle')
 
 observables = ['fi', 'cij', 'cijk']
 observables_dict = {key: dict() for key in observables}
-for dataset in ['train', 'test', 'model', 'model_global']:
+datasets = ['train', 'test', 'model', 'model_ncov', 'model_nskew', 'model_nskewdiag']
+for dataset in datasets:
     params = np.load('data/%s_observables.npz'%dataset)
     for observable in observables:
         observables_dict[observable][dataset] = params[observable]
 
-for model_type in ['model', 'model_global']:
+for model_type in datasets[2:]:
     fig, axes = plt.subplots(figsize=(6, 3.5), ncols=3, nrows=2)
 
     for j, (observable, label, lims, flattener) in enumerate([('fi', '$f_i$', (0, 0.12), np.ravel),
@@ -46,10 +47,9 @@ for model_type in ['model', 'model_global']:
     label_axes(fig, labelstyle='%s')
     fig.tight_layout()
 
-    fig.savefig('main.png' if model_type == 'model' else 'model_global.png')
+    fig.savefig('main.png' if model_type == 'model' else model_type+'.png')
     if model_type == 'model':
         fig.savefig('../../paper/images/maxent_freqs.pdf')
-    else:
+    elif model_type == 'model_global':
         fig.savefig('../../paper/images/maxent_freqs_global.pdf')
-    plt.show()
     plt.show()

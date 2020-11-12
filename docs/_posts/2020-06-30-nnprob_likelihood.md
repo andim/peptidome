@@ -12,6 +12,99 @@ Practically this finding helps us relate our findings in terms of likelihoods to
 {% include post-image-gallery.html filter="nnprob_likelihood/" %}
 
 ### Code 
+#### tcrspace_figure.ipynb
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+%matplotlib inline
+plt.style.use('../peptidome.mplstyle')
+#plt.style.use('talk')
+
+import sys
+sys.path.append('..')
+
+from lib import *
+```
+
+
+```python
+S = 20
+k = 10
+
+Nn = k*(S-1)
+N = float(S**k)
+
+sigma_lognormal = 0.3
+pi = np.random.lognormal(sigma=sigma_lognormal, size=S)
+pi /= pi.sum()
+
+psigmas = []
+psigmaps = []
+nsigmas = []
+Nsample = 10000
+for i in range(Nsample):
+    sigma = np.random.randint(0, S, k)
+    psigma = np.prod(pi[sigma])
+    nsigma = np.prod(pi[sigma])*np.sum((1-pi[sigma])/pi[sigma])
+    psigmas.append(psigma)
+    nsigmas.append(nsigma)
+    
+    i = np.random.randint(0, k)
+    sigmai = np.random.choice([s for s in range(0, S) if s != sigma[i]])
+    sigmap = np.asarray(list(sigma[:i]) + [sigmai] + list(sigma[i+1:]))
+    psigmap = np.prod(pi[sigmap])
+    psigmaps.append(psigmap)
+nsigmas = np.asarray(nsigmas)
+psigmas = np.asarray(psigmas)
+psigmaps = np.asarray(psigmaps)
+rho = np.corrcoef(psigmas, nsigmas)[1, 0]
+print(r'$\rho_{p(\sigma), n(\sigma)}$:', rho)
+```
+
+    $\rho_{p(\sigma), n(\sigma)}$: 0.9968480221759881
+
+
+
+```python
+fig, ax = plt.subplots(figsize=(3.42, 3.42))
+ax.plot(psigmas, nsigmas, '.', label='data', ms=2)
+pmin, pmax = min(psigmas), max(psigmas)
+psigmas_theory = np.linspace(pmin, pmax)
+#ax.plot(psigmas_theory,
+#        psigmas_theory*(Nn - S*np.log(psigmas_theory*N)),
+#        '-', label='theory')
+ax.plot(psigmas_theory,
+        psigmas_theory**(1.0 - S/Nn) * Nn * S**(-S/(S-1)),
+        '-', label=r'scaling $1-\frac{S}{k(S-1)}$')
+ax.plot(psigmas, psigmas*Nn, 'k-', label='linear')
+ins = ax.inset_axes((0.6, 0.15, 0.35, 0.35))
+ins.plot(psigmas, psigmaps, '.', label='data', ms=1)
+ins.plot(psigmas_theory, psigmas_theory, 'k-')
+for a in [ax, ins]:
+    a.set_xscale('log')
+    a.set_yscale('log')
+    a.set_xlabel('$p(\sigma)$')
+ax.set_ylabel("$n(\sigma) = \sum_{\sigma' \sim \sigma} p(\sigma')$")
+ins.set_ylabel("$p(\sigma')$")
+ax.legend()
+fig.savefig('nnproblikelihood.pdf')
+```
+
+
+![png](notebook_files/tcrspace_figure_2_0.png)
+
+
+
+```python
+
+```
+
+
+```python
+
+```
 #### math.ipynb
 
 # How does neighbor density relate to likelihoods ?
@@ -52,7 +145,7 @@ nsigma_sum = np.sum(np.fromiter((np.prod(pi[sigmap]) for sigmap in neighbors(sig
 print(nsigma, nsigma_sum)
 ```
 
-    0.3439384511191594 0.3439384511191593
+    0.3772593371063177 0.37725933710631776
 
 
 ## correlation between probabilities
@@ -110,7 +203,7 @@ rhop, np.corrcoef(np.log(psigmaps), np.log(psigmas))[0, 1]
 
 
 
-    (0.8432573033820352, 0.8950549164412782)
+    (0.8526248308242619, 0.8941178786189733)
 
 
 
@@ -124,13 +217,25 @@ paa
 ```
 
 
+    ---------------------------------------------------------------------------
+
+    NameError                                 Traceback (most recent call last)
+
+    <ipython-input-6-c6e55ac922bd> in <module>
+    ----> 1 df = Counter(human, 1).to_df(norm=True, clean=True)
+          2 paa = np.asarray(df['freq'])
+          3 paa
 
 
-    array([0.02132759, 0.06577845, 0.07012693, 0.06314819, 0.09970845,
-           0.08332527, 0.01217275, 0.05643573, 0.05963846, 0.07101057,
-           0.02662735, 0.02305051, 0.05347764, 0.0473157 , 0.05724314,
-           0.04330068, 0.04767035, 0.02626757, 0.0365297 , 0.03584496])
+    ~/repos/peptidome/code/lib/main.py in __init__(self, iterable, k, gap, **kwargs)
+        197         self.gap = gap
+        198         if isinstance(iterable, str):
+    --> 199             iterable = fasta_iter(iterable, returnheader=False)
+        200         self.count(iterable, **kwargs)
+        201 
 
+
+    NameError: name 'fasta_iter' is not defined
 
 
 
@@ -141,9 +246,9 @@ k = 9
 Nn = k*(S-1)
 N = float(S**k)
 
-#sigma_lognormal = 0.4
-#pi = np.random.lognormal(sigma=sigma_lognormal, size=S)
-pi = paa
+sigma_lognormal = 0.4
+pi = np.random.lognormal(sigma=sigma_lognormal, size=S)
+#pi = paa
 #pi = np.random.uniform(size=S)
 pi /= pi.sum()
 
@@ -163,7 +268,7 @@ rho = np.corrcoef(psigmas, nsigmas)[1, 0]
 print(r'$\rho_{p(\sigma), n(\sigma)}$:', rho)
 ```
 
-    $\rho_{p(\sigma), n(\sigma)}$: 0.991705622487347
+    $\rho_{p(\sigma), n(\sigma)}$: 0.9928257683165781
 
 
 
@@ -175,7 +280,7 @@ np.var(np.log(psigmas)), np.var(np.log(pi))*k
 
 
 
-    (2.3464343858318664, 2.373654150098714)
+    (1.3134105361638664, 1.3046977956328039)
 
 
 
@@ -189,7 +294,7 @@ np.var(psigmas)*N**2, (np.exp(sigmasq)-1)**.5, (np.exp(np.var(np.log(psigmas)))-
 
 
 
-    (3.124411221821948, 3.1203451200778947, 3.0738003845887154)
+    (2.337054739341597, 1.6390774314634287, 1.6488891202462197)
 
 
 
@@ -232,10 +337,10 @@ print('nsigmabar (lower, sampled, upper):', Nn/N, nsigmabar, nsigmabar_upper)
 print('prediction (-S, -3/2S, rhop)', nsigmabar_pred, nsigmabar_pred2, nsigmabar_pred3)
 ```
 
-    slope, prediction 0.8661041850727093 0.8830409356725146
-    nsigmavar (sampled, upper, pred): 2.31033278570407e-19 3.485142079822372e-19 2.717578898191919e-19 2.942066076857593e-19
-    nsigmabar (lower, sampled, upper): 3.33984375e-10 1.1630385948709255e-09 1.3607527570242163e-09
-    prediction (-S, -3/2S, rhop) 1.25544159081077e-09 1.19441793413456e-09 1.2927452558183374e-09
+    slope, prediction 0.882394560824652 0.8830409356725146
+    nsigmavar (sampled, upper, pred): 1.723209366877293e-19 2.606880860637193e-19 2.0327447933856105e-19 2.224938075047965e-19
+    nsigmabar (lower, sampled, upper): 3.33984375e-10 9.59623282031244e-10 1.1096901491742311e-09
+    prediction (-S, -3/2S, rhop) 1.02323294070426e-09 9.775873403264945e-10 1.0550809061962343e-09
 
 
 

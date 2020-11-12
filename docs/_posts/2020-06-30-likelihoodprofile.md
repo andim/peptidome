@@ -825,12 +825,11 @@ likelihood_virus = pd.read_csv('data/proteome-ref%s-%s-k%i-Viruses.zip'%(ref, li
 #loglikelihood = lambda seq, k: loglikelihood_triplet(seq, **tripletparams, k=k)
 #likelihoodname = 'triplet'
 
-params = np.load('../maxent/data/Human_reference_9.npz')
+params = np.load('../maxent/data/Human_9.npz')
 hi = params['hi']
 Jij = params['Jij']
 loglikelihood = lambda seq, k: -energy_potts(map_aatonumber(seq.upper()), hi, Jij) if isvalidaa(seq) else np.nan
 likelihoodname = 'maxent'
-
 
 
 df_ts = load_iedb_tcellepitopes(human_only=True)
@@ -862,7 +861,7 @@ ax.set_ylabel('probability density')
 ax.set_xlabel('loglikelihood')
 fig.tight_layout()
 plt.show()
-fig.savefig('plots/likelihoodprofile-Viruses-%s-k%i.png' % (likelihoodname, k), dpi=300)
-fig.savefig('../../paper/images/viruses.pdf', dpi=300)
+#fig.savefig('plots/likelihoodprofile-Viruses-%s-k%i.png' % (likelihoodname, k), dpi=300)
+#fig.savefig('../../paper/images/viruses.pdf', dpi=300)
 
 ```

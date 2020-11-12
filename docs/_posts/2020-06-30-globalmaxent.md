@@ -813,13 +813,13 @@ ax.text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.2f}$'.format(r_value**2, slope),
         va='top', ha='left', transform=ax.transAxes)
 ```
 
-    0.9919535133524677 0.0 0.9307956024449778
+    0.987032413078013 0.0 0.9728356376531095
 
 
 
 
 
-    Text(0.05, 1.0, 'slope$=0.93$\n$r^2=0.99$')
+    Text(0.05, 1.0, 'slope$=0.97$\n$r^2=0.99$')
 
 
 
@@ -839,7 +839,7 @@ ax.text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.2f}$'.format(r_value**2, slope),
         va='top', ha='left', transform=ax.transAxes)
 ```
 
-    0.9992588119640597 1.2524936646632855e-29 0.986280554535421
+    0.9986273290198313 3.211009098404129e-27 0.9935145166805103
 
 
 
@@ -865,7 +865,7 @@ ax.text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.2f}$'.format(r_value**2, slope),
         va='top', ha='left', transform=ax.transAxes)
 ```
 
-    0.9994860511089362 0.0 0.98518132440638
+    0.9990441089754443 0.0 0.991274144843994
 
 
 
@@ -926,7 +926,7 @@ ax.text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.2f}$'.format(r_value**2, slope),
         va='top', ha='left', transform=ax.transAxes)
 ```
 
-    0.9988577406112923 6.143007015022327e-28 1.0143513489458438
+    0.9988407897134691 7.013934997103609e-28 1.0138858478822317
 
 
 
@@ -966,13 +966,13 @@ ax.text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.2f}$'.format(r_value**2, slope),
         va='top', ha='left', transform=ax.transAxes)
 ```
 
-    0.8321432879285802 1.465528308024156e-148 1.0508870331746092
+    0.8390555418958603 5.158954786511759e-152 1.0616773815302674
 
 
 
 
 
-    Text(0.05, 1.0, 'slope$=1.05$\n$r^2=0.83$')
+    Text(0.05, 1.0, 'slope$=1.06$\n$r^2=0.84$')
 
 
 
@@ -1022,7 +1022,7 @@ x = n3.flatten()
 y = n3_test.flatten()
 sns.regplot(x, y, ax=ax, scatter_kws=dict(s=5))
 slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(x, y)
-print(r_value**2, ap_value, slope)
+print(r_value**2, p_value, slope)
 ax.text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.2f}$'.format(r_value**2, slope),
         va='top', ha='left', transform=ax.transAxes)
 ```
@@ -1063,17 +1063,17 @@ y = n3_model.flatten()
 sns.regplot(x, y, ax=ax, scatter_kws=dict(s=5))
 slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(x, y)
 print(r_value**2, p_value, slope)
-ax.text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.2f}$'.format(r_value**2, slope),
+ax.text(0.05, 1.0, 'slope$={1:.2f}$\n$r^2={0:.3f}$'.format(r_value**2, slope),
         va='top', ha='left', transform=ax.transAxes)
 ```
 
-    0.9987563441196157 0.0 0.9765281785895622
+    0.9986001123298436 0.0 0.9836453132021754
 
 
 
 
 
-    Text(0.05, 1.0, 'slope$=0.98$\n$r^2=1.00$')
+    Text(0.05, 1.0, 'slope$=0.98$\n$r^2=0.999$')
 
 
 
@@ -1099,7 +1099,7 @@ def energy_third(x, h, J, J2):
 
 
 ```python
-def fit_third(n1, n2, n3, L, sampler, h=None, J=None, q=naminoacids,
+def fit_third(n1, n2, n3, L, sampler, h=None, J=None, J2=None, q=naminoacids,
             niter=1, epsilon=0.1, pseudocount=1.0,
             prng=None, output=False):
     """ sampler(x0, energy, jump, prng=prng): function returning samples from the distribution """
@@ -1114,7 +1114,10 @@ def fit_third(n1, n2, n3, L, sampler, h=None, J=None, q=naminoacids,
         J = np.zeros_like(n2)
     else:
         J = J.copy()
-    J2 = np.zeros_like(n3)
+    if J2 is None:
+        J2 = np.zeros_like(n3)
+    else:
+        J2 = J2.copy()
     for iteration in range(niter):
         if output:
             print('iteration %g/%g'%(iteration+1,niter))
@@ -1201,10 +1204,10 @@ plt.hist([J2_third[i, i, i] for i in range(q)])
 
 
 
-    (array([2., 6., 3., 3., 2., 1., 0., 2., 0., 1.]),
-     array([0.00013418, 0.00137673, 0.00261928, 0.00386183, 0.00510439,
-            0.00634694, 0.00758949, 0.00883205, 0.0100746 , 0.01131715,
-            0.0125597 ]),
+    (array([4., 5., 4., 2., 2., 2., 0., 0., 0., 1.]),
+     array([0.00046894, 0.00179797, 0.003127  , 0.00445603, 0.00578506,
+            0.00711409, 0.00844312, 0.00977215, 0.01110118, 0.01243021,
+            0.01375924]),
      <a list of 10 Patch objects>)
 
 
@@ -1221,11 +1224,11 @@ plt.hist(J2_third.flatten())
 
 
 
-    (array([  36.,   66.,  267.,  969., 2250., 2269., 1476.,  478.,  168.,
-              21.]),
-     array([-0.02482474, -0.01995712, -0.01508949, -0.01022186, -0.00535423,
-            -0.00048661,  0.00438102,  0.00924865,  0.01411628,  0.0189839 ,
-             0.02385153]),
+    (array([  30.,   78.,  225.,  726., 1977., 2425., 1639.,  641.,  202.,
+              57.]),
+     array([-0.02530562, -0.02053218, -0.01575874, -0.0109853 , -0.00621186,
+            -0.00143842,  0.00333502,  0.00810846,  0.0128819 ,  0.01765534,
+             0.02242878]),
      <a list of 10 Patch objects>)
 
 
@@ -1259,9 +1262,30 @@ np.savez('data/Human_third_L%g.npz'%L, h=h_third, J=J_third, J2=J2_third)
 
 
 ```python
-aacounts = to_aacounts(sample_matrices['test'])
-n3_model = calc_n3(aacounts, L)
+aacounts = to_aacounts(model_matrix)
+n3_model = calc_n3(aacounts)
 ```
+
+
+```python
+plt.hist(((n3_model - n3_test)/n3_test).flatten())
+```
+
+
+
+
+    (array([ 106.,  555., 1182., 1842., 1757., 1300.,  835.,  315.,   66.,
+              42.]),
+     array([-0.06558048, -0.04921294, -0.03284541, -0.01647787, -0.00011034,
+             0.0162572 ,  0.03262474,  0.04899227,  0.06535981,  0.08172734,
+             0.09809488]),
+     <a list of 10 Patch objects>)
+
+
+
+
+![png](notebook_files/cov_52_1.png)
+
 
 
 ```python
