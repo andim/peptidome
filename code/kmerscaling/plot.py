@@ -13,7 +13,7 @@ import sys
 sys.path.append('..')
 from lib import *
 
-ks = np.arange(1, 10)
+ks = np.arange(1, 12)
 counters = [count_kmers_proteome(human, k, clean=True) for k in ks]
 
 totalpeptides = np.sum(list(counters[0].values()))
@@ -58,4 +58,5 @@ fig.tight_layout()
 
 
 fig.savefig('main.png')
+fig.savefig(figuredir+'kmerscaling.svg')
 plt.show()

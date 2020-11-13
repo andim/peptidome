@@ -7,12 +7,13 @@ sys.path.append('..')
 from lib import *
 plt.style.use('../peptidome.mplstyle')
 
+L = 9
 
 observables = ['fi', 'cij', 'cijk']
 observables_dict = {key: dict() for key in observables}
-datasets = ['train', 'test', 'model', 'model_ncov', 'model_nskew', 'model_nskewdiag']
+datasets = ['train', 'test', 'model', 'model_ncov', 'model_nskew', 'model_nskewdiag', 'model_nskewfcov']
 for dataset in datasets:
-    params = np.load('data/%s_observables.npz'%dataset)
+    params = np.load('data/%s_observables_L%i.npz'%(dataset, L))
     for observable in observables:
         observables_dict[observable][dataset] = params[observable]
 

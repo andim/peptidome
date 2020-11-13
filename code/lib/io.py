@@ -13,7 +13,7 @@ from .main import *
 # Define path variables
 repopath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
 datadir = os.path.join(repopath, 'data/')
-plotsdir = os.path.join(repopath,  'plots/')
+figuredir = os.path.join(repopath,  'figures/raw/')
 
 def make_path(row):
     "Return path based on a row from the proteome file"

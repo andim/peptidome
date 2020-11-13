@@ -52,7 +52,8 @@ df_theory = pd.DataFrame.from_dict(frequencies, orient='index', columns=['freq']
 dfmerged = pd.merge(df, df_theory, left_on='seq', right_index=True, suffixes=['_human', '_pathogen'])
 plot(dfmerged, 'uniform nt usage')
 
-plot(compare(datadir+'human-viruses-uniref90.fasta'), 'Viruses')
+plot(compare(datadir+'human-viruses-uniref50_nohiv.fasta'), 'Viruses')
+shutil.move('aafreqsViruses.png', 'main.png')
 plot(compare(datadir+'ufos/ufo.fasta'), 'Ufo')
 plot(compare(datadir+'ufos/ext.fasta'), 'Ufo-ext')
 
@@ -61,4 +62,3 @@ for name, row in proteomes.iterrows():
 
     plot(compare(path), name)
 
-shutil.move('aafreqsViruses.png', 'main.png')
