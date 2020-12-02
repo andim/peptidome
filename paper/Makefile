@@ -7,10 +7,17 @@
 TEMPFILES = *.log *.lot *.lof *.toc *.out *.aux *.bbl *.blg *.pdf *.glo *.ist *.acn *.alg *.acr *.tdo
 
 MAKEDIR := $(shell pwd)
-SECTIONSDIR = $(MAKEDIR)
-sections = $(SECTIONSDIR)/*.tex
-additionaldeps = images/*pdf
+IMGDIR = $(MAKEDIR)/images/
+SKETCHDIR = $(MAKEDIR)/../figures/
+additionaldeps = 
 SHAREDREFDIR = 
+
+# don't remove pdf file if it has been newly generated using target s%
+.PRECIOUS: %.pdf $(IMGDIR)/%.pdf
+
+SVGSRC	:= $(notdir $(wildcard $(SKETCHDIR)/*.svg))
+SVG	:= $(addprefix $(IMGDIR)/, $(SVGSRC:%.svg=%.pdf))
+
 
 RM = /bin/rm -f
 OUT = /dev/null 2>&1
@@ -18,13 +25,15 @@ OUT = /dev/null 2>&1
 RERUN = "(There were undefined references|Rerun to get citations correct.|Rerun to get cross-references right.|Table widths have changed. Rerun LaTeX.)"
 RERUNBIB = "No file.*\.bbl|Citation.*undefined"
 
+$(IMGDIR)/%.pdf : $(SKETCHDIR)/%.svg
+	inkscape $< --export-pdf=$@ --export-area-drawing
 
 # show pdf to corresponding tex file
 # % = filename (without extension)
 s%: %.pdf
 	@evince $< > $(OUT) &
 
-%.pdf: %.tex $(sections) $(additionaldeps)
+%.pdf: %.tex $(additionaldeps)  $(wildcard $(IMGDIR)/*pdf) $(SVG)
 	@echo "changes found. regenerating"
 	@pdflatex -file-line-error $<
 	@# run bibtex if needed

@@ -68,6 +68,20 @@ To capture these effects in an ensemble approach, we start by establishing an en
 
 \section{Results}
 
+\subsection{Statistical discriminability of host and pathogen peptides}
+
+
+\begin{figure*}
+    \includegraphics{classifier}
+    \caption{{\bf Discrimination between host peptides and pathogen peptides by simple sequence statistics for two examples.} We consider the classification of a random 9mer derived either from the human proteome or from a pathogen proteome based on a simple first order Markov chain model of sequence statistics. As an illustration we show classification accuracy for both Cytomegalovirus (A-C), a chronic virus, and for Plasmodium falciparum (D-F), a parasite causing Malaria. (A,D) Distribution of loglikelihood ratios over peptides drawn from both proteomes. (B,E) Sensitivity-Specificity tradeoff curve for a binary classifier. (C,F) Precision-Recall tradeoff curve for a binary classifier.
+    \label{figclassifier}
+    }
+\end{figure*}
+
+To anchor our further explorations we analyze the ability of simple sequence statistics to classify peptides of a given length drawn at random either from a pathogen proteome or the host proteome. We describe statistics in each proteome with a simple first order Markov chain model inferred directly from the sequence statistics in each proteome. These models assign a likelihood $\mathcal{L}(s)$ to each peptide $s$. Given likelihood functions $\mathcal{L}_H(s)$ and $\mathcal{L}_P(s)$ for the host and pathogen, respectively, we can calculate their likelihood ratio as a measure based on which to classify peptides. Fig.~\ref{figclassifier}A,D show the distributions of likelihood ratios for peptides of a length of 9 amino acids from the Cytomegalovirus (CMV) and Plasmodium falciparum proteome with respect to the statistics of human host proteins. The statistical discriminability is quite modest in the case of CMV as shown by the substantial overlap of both distributions, while it is larger for Plasmodium falciparum. By choosing an appropriate cutoff one can turn the likelihood ratio into a binary decision of whether a given peptide originates from one of the two proteomes. We visualize the accuracy with which such a classifier discriminates between host and pathogen peptides as a function of the chosen threshold in the form of its sensitivity-specificity tradeoff curve (Fig.~\ref{figclassifier}B,F). Here, sensitiviy is defined as the fraction of foreign peptides correctly classified as such, and specificity as the fraction of false positives from the host proteome. Quantifying the discrimination accuracy using the area under this curve (AUROC), we confirm the modest discriminability for the case of CMV and more substantial discriminability for Plasmodium falciparum. However, this measure focuses on the overall discriminability, while the immune system might instead make a decision bases on only a few peptides that are particularly easy to discriminate. The assess the accuracy of such a classification strategy, it is particular convenient to display the data in the form of a precision-recall curve (Fig.~\ref{figclassifier}C,F).
+
+
+
 
 \subsection{Proteins are surprisingly random}
 

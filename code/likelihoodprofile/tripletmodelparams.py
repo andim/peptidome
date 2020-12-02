@@ -5,10 +5,12 @@ import pandas as pd
 
 import json
 
+import sys
+sys.path.append('..')
 from lib import *
 
-name = 'malaria'
-proteome = malaria
+name = 'cmv'
+proteome = proteome_path('CMV')
 
 df = counter_to_df(count_kmers_proteome(proteome, 1), norm=True)
 df = df.set_index('seq')
@@ -30,5 +32,5 @@ count[count.isna()] = 1e-10
 tripletlogp = np.log10(count).to_dict()
 
 modelparams = dict(charlogp=charlogp, doubletlogp=doubletlogp, tripletlogp=tripletlogp)
-with open('../data/triplet-%s.json'%name, 'w') as f:
+with open('../../data/triplet-%s.json'%name, 'w') as f:
     json.dump(modelparams, f, indent=4)
