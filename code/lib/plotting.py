@@ -25,7 +25,12 @@ def label_axes(fig_or_axes, labels=string.ascii_uppercase,
     defkwargs = dict(fontweight='bold', ha='left', va='top')
     defkwargs.update(kwargs)
     labels = itertools.cycle(labels)
-    axes = fig_or_axes.axes if isinstance(fig_or_axes, plt.Figure) else fig_or_axes
+    if isinstance(fig_or_axes, plt.Figure):
+        axes = fig_or_axes.axes
+    elif isinstance(fig_or_axes, plt.Axes):
+        axes = [fig_or_axes]
+    else:
+        axes = fig_or_axes
     for ax, label in zip(axes, labels):
         ax.annotate(labelstyle % label, xy=xy, xycoords=xycoords,
                     **defkwargs)

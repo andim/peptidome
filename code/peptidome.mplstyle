@@ -56,7 +56,7 @@ legend.columnspacing: 0.5
 legend.labelspacing  : 0.5
 legend.handletextpad: 0.5
 legend.handlelength: 1.25
-legend.borderaxespad: 0.5
+legend.borderaxespad: 0.25
 
 
 # grid

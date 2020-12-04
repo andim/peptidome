@@ -6,15 +6,15 @@ import sys
 sys.path.append('..')
 from lib import *
 
-pathogen = 'CMV'
+pathogen = 'Malaria'
 k = 9
 
 with open('../../data/triplet-human.json', 'r') as f:
     tripletparams_human = json.load(f)
-    loglikelihood_human = lambda seq: loglikelihood_mc(seq, **tripletparams_human)
+    loglikelihood_human = lambda seq: loglikelihood_independent(seq, **tripletparams_human)
 with open('../../data/triplet-%s.json'%pathogen.lower(), 'r') as f:
     tripletparams_malaria = json.load(f)
-    loglikelihood_pathogen = lambda seq: loglikelihood_mc(seq, **tripletparams_malaria)
+    loglikelihood_pathogen = lambda seq: loglikelihood_independent(seq, **tripletparams_malaria)
 
 logp_hh = np.array([loglikelihood_human(seq[i:i+k]) for h, seq in fasta_iter(human) for i in range(len(seq)-k+1)
                 if isvalidaa(seq[i:i+k])])
