@@ -1,0 +1,20 @@
+name: py3
+channels:
+    - conda-forge
+    - bioconda
+dependencies:
+    - pip
+    - numpy
+    - scipy
+    - pandas
+    - matplotlib
+    - seaborn
+    - biopython
+    - numba
+    - mpmath
+    - scikit-learn
+    - statsmodels
+    - jupyter
+    - bioconda::snakemake
+    - pip:
+        - palettable

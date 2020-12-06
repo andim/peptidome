@@ -9,8 +9,8 @@ from lib.maxent import *
 
 from numba import njit
 
-L = 4
-nsample = L
+k = int(snakemake.wildcards.k)
+nsample = k
 output = True
 q = naminoacids
 pseudocount = 1.0
@@ -21,9 +21,9 @@ nburnin = 1e3
 
 prng = np.random
 
-matrix = load_matrix('data/train_matrix_L%i.csv.gz'%L)
+matrix = load_matrix('data/train_matrix_k%i.csv.gz'%k)
 
-arr = np.load('data/Human_nskew_%i.npz'%L)
+arr = np.load('data/Human_nskew_k%i.npz'%k)
 h = arr['h']
 J = arr['J']
 J2 = arr['J2']
@@ -40,9 +40,9 @@ def jump(x):
 @njit
 def energy(x):
     return energy_nskewfcov(x, h, J, J2, hi, Jij)
-x0 = prng.randint(q, size=L)
+x0 = prng.randint(q, size=k)
 nsteps_generate = int(matrix.shape[0]*nsample)
 model_matrix = mcmcsampler(x0, energy, jump, nsteps=nsteps_generate,
                            nsample=nsample, nburnin=nburnin)
-np.savetxt('data/model_nskewfcov_matrix_L%i.csv.gz'%L, model_matrix, fmt='%i')
-np.savez('data/Human_nskewfcov_%i.npz'%L, h=h, J=J, J2=J2, hi=hi, Jij=Jij)
+np.savetxt('data/model_nskewfcov_matrix_k%i.csv.gz'%k, model_matrix, fmt='%i')
+np.savez('data/Human_nskewfcov_k%i.npz'%k, h=h, J=J, J2=J2, hi=hi, Jij=Jij)

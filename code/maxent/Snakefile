@@ -1,0 +1,44 @@
+ks = [4, 9]
+
+rule all:
+    input:
+        expand(
+            'data/Human_nskewfcov_k{k}.npz',
+            k=ks
+        )
+
+rule train_test:
+    output:
+        'data/test_matrix_k{k}.csv.gz',
+        'data/train_matrix_k{k}.csv.gz'
+    script:
+       'generate_reference_matrices.py' 
+
+rule fit_ncov:
+    input:
+        'data/train_matrix_k{k}.csv.gz'
+    output:
+        'data/Human_ncov_k{k}.npz',
+        'data/model_ncov_matrix_k{k}.csv.gz'
+    script:
+        'fit_ncov.py'
+
+rule fit_nskew:
+    input:
+        'data/train_matrix_k{k}.csv.gz',
+        'data/Human_ncov_k{k}.npz'
+    output:
+        'data/Human_nskew_k{k}.npz',
+        'data/model_nskew_matrix_k{k}.csv.gz'
+    script:
+        'fit_nskew.py'
+
+rule fit_nskewfcov:
+    input:
+        'data/train_matrix_k{k}.csv.gz',
+        'data/Human_nskew_k{k}.npz'
+    output:
+        'data/Human_nskewfcov_k{k}.npz',
+        'data/model_nskewfcov_matrix_k{k}.csv.gz'
+    script:
+        'fit_nskewfcov.py'

@@ -269,22 +269,22 @@ def iscontained(string, strings):
             return True
     return False
 
-try:
-    from .clib import count_kmers
-except ImportError:
-    print('clib not found')
-    def count_kmers(string, k, counter=None, gap=0):
-        """
-        Count occurrence of kmers in a given string.
-        """
-        if counter is None:
-            counter = defaultdict(int)
-        for i in range(len(string)-k-gap+1):
-            if gap:
-                counter[string[i]+string[i+gap+1:i+k+gap]] += 1
-            else:
-                counter[string[i:i+k]] += 1
-        return counter
+#try:
+#    from .clib import count_kmers
+#except ImportError:
+#    print('clib not found')
+def count_kmers(string, k, counter=None, gap=0):
+    """
+    Count occurrence of kmers in a given string.
+    """
+    if counter is None:
+        counter = defaultdict(int)
+    for i in range(len(string)-k-gap+1):
+        if gap:
+            counter[string[i]+string[i+gap+1:i+k+gap]] += 1
+        else:
+            counter[string[i:i+k]] += 1
+    return counter
 
 def plot_sorted(data, ax=None, normalize=True, scalex=1.0, scaley=1.0, **kwargs):
     if ax is None:

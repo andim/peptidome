@@ -9,7 +9,7 @@ from lib.maxent import *
 
 L = 9
 
-for dataset in ['train', 'test', 'flat', 'independent',
+for dataset in ['train', 'test', 'filtered_train', 'filtered_test', 'flat', 'independent',
         'model', 'model_ncov', 'model_nskew', 'model_nskewdiag', 'model_nskewfcov']:
     print(dataset)
     path = 'data/%s_observables_L%i.npz'%(dataset, L)

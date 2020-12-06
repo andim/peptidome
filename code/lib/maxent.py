@@ -2,7 +2,7 @@ import itertools
 import numpy as np
 import pandas as pd
 from . import *
-from . import clib
+#from . import clib
 
 import numba
 from numba import jit, njit
@@ -17,15 +17,15 @@ def aacounts_int_jit(seq):
         counter[c] += 1
     return counter
 
-try:
-    from .clib import aacounts_int
-except:
-    print('clib not found')
-    def aacounts_int(seq):
-        counter = np.zeros(len(aminoacids), dtype=int)
-        for c in seq:
-            counter[c] += 1
-        return counter
+#try:
+#    from .clib import aacounts_int
+#except:
+#    print('clib not found')
+#    def aacounts_int(seq):
+#        counter = np.zeros(len(aminoacids), dtype=int)
+#        for c in seq:
+#            counter[c] += 1
+#        return counter
 
 def energy_global(counts, hks):
     energy = 0.0

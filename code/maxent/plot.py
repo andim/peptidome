@@ -11,7 +11,9 @@ L = 9
 
 observables = ['fi', 'cij', 'cijk']
 observables_dict = {key: dict() for key in observables}
-datasets = ['train', 'test', 'model', 'model_ncov', 'model_nskew', 'model_nskewdiag', 'model_nskewfcov']
+datasets = ['train', 'test',
+            #'filtered_train', 'filtered_test', 'model', 'model_ncov', 'model_nskew', 'model_nskewdiag',
+            'model_nskewfcov']
 for dataset in datasets:
     params = np.load('data/%s_observables_L%i.npz'%(dataset, L))
     for observable in observables:
@@ -53,4 +55,6 @@ for model_type in datasets[2:]:
         fig.savefig('../../paper/images/maxent_freqs.pdf')
     elif model_type == 'model_global':
         fig.savefig('../../paper/images/maxent_freqs_global.pdf')
+    if model_type == 'model_nskewfcov':
+        fig.savefig(figuredir + 'connected_correlations.svg')
     plt.show()
