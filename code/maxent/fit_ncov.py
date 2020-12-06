@@ -21,7 +21,7 @@ nburnin = 1e3
 
 prng = np.random
 
-matrix = load_matrix('data/train_matrix_k%i.csv.gz'%k)
+matrix = load_matrix(snakemake.input[0])
 
 def sampler(*args, **kwargs):
     return mcmcsampler(*args, nsteps=nsteps, nsample=nsample, nburnin=nburnin)
@@ -39,5 +39,5 @@ x0 = prng.randint(q, size=k)
 nsteps_generate = int(matrix.shape[0]*nsample)
 model_matrix = mcmcsampler(x0, energy, jump, nsteps=nsteps_generate,
                            nsample=nsample, nburnin=nburnin)
-np.savetxt('data/model_ncov_matrix_k%i.csv.gz'%k, model_matrix, fmt='%i')
-np.savez('data/Human_ncov_k%i.npz'%k, h=h, J=J)
+np.savetxt(snakemake.output[0], model_matrix, fmt='%i')
+np.savez(snakemake.output[1], h=h, J=J)

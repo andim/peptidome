@@ -7,13 +7,15 @@ sys.path.append('..')
 from lib import *
 from lib.maxent import *
 
-L = 9
+k = proteome.wildcard.k
+proteome = snakemake.wildcard.proteome
+
 filterlength = 12
 seed = 12345
 
 prng = np.random.RandomState(seed=seed)
 
-df = load_proteome_as_df('Human')
+df = load_proteome_as_df(proteome)
 df.drop_duplicates(subset=['Sequence'], inplace=True)
 
 seqs = df['Sequence']
@@ -28,6 +30,6 @@ def filterseqs(seqs, k, filterlength):
     return filtered
 
 
-for label, data in [('train', train), ('test', test)]:
-    matrix = kmers_to_matrix(filterseqs(data, k=L, filterlength=filterlength))
-    np.savetxt('data/filtered_%s_matrix_L%i.csv.gz'%(label,L), matrix, fmt='%i')
+for i, (label, data) in [('train', train), ('test', test)]:
+    matrix = kmers_to_matrix(filterseqs(data, k=k, filterlength=filterlength))
+    np.savetxt(snakemake.output[i], matrix, fmt='%i')

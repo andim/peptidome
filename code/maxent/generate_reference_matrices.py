@@ -16,4 +16,4 @@ train, test = train_test_split(seqs, test_size=0.5, random_state=prng)
 
 for label, data in [('train', train), ('test', test)]:
     matrix = kmers_to_matrix(to_kmers(data, k=k))
-    np.savetxt('data/%s_matrix_k%i.csv.gz'%(label,k), matrix, fmt='%i')
+    np.savetxt(snakemake.output[i], matrix, fmt='%i')
