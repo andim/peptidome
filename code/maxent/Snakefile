@@ -1,11 +1,9 @@
-ks = list(range(4, 20, 1))
+ks = list(range(4, 12, 1))
 
 rule all:
     input:
-        expand('data/Human_nskewfcov_k{k}_params.npz',
-               k=ks),
-        expand('data/Human_{model}_k{k}_observables.npz',
-            model=['train', 'test', 'ncov', 'nskew', 'nskewfcov'], k=ks)
+        expand('plots/Human_{model}_k{k}_observables.png',
+            model=['train', 'ncov', 'nskew', 'nskewfcov'], k=ks)
 
 rule train_test:
     output:
@@ -50,3 +48,12 @@ rule observables:
         'data/Human_{model}_k{k}_observables.npz'
     script:
         'evaluate_observables.py'
+
+rule observables_plot:
+    input:
+        'data/Human_test_k{k}_observables.npz',
+        'data/Human_{model}_k{k}_observables.npz'
+    output:
+        'plots/Human_{model}_k{k}_observables.png'
+    script:
+        'plot_observables.py'
