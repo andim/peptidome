@@ -1,5 +1,6 @@
 import itertools, json
 import numpy as np
+np.seterr(all=raise)
 import pandas as pd
 
 import sys

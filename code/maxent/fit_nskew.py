@@ -1,5 +1,6 @@
 import itertools, json
 import numpy as np
+np.seterr(all=raise)
 import pandas as pd
 
 import sys
@@ -16,7 +17,7 @@ q = naminoacids
 pseudocount = 1.0
 niter = 200
 stepsize = 0.01 
-nsteps = 1e6
+nsteps = 1e7
 nburnin = 1e3
 
 prng = np.random
