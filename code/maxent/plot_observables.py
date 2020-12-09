@@ -19,7 +19,7 @@ for i, dataset in enumerate(datasets):
     for observable in observables:
         observables_dict[observable][dataset] = params[observable]
 
-fig, axes = plt.subplots(figsize=(6, 1.75), ncols=3, nrows=1)
+fig, axes = plt.subplots(figsize=(5.5, 1.75), ncols=3, nrows=1)
 
 for j, (observable, label, lims, flattener) in enumerate([('fi', '$f_i$', (0, 0.12), np.ravel),
                                                ('cij', '$C_{ij}$', (-0.0025, 0.0035), flatten_ij),
@@ -45,7 +45,7 @@ for j, (observable, label, lims, flattener) in enumerate([('fi', '$f_i$', (0, 0.
 for ax in axes[1:]:
     ax.ticklabel_format(style='sci', scilimits=(0,0))
 
-label_axes(fig, labelstyle='%s')
+label_axes(fig, labelstyle='%s', xy=(-0.25, 1.0))
 fig.tight_layout()
 
 fig.savefig(snakemake.output[0])
