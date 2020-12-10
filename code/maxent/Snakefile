@@ -5,7 +5,9 @@ rule all:
         expand('plots/Human_{model}_k{k}_observables.png',
             model=['train', 'independent', 'ncov', 'nskew', 'nskewfcov'], k=ks),
         expand('plots/Human_k{k}_dos.png', k=ks),
-        'plots/maxent.svg'
+        'plots/maxent.svg',
+        expand('data/Human_{model}_k{k}_entropy.csv',
+            model=['independent', 'ncov', 'nskew', 'nskewfcov'], k=ks)
 
 rule train_test:
     output:

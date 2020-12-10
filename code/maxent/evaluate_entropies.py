@@ -9,8 +9,8 @@ from lib import *
 k = int(snakemake.wildcards.k)
 q = naminoacids
 
-integration_intervals = 10
-mcmc_kwargs = dict(nsteps=1e6, nsample=k, nburnin=1e4)
+integration_intervals = 20
+mcmc_kwargs = dict(nsteps=1e7, nsample=k, nburnin=1e4)
 
 def entropy_thermodynamic_integration(model_params,
         integration_intervals=1,
