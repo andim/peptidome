@@ -9,9 +9,8 @@ sys.path.append('..')
 from lib import *
 plt.style.use('../peptidome.mplstyle')
 
-k = int(snakemake.wildcards.k)
-
-fig, axes = plt.subplots(figsize=(5.5, 1.75), ncols=3, nrows=3)
+k = 9
+fig, axes = plt.subplots(figsize=(7.2, 5.0), ncols=3, nrows=2)
 
 ## observables
 observables = ['fi', 'cij', 'cijk']
@@ -62,7 +61,7 @@ for model in models:
 xmax = max([max(energies[model]) for model in models])+0.1
 xmin = min([min(energies[model]) for model in models])-0.1
 nbins = 100
-for ax in axes:
+for ax in axes[1,:2]:
     plot_histograms([energies[model] for model in models],
                     [labels[model] for model in models],
                     step=True, nbins=nbins, xmin=xmin, xmax=xmax, lw=0.5, ax=ax, scaley=nbins/(xmax-xmin))
