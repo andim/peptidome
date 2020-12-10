@@ -11,6 +11,8 @@ plt.style.use('../peptidome.mplstyle')
 
 k = int(snakemake.wildcards.k)
 
+fig, axes = plt.subplots(figsize=(4.5, 1.75), ncols=2)
+
 energies = {}
 models = ['test', 'independent', 'ncov', 'nskew', 'nskewfcov']
 for model in models:
@@ -20,7 +22,6 @@ for model in models:
 xmax = max([max(energies[model]) for model in models])+0.1
 xmin = min([min(energies[model]) for model in models])-0.1
 nbins = 100
-fig, axes = plt.subplots(figsize=(4.5, 1.75), ncols=2)
 for ax in axes:
     plot_histograms([energies[model] for model in models],
                     models,
