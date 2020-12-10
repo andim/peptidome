@@ -77,11 +77,10 @@ rule observables_plot:
     script:
         'plot_observables.py'
 
-
 rule dos_plot:
     input:
-        expand('plots/Human_{model}_k{k}_observables.png',
-            model = ['test', 'independent', 'ncov', 'nskew', 'nskewfcov'], k=ks),
+        expand('data/Human_{model}_k{{k}}_energies.npz',
+            model = ['test', 'independent', 'ncov', 'nskew', 'nskewfcov']),
     output:
         'plots/Human_k{k}_dos.png'
     script:

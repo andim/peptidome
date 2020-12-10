@@ -15,16 +15,15 @@ energies = {}
 models = ['test', 'independent', 'ncov', 'nskew', 'nskewfcov']
 for model in models:
     print(model)
-    energies[model] = np.load('data/Human_{model}_k{k}_energies.npz'.format(model=model, k=k))
+    energies[model] = np.load('data/Human_{model}_k{k}_energies.npz'.format(model=model, k=k))['energies']
 
-xmax = max([max(energies[dataset]) for dataset in datasets])+0.1
-xmin = min([min(energies[dataset]) for dataset in datasets])-0.1
+xmax = max([max(energies[model]) for model in models])+0.1
+xmin = min([min(energies[model]) for model in models])-0.1
 nbins = 100
 fig, axes = plt.subplots(figsize=(4.5, 1.75), ncols=2)
-datasets = models
 for ax in axes:
-    plot_histograms([energies[dataset] for dataset in datasets],
-                    datasets,
+    plot_histograms([energies[model] for model in models],
+                    models,
                     step=True, nbins=nbins, xmin=xmin, xmax=xmax, lw=0.5, ax=ax, scaley=nbins/(xmax-xmin))
     ax.set_xlabel('Energy')
     ax.set_ylabel('Density')
