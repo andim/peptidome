@@ -30,7 +30,7 @@ J2 = arr['J2']
 
 def sampler(*args, **kwargs):
     return mcmcsampler(*args, nsteps=nsteps, nsample=nsample, nburnin=nburnin)
-h, J, J2, hi, Jij = fit_nskewfcov(matrix, sampler=sampler, h=h, J=J,
+h, J, J2, hi, Jij = fit_nskewfcov(matrix, sampler=sampler, h=h, J=J, J2=J2,
                 niter=niter, pseudocount=pseudocount,
                 epsilon=stepsize, prng=prng, output=output)
 

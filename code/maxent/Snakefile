@@ -68,6 +68,14 @@ rule evaluate_energies:
     script:
         'evaluate_energies.py'
 
+rule evaluate_entropies:
+    input:
+        'data/Human_{model}_k{k}_params.npz'
+    output:
+        'data/Human_{model}_k{k}_entropy.csv'
+    script:
+        'evaluate_entropies.py'
+
 rule observables_plot:
     input:
         'data/Human_test_k{k}_observables.npz',
