@@ -59,7 +59,7 @@ rule evaluate_energies:
     output:
         'data/Human_{model}_k{k}_energies.npz'
     script:
-        'evaluate_observables.py'
+        'evaluate_energies.py'
 
 rule observables_plot:
     input:
