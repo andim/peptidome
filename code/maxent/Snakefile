@@ -5,9 +5,8 @@ rule all:
         expand('plots/Human_{model}_k{k}_observables.png',
             model=['train', 'independent', 'ncov', 'nskew', 'nskewfcov'], k=ks),
         expand('plots/Human_k{k}_dos.png', k=ks),
-        'plots/maxent.svg',
-        expand('data/Human_{model}_k{k}_entropy.csv',
-            model=['independent', 'ncov', 'nskew', 'nskewfcov'], k=ks)
+        expand('plots/Human_k{k}_entropies.png', k=ks),
+        'plots/maxent.svg'
 
 rule train_test:
     output:
@@ -96,6 +95,15 @@ rule dos_plot:
         'plots/Human_k{k}_dos.png'
     script:
         'plot_dos.py'
+
+rule entropies_plot:
+    input:
+        expand('data/Human_{model}_k{{k}}_entropy.csv',
+            model = ['independent', 'ncov', 'nskew', 'nskewfcov']),
+    output:
+        'plots/Human_k{k}_entropies.png'
+    script:
+        'plot_entropies.py'
 
 rule maintext_plot:
     input:
