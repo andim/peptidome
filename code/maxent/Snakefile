@@ -3,9 +3,9 @@ ks = list(range(4, 12, 1))
 rule all:
     input:
         expand('plots/Human_{model}_k{k}_observables.png',
-            model=['train', 'ncov', 'nskew', 'nskewfcov'], k=ks),
+            model=['train', 'independent', 'ncov', 'nskew', 'nskewfcov'], k=ks),
         expand('data/Human_{model}_k{k}_energies.npz',
-            model=['test', 'ncov', 'nskew', 'nskewfcov'], k=ks)
+            model=['train', 'test',  'independent', 'ncov', 'nskew', 'nskewfcov'], k=ks)
         
 
 rule train_test:
@@ -14,6 +14,15 @@ rule train_test:
         'data/Human_test_k{k}_matrix.csv.gz',
     script:
        'generate_reference_matrices.py' 
+
+rule fit_independent:
+    input:
+        'data/Human_train_k{k}_matrix.csv.gz'
+    output:
+        'data/Human_independent_k{k}_matrix.csv.gz',
+        'data/Human_independent_k{k}_params.npz',
+    script:
+        'fit_independent.py'
 
 rule fit_ncov:
     input:
