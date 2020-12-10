@@ -64,24 +64,209 @@ Previous immuno-peptidome analyses have focused on similarity between self and n
 
 Even a single proteome contains a great deal of data. The approximately 20000 genes times 1000 amino acids per gene on average gives $2 \cdot 10^7$ possible {\it k}-mer peptides, when not accounting restrictions on which can be processed and presented \cite{Luksza}. This also implies that most 5mers will still be represented in the proteome, as there are only about $20^5 = 3.2 \cdot 10^6$ possible 5mers. As a consequence, small changes in amino acid usage can lead to larger changes in the relative likelihood of longer stretches of otherwise random sequences: consider a 10\% difference for single amino acids than a random 8mer has a log-likelihood ratio of $1.1^8 \approx 2.15$. Even larger likelihood ratios are expected for long {\it k}-mers once pairwise or higher-order correlations are considered  \cite{Schneidman2006}. In that sense, the ability to capture features of genuine antigens would come from an adequate statistical model that captures typical self-peptides. Karlin and Bucher \cite{Karlin1992} have shown the existence of pairwise correlations in amino acid usage and discuss various structural reasons for these correlations. Peer et al. \cite{Peer2004} have shown that amino acid and oligopeptide compositions differentiate among phyla, which implies one can construct models of self-peptide that are not simply random, and follow up work has shown similar conclusions \cite{Bogatyreva2006}. On the other hand \cite{Lavelle2009} claim that generally 4mers and 5mers do not show large deviations from random models when taking care to remove bias by large protein families, implying the diversification of and selection upon these families account for most organism specific difference. On a more general level the question which structural constraints restrain the evolution of amino acid patterns has received attention for a long time \cite{Turjanski2018}. Random strings of amino acids do not yield valid, folding proteins, but amino acid strings of natural proteins are hard to distinguish from random, other than by deviations from uniform in individual amino acid frequencies that seem to be governed by amino acid mass \cite{BenAlbert}.
 
-To capture these effects in an ensemble approach, we start by establishing an ensemble model of the self-proteome, demonstrating that most long peptides are random, other than single amino acid biases and a small amount of comparatively weak correlations. We build a maximum entropy distribution constrained to reproduce the amino acid frequencies and the correlations between pairs of amino acids a given distance apart (as we consider random substrings the distribution should only depend on absolute distance). A similar approach was done by Mora et al. \cite{Mora2010} for the distribution of antibodies, however antibodes offer greater antigen specificity than T-cell receptors. In doing so, we construct a theory of immune recognition whereby the species specific biases in the self-peptidome are leverage to find deviations from the self-distribution by pathogens. As pathogens, specifically viruses, have higher diversity that the self-proteome, yet need to interact with its internal machinery, we argue an immune model based on deviation from the "biased self", rather than trying to target pathogens uniformly and whitelisting, is optimal. 
+To capture these effects in an ensemble approach, we start by establishing an ensemble model of the self-proteome, demonstrating that most long peptides are random, other than single amino acid biases and a small amount of comparatively weak correlations. We build a maximum entropy distribution constrained to reproduce the amino acid frequencies and the correlations between pairs of amino acids a given distance apart (as we consider random substrings the distribution should only depend on absolute distance). A similar approach was done by Mora et al. \cite{Mora2010} for the distribution of antibodies, however antibodes offer greater antigen specificity than T-cell receptors. In doing so, we construct a theory of immune recognition whereby the species specific biases in the self-peptidome are leveraged to find deviations from the self-distribution by pathogens. As pathogens, specifically viruses, have higher diversity that the self-proteome, yet need to interact with its internal machinery, we argue an immune model based on deviation from the "biased self", rather than trying to target pathogens uniformly and whitelisting, is optimal. 
 
 \section{Results}
 
-\subsection{Statistical discriminability of host and pathogen peptides}
+\subsection{Discriminability of host and pathogen peptides}
+
+
+\begin{figure}
+    \includegraphics{classifier}
+        \caption{{\bf Strategies for discriminating between host and pathogen peptides.} (A) Sketch of the problem setup considered in this paper: how discriminable are peptides drawn from host and pathogen proteomes? (B) Histograms of loglikelihood ratios for 9mers drawn randomly from the Plasmodium falciparum or human proteome. Likelihood is defined here by the first order Markov statistics of both sets of sequences. (B, inset) Sensitivity (true positive rate - TPR) vs. specificity (false positive rate - FPR) tradeoff curve for a binary classification based on the likelihood ratio. (C) Fraction of pathogen peptides of different length that are distinct from all peptides from the host.
+    \label{figclassifier}
+    }
+\end{figure}
+
+The adaptive immune system of vertebrates discriminates between different peptides, in particular those from the host and pathogen proteomes. Here, using a combination of theoretical and statistical analyses we aim to understand how the biophysics of protein statistics might have shaped the evolution of adaptive immune recognition (Fig.~\ref{figclassifier}). Classification between two sets of sequences can be achieved in a statistical way based on statistical features that differ between the sets of sequences. Such a type of classification underlies all machine learning classification algorithms: Given a training set with items of each class the algorithms aim at generalizing by inferring statistical features that allow discrimination. Instead of learning sequence features discrimination can also be achieved by memorizing the complete set of sequences, if the set of sequences is finite and sparsely covers the space of all possible sequences. It is clear that to a certain extent the immune system employs a combination of both strategies. The immune system memorize peptides from the host proteome that should be ignored by a combination of negative selection of specific cells and the induction of regulatory cells. 
+
+To anchor our further explorations we here analyze the ability of both strategies to classify peptides of a given length drawn at random either from a pathogen proteome or the host proteome.
+
+To illustrate statistical discriminability we here describe the statistics of each proteome using a very simple independent site model, only taking into account differences in average amino acid usage between proteomes. These models assign a probability $P(\B \sigma)$ to each peptide $\B \sigma$ of the form $P(\B \sigma) = \prod_{i=1}^k P(\sigma_i)$. Given probability functions $P_H(\B \sigma)$ and $P_P(\B \sigma)$ for the host and pathogen, respectively, we can calculate a likelihood ratio as a measure based on which to classify peptides. Fig.~\ref{figclassifier}B show the distributions of likelihood ratios for peptides of a length $k=9$ amino acids from the Plasmodium falciparum proteome (the parasite causing Malaria) with respect to the statistics of human host proteins. By choosing an appropriate cutoff one can turn the likelihood ratio into a binary decision of whether a given peptide originates from one of the two proteomes. We visualize the accuracy with which such a classifier discriminates between host and pathogen peptides as a function of different threshold values in the form of a sensitivity-specificity tradeoff curve (Fig.~\ref{figclassifier}B inset). Here, sensitivity is defined as the fraction of foreign peptides correctly classified as such, and specificity as the fraction of false positives from the host proteome. Quantifying the discrimination accuracy using the area under this curve confirms a substantial statistical discriminability (AUROC = 0.89), although discrimination is not perfect as is clear from the overlap of the distributions of likelihood ratios.
+
+To illustrate when discrimination exploiting finiteness is possible we analyze how the fraction of peptides that are found only in a pathogen protein, but in none of the host proteins depend on the peptide length $k$. Intuitively, the critical value of $k$ beyond, which most pathogen peptides are not to be found in the host proteome, is set by a comparison of the length $L$ of the host proteome to the exponentially increasing number of different kmers $20^k$. Simple combinatorics based on random sequences matches predicts the probability that a random pathogen peptide is not present among the $\sim L$ possible host peptides is given by $e^{-L/20^k}$ (SI Text~\ref{secsequencematching}). The simple expression is in good overall agreement with the empirical values for the same host/pathogen pair considered before (Fig.~\ref{figclassifier}C), although the empirical curve is less steep as a function of $k$ owing to non-randomness in the sequence space coverage. From both theory and data we find that a majority of peptides are distinct for peptides of length $k\geq6$ (orange dots, Fig.~\ref{figclassifier}C), thus setting a minimal length scale needed for this mode of immune discrimination.  
+
+
+%However, this measure focuses on the overall discriminability, while the immune system might instead make a decision bases on only a few peptides that are particularly easy to discriminate. To assess the accuracy of such a classification strategy, it is particular convenient to display the data in the form of a precision-recall curve (Fig.~\ref{figclassifier}C,F).
+
+A number of questions remain open in our analyses so far, which we will address in turn in the following. First, is there higher order statistical structure in peptide space that might increase discriminability? Second, do statistical differences generalize across pathogens? Third, what are the implications of the statistics for the evolution of immune recognition?
+
+
+\subsection{A mathematical framework to model peptide statistics} 
 
 
 \begin{figure*}
-    \includegraphics{classifier}
-    \caption{{\bf Discrimination between host peptides and pathogen peptides by simple sequence statistics for two examples.} We consider the classification of a random 9mer derived either from the human proteome or from a pathogen proteome based on a simple first order Markov chain model of sequence statistics. As an illustration we show classification accuracy for both Cytomegalovirus (A-C), a chronic virus, and for Plasmodium falciparum (D-F), a parasite causing Malaria. (A,D) Distribution of loglikelihood ratios over peptides drawn from both proteomes. (B,E) Sensitivity-Specificity tradeoff curve for a binary classifier. (C,F) Precision-Recall tradeoff curve for a binary classifier.
-    \label{figclassifier}
+    \includegraphics{maxent}
+        \caption{{\bf Maximum entropy models of peptide statistics.} A maximum entropy model with second order pairwise constraints and third order global constraints on amino acid covariations captures the statistics of the human proteome. (A-F) Connected correlation functions in training/test set and model/test set. (G,H) Density of states. (I) Reduction in entropy by different constraints.
+    \label{figmaxent}
     }
 \end{figure*}
 
-To anchor our further explorations we analyze the ability of simple sequence statistics to classify peptides of a given length drawn at random either from a pathogen proteome or the host proteome. We describe statistics in each proteome with a simple first order Markov chain model inferred directly from the sequence statistics in each proteome. These models assign a likelihood $\mathcal{L}(s)$ to each peptide $s$. Given likelihood functions $\mathcal{L}_H(s)$ and $\mathcal{L}_P(s)$ for the host and pathogen, respectively, we can calculate their likelihood ratio as a measure based on which to classify peptides. Fig.~\ref{figclassifier}A,D show the distributions of likelihood ratios for peptides of a length of 9 amino acids from the Cytomegalovirus (CMV) and Plasmodium falciparum proteome with respect to the statistics of human host proteins. The statistical discriminability is quite modest in the case of CMV as shown by the substantial overlap of both distributions, while it is larger for Plasmodium falciparum. By choosing an appropriate cutoff one can turn the likelihood ratio into a binary decision of whether a given peptide originates from one of the two proteomes. We visualize the accuracy with which such a classifier discriminates between host and pathogen peptides as a function of the chosen threshold in the form of its sensitivity-specificity tradeoff curve (Fig.~\ref{figclassifier}B,F). Here, sensitiviy is defined as the fraction of foreign peptides correctly classified as such, and specificity as the fraction of false positives from the host proteome. Quantifying the discrimination accuracy using the area under this curve (AUROC), we confirm the modest discriminability for the case of CMV and more substantial discriminability for Plasmodium falciparum. However, this measure focuses on the overall discriminability, while the immune system might instead make a decision bases on only a few peptides that are particularly easy to discriminate. The assess the accuracy of such a classification strategy, it is particular convenient to display the data in the form of a precision-recall curve (Fig.~\ref{figclassifier}C,F).
+We propose to use a maximum entropy framework as a principled way to include increasingly detailed statistical structure into a series nested models of peptide statistics. Using this approach we constrain a set of statistical observables $\langle f_\mu(\boldsymbol \sigma)\rangle$ for $\mu$ from 1 to $K$ to be equal to their empirical values $\bar{f_\mu}$, while otherwise keeping the probability distribution as random as possible. In mathematical terms this means that we are choosing the probability distribution that maximizizes the Shannon entropy
+\begin{equation}
+    S[P(\B \sigma)] = - \sum_{\B \sigma} P(\B \sigma) \log P(\B \sigma),
+\end{equation}
+subject to a normalization constraint and constraints that enforce the equality of modelled and empirical marginals
+\begin{equation}
+    \langle f_\mu(\boldsymbol \sigma)\rangle = \sum_{\boldsymbol \sigma} P(\boldsymbol \sigma) f_\mu(\boldsymbol \sigma) = \bar{f_\mu}
+\end{equation}
+for each observable.
+The optimization with respect to the normalization constraint yields a Boltzmann distribution of the form,
+\begin{equation}
+    P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ -E(\B \sigma) \right].
+\end{equation}
+Here,
+\begin{equation}
+ E(\B \sigma) = \sum_{\mu=1}^K \lambda_\mu f_\mu(\boldsymbol \sigma),
+\end{equation}
+is a sum of terms related to the imposed constraints, which is called the energy in statistical mechanics, and 
+\begin{equation}
+    Z = \sum_{\B \sigma} \exp \left[ - E(\B \sigma) \right]
+\end{equation}
+is a normalization factor, called the partition function in statistical mechanics.
+
+To fit the parameters $\lambda_\mu$ to the data we use Boltzmann machine learning. In short, we estimate $\langle f_\mu(\B \sigma)\rangle$ using Monte Carlo methods for given model parameters and then update the parameters by iterative scaling (Materials and Methods).
+
+
+\subsection{Quantifying differences between human and pathogen proteomes}
+
+As argued above the dominant statistical bias away from a uniform peptide distribution arises from single amino acid biases. Therefore to start unraveling potential differences between human and pathogen proteomes we can quantify how much the distributions of single amino acids differs between proteomes. The overall differences can be quantified using the Kullback-Leibler divergence between the distribution of amino acid usage in a pathogen proteome and the human proteome. It turns out that these differences are small with some notable exceptions (Table~\ref{tabkldiv}). Interestingly, the parasite Plasmodium falciparum has the largest observed divergence from the human amino acid usage, which might be a result of the known AT bias of its genome \cite{Hamilton2017}. Vaccinia is higher than other viruses, which might attributable to it replicating outside the nucleus of the host cell using its own set of proteins for DNA replication and gene transcription \cite{Tolonen2001}. Mostly the Kullback-Leibler divergences between the doublet distributions are about twice the single site divergences. Notable exceptions are some of the viral proteomes, but this might be due to finite sampling effects biasing the entropy estimates for these small proteomes.
+
+The Kullback-Leibler divergence is exactly the expected log-likelihood ratio drawing an amino acid from the pathogen distribution versus the human distribution. Under the independent model log-likelihoods are additive and thus the average log-likelihood ratio for a kmer is simply k times the calculated single site $D_{KL}$.
+%In the limit of large $k$ 
+%Chernoff-Stein Lemma!
+
+%\begin{figure}
+%    \includegraphics[width=\columnwidth]{viruses}
+%    \caption{Likelihood of randomly drawn viral 9mers given a triplet model based on the human proteome statistics. B cell and T cell epitope likelihoods. Interestingly the B cell epitopes are more similar to the human proteome than if they where drawn at random.
+%    \label{figviruses}
+%    }
+%\end{figure}
+
+
+\subsection{Features of immune epitopes}
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{likelihoodprofile-iedb-tcell}
+    \caption{Likelihood of IEDB T cell epitopes given a triplet model based on the human proteome statistics compared to random self peptides. The three distributions are largely indistinguishable except for a slight depletion of epitopes at the highest likelihoods.
+    \label{figtcelliedb}
+    }
+\end{figure}
+
+Which of the possible peptides do eventually get recognized by the immune system? To answer this question we score known immune epitopes from the Immune Epitope Database (IEDB) against a model for the likeliehood of self peptides (Fig.~\ref{figtcelliedb}). There are few epitopes that are very likely under the self statistics, but overall the distributions are largely indistinguishable. There are also no statistical differences between IEDB entries with positive vs. negative assays.
+
+We can zoom into epitopes from particular pathogens to see whether this finding is due to the similarity of the pathogen proteomes or to immune selection.
+
+\subsection{A shell theory of immunogenicity?}
+
+\begin{figure}
+    \includegraphics{shelltheorysketch}
+    \caption{Sketch of the shell theory of immunogenicity: To be immunogenic an antigen needs to fall outside the tolerance region (orange), but within one of the detectable regions surrounding a self-antigen (blue).
+    \label{figshelltheorysketch}
+    }
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{shelltheory}
+    \caption{Immunogenicity as a function of the likelihood a peptide in the shell model. The probability of a peptide being immunogenic is defined as the probability of being detectable, but not tolerated. The probability of immunogenicity times the probability of peptides within the pathogen proteome (assumed to be lognormal with $mu = -1.25 k$ and $\sigma = 0.3 k$ with $k=9$) gives a hypothetical expected distribution for the epitopes, which is clipped at both ends.  
+    \label{figshelltheory}
+    }
+\end{figure}
+
+How likely is it that a peptide will be close enough to a self-peptide to be tolerized? How likely to be close enough such that there has been positive selection? To a first approximation neighboring peptides will have similar probabilities. Therefore the probabilities of a peptide relate to the local density and thus to the average distance to the nearest neighbor.
+
+Consider that there is a number $N_T$ neighboring peptides that if they are in the self-peptidome would lead to tolerance, and a number $N_D > N_T$ of neighboring peptides that would lead to positive selection on TCRs recognizing the peptide and are thus needed for detectability. The probability of a peptide of probability $p$ being tolerized is $P_T \sim 1-(1-N_T p)^N$ assuming the $N$ possible self-peptides are sampled statistically independently from the peptidome distribution. As $N_T p \ll 1$ we can approximate $P_T \sim 1-e^{-N_T p N}$. Similarly, the probability of being detectable is $P_D \sim 1-(1-N_D p)^N \approx 1-e^{-N_D p N}$. Setting $N_T$ to the number of first neighbors (171 for 9mers), and $N_D$ to the number of second neighbors (25992 for 9mers) and assuming that $N$ is equal to the total possible number of kmers that can be generated from the full human proteome ($\sim 2 \cdot 10^7$), we can plot how $P_T$ and $P_D$ depends on $p$ (Fig.~\ref{figshelltheory}).
+
+\section{Discussion}
+
+
+\section{Material and Methods}
+
+\subsection{Model construction and fitting}
+
+A common choice is to constrain the one and two-point frequencies
+\begin{align}
+    f_i^\alpha(\B \sigma) &= \sigma_i^\alpha, \\
+    f_{ij}^{\alpha\beta}(\B \sigma) &= \sigma_i^\alpha \sigma_j^\beta,
+\end{align}
+where $\sigma_i^\alpha = 1$ if the amino acid at site i is of type $\alpha$ and zero otherwise.
+This leads to a maximum entropy probability distribution that takes the form of a disordered Potts model,
+\begin{equation}
+    E(\boldsymbol \sigma) = - \sum_{i=1}^L \sum_{\alpha = 1}^{20} h_i^\alpha \sigma_i^\alpha - \sum_{i<j}^L \sum_{\alpha,\beta = 1}^{20} J_{ij}^{\alpha \beta}  \sigma_i^\alpha \sigma_j^\beta.
+\end{equation}
+
+Given that many biases are compositional in nature we can also consider a simpler model that only involves a global constraint on the covariation of the total count of amino acids of different types:
+\begin{align}
+    n^\alpha(\B \sigma) &= \sum_i \sigma_i^\alpha, \\
+    n^{\alpha\beta}(\B \sigma) &= n^\alpha(\B \sigma) n^\beta(\B\sigma) = \left(\sum_{i=1}^L \sigma_i^\alpha\right) \left(\sum_{j=1}^L \sigma_j^\beta\right).
+\end{align}
+This leads to a maximum entropy probability distribution that takes the form
+\begin{equation}
+    E(\boldsymbol \sigma) = - \sum_{\alpha=1}^{20} h^\alpha n^\alpha -  \sum_{\alpha,\beta = 1}^{20} J^{\alpha \beta} n^\alpha n^\beta,
+\end{equation}
+i.e. a model that only involves global couplings between amino acids independent of their distance.
+
+
+The parameters are updated by gradient ascent,
+\begin{equation}
+    \lambda_\mu^{t+1} = \lambda_\mu^t + \epsilon_\mu^t \left(\langle f_\mu \rangle  - \bar{f_\mu}\right),
+\end{equation}
+where $\epsilon_\mu^t$ represents a learning rate (which generally can be coordinate dependent and time-varying).
+
+Once we have fitted the model parameters we can calculate the entropy of the distribution $P(\B \sigma)$. To do so we use the identity
+\begin{align}
+    S &= - \sum_{\B \sigma}  P(\B \sigma) \log P(\B \sigma),  \\
+      &= \langle E(\B \sigma) \rangle - F, \quad F = - \log Z.
+\end{align}
+The mean energy can be calculated directly from Monte Carlo samples. To calculate the free energy we use thermodynamic integration as follows \cite{Marchi2019b}: We express the energy with respect to a reference energy $E_{ref}(\B \sigma)$ as $E(\B \sigma) = E_{ref}(\B \sigma) + \Delta E(\B\sigma)$, where the reference energy is choosen such that $F_{ref}$ can be calculated analytically. We define the perturbed energy function
+\begin{equation}
+    E_\alpha(\B \sigma) = E_{ref}(\B \sigma) + \alpha \Delta E(\B\sigma),
+\end{equation}
+which scales the contribution of the energy beyond the reference model.
+To obtain the free energy we use the identity
+\begin{equation}
+    F(1) = F_{ref} + \int_0^1 \ud \alpha F'(\alpha).
+\end{equation}
+Note that
+\begin{equation}
+    F'(\alpha) = - \langle \Delta E(\B \sigma) \rangle_{\alpha},
+\end{equation}
+which allows us to approximate the integrand by Monte Carlo simulations. We numerically evaluate $F'(\alpha)$ for evenly spaced $\alpha \in [0, 1]$ and calculate the integral by Simpson's rule. Calculating the entropy in this way allows us to determine the reduction in the effective diversity in sequences implied by including different constraints (Fig.~\ref{figdiversity_reduction}). 
+
+\begin{figure}
+    \includegraphics{diversity_reduction}
+    \caption{Effective diversity of modelled distributions of 9-mers including different constraints.
+    \label{figdiversity_reduction}
+    }
+\end{figure}
 
 
 
+
+
+
+\bibliographystyle{apsrev}
+\bibliography{library}
+
+\begin{figure}
+    \includegraphics{entropyaa}
+    \caption{Entropy of the single site distribution of amino acids used in different positions along proteins in the human proteome. In an overwhelming majority of cases the first amino acid in a protein is a Methionine, because this amino acid is encoded by the start codon AUG. There is a slightly lower entropy o amino acids also in the following few amino acids, which might similarly be explained by known mRNA biases around the initiation codon (rf. Kozak consensus sequence). 
+    \label{figentropyaa}
+    }
+\end{figure}
+
+
+\section{Probability of random sequence matches}
+\label{secsequencematching}
+Given a random set of $L$ sequences of length $k$ what is the probability with which a new randomly chosen sequence is going to match any of the existing sequences?
+There are $20^k$ sequences of length $k$ and all of them we assume here are sampled with equal probability. Thus for the new sequenc will match any of the existing sequences with a probability $p_0 = 1/20^k$. Matches to different sequences can be treated as independent of each other, such that the probability of not matching any of the sequences is given by
+\begin{equation}
+    P(\mathrm{no match}) = (1-p_0)^L \sim e^{-L / 20^k},
+\end{equation}
+where in the last step we have used that $20^k \ll 1$ for $k \ll 1$.
+
+
+\input{independentmodel}
 
 \subsection{Proteins are surprisingly random}
 
@@ -100,7 +285,7 @@ To anchor our further explorations we analyze the ability of simple sequence sta
     }
 \end{figure}
 
-How close to random is the protein distribution? To answer this question we calculate how much information about the amino acid in a certain position is revealed by knowing its neighbors. Concretely, we calculate the mutual information between amino acid pair a certain distance apart. The mutual information can be expressed as $I(X, Y) = H(X) + H(Y) - H(X, Y)$. We use this expression to calulate the mutual information from the single site entropies and the entropy of the joint distribution, which we calculate using the estimator proposed by Grassberger \cite{Grassberger2003}. (TODO: Use NSB estimator instead?) Note that one cannot assume uniform single site entropies across all comparions stemming most notably from differences in amino acid composition for the first few amino acids within a protein (Fig.~\ref{figentropyaa}). The universal constraints on unrelated proteins are surprisingly small as measured by the mutual information (Fig.~\ref{figmutualinformationdecay}, see also \cite{Lavelle2009}). 
+How close to random is the protein distribution? To answer this question we calculate how much information about the amino acid in a certain position is revealed by knowing its neighbors. Concretely, we calculate the mutual information between amino acid pair a certain distance apart. The mutual information can be expressed as $I(X, Y) = H(X) + H(Y) - H(X, Y)$. We use this expression to calulate the mutual information from the single site entropies and the entropy of the joint distribution, which we calculate using the estimator proposed by Grassberger \cite{Grassberger2003}. Note that one cannot assume uniform single site entropies across all comparions stemming most notably from differences in amino acid composition for the first few amino acids within a protein (Fig.~\ref{figentropyaa}). The universal constraints on unrelated proteins are surprisingly small as measured by the mutual information (Fig.~\ref{figmutualinformationdecay}, see also \cite{Lavelle2009}). 
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{4mer-comparison}
@@ -155,74 +340,6 @@ which is a sum of independent random variables under the independent site model.
 Using the central limit theorem we can approximate the distribution of the log-likelihoods of a kmer by a normal distribution. To do so we need to know the mean $\mu$ and variance $\sigma^2$ of the likelihood of a randomly picked amino acid. These can be calculated directly from the probability mass function of amino acid frequencies (Fig.~\ref{figlognormalaa}A). Note that the distribution of amino acid frequencies is somewhat skewed (skewness $\gamma_1 = -1.05$), but this skewness should diminish with $k$. The kmer distribution is approximately normal with mean $k \mu$ and variance $k \sigma^2$ as the cumulants of the sum of independent variables is equal to the sum of the cumulants.  Indeed, using the mean and variance of the distribution of frequencies of randomly chosen amino acids (Fig.~\ref{figlognormalaa}A), predicts relatively well the mean and variance of the empirical likelihoods of 4mers (Fig.~\ref{figlognormalaa}B) as well as of the model-based likelihoods of 9mers (Fig.~\ref{figlognormalaa}C). There are some deviations from the lognormal approximation apparent in both cases. There is a slight shift towards higher mean likelihoods, corresponding to a slightly reduced entropy in line with our earlier findings. Additionally, there are enrichments at the lower tail in both distributions, and the 4mer data shows an additional enrichment at the high likelihood tail.
 
 
-\subsection{Quantifying differences between human and pathogen proteomes}
-
-As argued above the dominant statistical bias away from a uniform peptide distribution arises from single amino acid biases. Therefore to start unraveling potential differences between human and pathogen proteomes we can quantify how much the distributions of single amino acids differs between proteomes. The overall differences can be quantified using the Kullback-Leibler divergence between the distribution of amino acid usage in a pathogen proteome and the human proteome. It turns out that these differences are small with some notable exceptions (Table~\ref{tabkldiv}). Interestingly, the parasite Plasmodium falciparum has the largest observed divergence from the human amino acid usage, which might be a result of the known AT bias of its genome \cite{Hamilton2017}. Vaccinia is higher than other viruses, which might attributable to it replicating outside the nucleus of the host cell using its own set of proteins for DNA replication and gene transcription \cite{Tolonen2001}. Mostly the Kullback-Leibler divergences between the doublet distributions are about twice the single site divergences. Notable exceptions are some of the viral proteomes, but this might be due to finite sampling effects biasing the entropy estimates for these small proteomes.
-
-The Kullback-Leibler divergence is exactly the expected log-likelihood ratio drawing an amino acid from the pathogen distribution versus the human distribution. Under the independent model log-likelihoods are additive and thus the average log-likelihood ratio for a kmer is simply k times the calculated single site $D_{KL}$.
-%In the limit of large $k$ 
-%Chernoff-Stein Lemma!
-
-%\begin{figure}
-%    \includegraphics[width=\columnwidth]{viruses}
-%    \caption{Likelihood of randomly drawn viral 9mers given a triplet model based on the human proteome statistics. B cell and T cell epitope likelihoods. Interestingly the B cell epitopes are more similar to the human proteome than if they where drawn at random.
-%    \label{figviruses}
-%    }
-%\end{figure}
-
-\subsection{A mathematical framework to model peptide statistics} 
-
-\input{maxent}
-
-
-
-\subsection{Features of immune epitopes}
-
-\begin{figure}
-    \includegraphics[width=\columnwidth]{likelihoodprofile-iedb-tcell}
-    \caption{Likelihood of IEDB T cell epitopes given a triplet model based on the human proteome statistics compared to random self peptides. The three distributions are largely indistinguishable except for a slight depletion of epitopes at the highest likelihoods.
-    \label{figtcelliedb}
-    }
-\end{figure}
-
-Which of the possible peptides do eventually get recognized by the immune system? To answer this question we score known immune epitopes from the Immune Epitope Database (IEDB) against a model for the likeliehood of self peptides (Fig.~\ref{figtcelliedb}). There are few epitopes that are very likely under the self statistics, but overall the distributions are largely indistinguishable. There are also no statistical differences between IEDB entries with positive vs. negative assays.
-
-We can zoom into epitopes from particular pathogens to see whether this finding is due to the similarity of the pathogen proteomes or to immune selection.
-
-
-
-\subsection{A shell theory of immunogenicity?}
-
-\begin{figure}
-    \includegraphics{shelltheorysketch}
-    \caption{Sketch of the shell theory of immunogenicity: To be immunogenic an antigen needs to fall outside the tolerance region (orange), but within one of the detectable regions surrounding a self-antigen (blue).
-    \label{figshelltheorysketch}
-    }
-\end{figure}
-
-\begin{figure}
-    \includegraphics[width=\columnwidth]{shelltheory}
-    \caption{Immunogenicity as a function of the likelihood a peptide in the shell model. The probability of a peptide being immunogenic is defined as the probability of being detectable, but not tolerated. The probability of immunogenicity times the probability of peptides within the pathogen proteome (assumed to be lognormal with $mu = -1.25 k$ and $\sigma = 0.3 k$ with $k=9$) gives a hypothetical expected distribution for the epitopes, which is clipped at both ends.  
-    \label{figshelltheory}
-    }
-\end{figure}
-
-How likely is it that a peptide will be close enough to a self-peptide to be tolerized? How likely to be close enough such that there has been positive selection? To a first approximation neighboring peptides will have similar probabilities. Therefore the probabilities of a peptide relate to the local density and thus to the average distance to the nearest neighbor.
-
-Consider that there is a number $N_T$ neighboring peptides that if they are in the self-peptidome would lead to tolerance, and a number $N_D > N_T$ of neighboring peptides that would lead to positive selection on TCRs recognizing the peptide and are thus needed for detectability. The probability of a peptide of probability $p$ being tolerized is $P_T \sim 1-(1-N_T p)^N$ assuming the $N$ possible self-peptides are sampled statistically independently from the peptidome distribution. As $N_T p \ll 1$ we can approximate $P_T \sim 1-e^{-N_T p N}$. Similarly, the probability of being detectable is $P_D \sim 1-(1-N_D p)^N \approx 1-e^{-N_D p N}$. Setting $N_T$ to the number of first neighbors (171 for 9mers), and $N_D$ to the number of second neighbors (25992 for 9mers) and assuming that $N$ is equal to the total possible number of kmers that can be generated from the full human proteome ($\sim 2 \cdot 10^7$), we can plot how $P_T$ and $P_D$ depends on $p$ (Fig.~\ref{figshelltheory}).
-
-\bibliographystyle{apsrev}
-\bibliography{library}
-
-\begin{figure}
-    \includegraphics{entropyaa}
-    \caption{Entropy of the single site distribution of amino acids used in different positions along proteins in the human proteome. In an overwhelming majority of cases the first amino acid in a protein is a Methionine, because this amino acid is encoded by the start codon AUG. There is a slightly lower entropy o amino acids also in the following few amino acids, which might similarly be explained by known mRNA biases around the initiation codon (rf. Kozak consensus sequence). 
-    \label{figentropyaa}
-    }
-\end{figure}
-
-
-\input{independentmodel}
 
 
 \begin{table}
