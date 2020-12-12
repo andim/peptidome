@@ -373,7 +373,7 @@ def energy_nskewfcov(x, h, J, J2, hi, Jij):
     return energy_potts(x, hi, Jij) + energy_nskew(x, h, J, J2)
 
 def fit_nskewfcov(train_matrix, sampler, h=None, J=None, J2=None, q=naminoacids,
-            niter=1, epsilon=0.1, pseudocount=1.0,
+            niter=1, epsilon=0.1, pseudocount=1.0, fit_hi=False,
             prng=None, output=False):
     """ sampler(x0, energy, jump, prng=prng): function returning samples from the distribution """
 
@@ -436,7 +436,8 @@ def fit_nskewfcov(train_matrix, sampler, h=None, J=None, J2=None, q=naminoacids,
         J -= np.log(n2_model/n2)*epsilon
         J2 -= np.log(n3_model/n3)*epsilon
 
-        hi -= np.log(fi_model/fi)*epsilon
+        if fit_hi:
+            hi -= np.log(fi_model/fi)*epsilon
         Jij -= np.log(fij_model/fij)*epsilon
 
     return h, J, J2, hi, Jij

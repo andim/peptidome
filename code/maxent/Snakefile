@@ -1,4 +1,5 @@
 ks = list(range(4, 12, 1))
+fit_params = dict(niter=200, stepsize=0.01, nsteps=1e7, nburnin=1e3)
 
 rule all:
     input:
@@ -30,6 +31,8 @@ rule fit_ncov:
     output:
         'data/Human_ncov_k{k}_matrix.csv.gz',
         'data/Human_ncov_k{k}_params.npz',
+    params:
+        fit=fit_params
     script:
         'fit_ncov.py'
 
