@@ -15,10 +15,11 @@ nsample = k
 output = True
 q = naminoacids
 pseudocount = 1.0
-niter = 50
-stepsize = 0.1 
-nsteps = 1e7
-nburnin = 1e3
+params = snakemake.params.fit
+niter = params.niter
+stepsize = params.stepsize
+nsteps = params.nsteps
+nburnin = params.nburnin
 
 prng = np.random
 
