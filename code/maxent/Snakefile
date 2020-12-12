@@ -1,4 +1,4 @@
-ks = list(range(4, 12, 1))
+ks = list(range(3, 12, 1))
 
 rule all:
     input:
