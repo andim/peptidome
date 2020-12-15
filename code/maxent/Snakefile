@@ -1,36 +1,43 @@
 ks = list(range(3, 12, 1))
 fit_params = dict(niter=200, stepsize=0.01, nsteps=1e7, nburnin=1e3)
+proteomes = ['Humannozf', 'Human', 'Malaria']
 
 rule all:
     input:
-        expand('plots/Human_{model}_k{k}_observables.png',
-            model=['train', 'independent', 'ncov', 'nskew', 'nskewfcov'], k=ks),
-        expand('plots/Human_k{k}_dos.png', k=ks),
-        expand('plots/Human_k{k}_entropies.png', k=ks),
+        expand('plots/{proteome}_{model}_k{k}_observables.png',
+               proteome=proteomes,
+               model=['train', 'independent', 'ncov', 'nskew', 'nskewfcov'],
+               k=ks),
+        expand('plots/{proteome}_k{k}_dos.png',
+               proteome=proteomes,
+               k=ks),
+        expand('plots/{proteome}_k{k}_entropies.png',
+               proteome=proteomes,
+               k=ks),
         'plots/maxent.svg'
 
 rule train_test:
     output:
-        'data/Human_train_k{k}_matrix.csv.gz',
-        'data/Human_test_k{k}_matrix.csv.gz',
+        'data/{proteome}_train_k{k}_matrix.csv.gz',
+        'data/{proteome}_test_k{k}_matrix.csv.gz',
     script:
        'generate_reference_matrices.py' 
 
 rule fit_independent:
     input:
-        'data/Human_train_k{k}_matrix.csv.gz'
+        'data/{proteome}_train_k{k}_matrix.csv.gz'
     output:
-        'data/Human_independent_k{k}_matrix.csv.gz',
-        'data/Human_independent_k{k}_params.npz',
+        'data/{proteome}_independent_k{k}_matrix.csv.gz',
+        'data/{proteome}_independent_k{k}_params.npz',
     script:
         'fit_independent.py'
 
 rule fit_ncov:
     input:
-        'data/Human_train_k{k}_matrix.csv.gz'
+        'data/{proteome}_train_k{k}_matrix.csv.gz'
     output:
-        'data/Human_ncov_k{k}_matrix.csv.gz',
-        'data/Human_ncov_k{k}_params.npz',
+        'data/{proteome}_ncov_k{k}_matrix.csv.gz',
+        'data/{proteome}_ncov_k{k}_params.npz',
     params:
         fit=fit_params
     script:
@@ -38,73 +45,73 @@ rule fit_ncov:
 
 rule fit_nskew:
     input:
-        'data/Human_train_k{k}_matrix.csv.gz',
-        'data/Human_ncov_k{k}_params.npz'
+        'data/{proteome}_train_k{k}_matrix.csv.gz',
+        'data/{proteome}_ncov_k{k}_params.npz'
     output:
-        'data/Human_nskew_k{k}_matrix.csv.gz',
-        'data/Human_nskew_k{k}_params.npz',
+        'data/{proteome}_nskew_k{k}_matrix.csv.gz',
+        'data/{proteome}_nskew_k{k}_params.npz',
     script:
         'fit_nskew.py'
 
 rule fit_nskewfcov:
     input:
-        'data/Human_train_k{k}_matrix.csv.gz',
-        'data/Human_nskew_k{k}_params.npz'
+        'data/{proteome}_train_k{k}_matrix.csv.gz',
+        'data/{proteome}_nskew_k{k}_params.npz'
     output:
-        'data/Human_nskewfcov_k{k}_matrix.csv.gz',
-        'data/Human_nskewfcov_k{k}_params.npz',
+        'data/{proteome}_nskewfcov_k{k}_matrix.csv.gz',
+        'data/{proteome}_nskewfcov_k{k}_params.npz',
     script:
         'fit_nskewfcov.py'
 
 rule evaluate_observables:
     input:
-        'data/Human_{model}_k{k}_matrix.csv.gz'
+        'data/{proteome}_{model}_k{k}_matrix.csv.gz'
     output:
-        'data/Human_{model}_k{k}_observables.npz'
+        'data/{proteome}_{model}_k{k}_observables.npz'
     script:
         'evaluate_observables.py'
 
 rule evaluate_energies:
     input:
-        'data/Human_{model}_k{k}_matrix.csv.gz',
-        'data/Human_nskewfcov_k{k}_params.npz'
+        'data/{proteome}_{model}_k{k}_matrix.csv.gz',
+        'data/{proteome}_nskewfcov_k{k}_params.npz'
     output:
-        'data/Human_{model}_k{k}_energies.npz'
+        'data/{proteome}_{model}_k{k}_energies.npz'
     script:
         'evaluate_energies.py'
 
 rule evaluate_entropies:
     input:
-        'data/Human_{model}_k{k}_params.npz'
+        'data/{proteome}_{model}_k{k}_params.npz'
     output:
-        'data/Human_{model}_k{k}_entropy.csv'
+        'data/{proteome}_{model}_k{k}_entropy.csv'
     script:
         'evaluate_entropies.py'
 
 rule observables_plot:
     input:
-        'data/Human_test_k{k}_observables.npz',
-        'data/Human_{model}_k{k}_observables.npz'
+        'data/{proteome}_test_k{k}_observables.npz',
+        'data/{proteome}_{model}_k{k}_observables.npz'
     output:
-        'plots/Human_{model}_k{k}_observables.png'
+        'plots/{proteome}_{model}_k{k}_observables.png'
     script:
         'plot_observables.py'
 
 rule dos_plot:
     input:
-        expand('data/Human_{model}_k{{k}}_energies.npz',
+        expand('data/{proteome}_{model}_k{{k}}_energies.npz',
             model = ['test', 'independent', 'ncov', 'nskew', 'nskewfcov']),
     output:
-        'plots/Human_k{k}_dos.png'
+        'plots/{proteome}_k{k}_dos.png'
     script:
         'plot_dos.py'
 
 rule entropies_plot:
     input:
-        expand('data/Human_{model}_k{{k}}_entropy.csv',
+        expand('data/{proteome}_{model}_k{{k}}_entropy.csv',
             model = ['independent', 'ncov', 'nskew', 'nskewfcov']),
     output:
-        'plots/Human_k{k}_entropies.png'
+        'plots/{proteome}_k{k}_entropies.png'
     script:
         'plot_entropies.py'
 

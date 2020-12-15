@@ -15,10 +15,13 @@ seed = 12345
 
 prng = np.random.RandomState(seed=seed)
 
-df = load_proteome_as_df(proteome)
-df.drop_duplicates(subset=['Sequence'], inplace=True)
+if name == 'Humannozf':
+    seqs = np.array(pd.read_csv('../pfam/data/human_nozf.csv')['Sequence'])
+else:
+    df = load_proteome_as_df(proteome)
+    df.drop_duplicates(subset=['Sequence'], inplace=True)
+    seqs = df['Sequence']
 
-seqs = df['Sequence']
 train, test = train_test_split(seqs, test_size=0.5, random_state=prng)
 
 
@@ -29,7 +32,9 @@ def filterseqs(seqs, k, filterlength):
     filtered = np.asarray(count_series.index.str[:k])
     return filtered
 
-
 for i, (label, data) in [('train', train), ('test', test)]:
-    matrix = kmers_to_matrix(filterseqs(data, k=k, filterlength=filterlength))
+    if name == 'Humannozf':
+        matrix = kmers_to_matrix(to_kmers(data, k=k))
+    else:
+        matrix = kmers_to_matrix(filterseqs(data, k=k, filterlength=filterlength))
     np.savetxt(snakemake.output[i], matrix, fmt='%i')
