@@ -13,14 +13,15 @@ from numba import njit
 k = int(snakemake.wildcards.k)
 nsample = k
 output = True
-q = naminoacids
 pseudocount = 1.0
 params = snakemake.params.fit
-niter = params.niter
-stepsize = params.stepsize
-nsteps = params.nsteps
-nburnin = params.nburnin
+niter = params['niter']
+stepsize = params['stepsize']
+nsteps = params['nsteps']
+nburnin = params['nburnin']
 
+
+q = naminoacids
 prng = np.random
 
 matrix = load_matrix(snakemake.input[0])
