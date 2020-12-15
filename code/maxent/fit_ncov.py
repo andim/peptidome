@@ -11,7 +11,6 @@ from lib.maxent import *
 from numba import njit
 
 k = int(snakemake.wildcards.k)
-nsample = k
 output = True
 pseudocount = 1.0
 params = snakemake.params.fit
@@ -19,7 +18,7 @@ niter = params['niter']
 stepsize = params['stepsize']
 nsteps = params['nsteps']
 nburnin = params['nburnin']
-
+nsample = params['nsample']
 
 q = naminoacids
 prng = np.random

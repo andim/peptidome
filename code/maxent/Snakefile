@@ -1,20 +1,24 @@
 ks = list(range(3, 12, 1))
-fit_params = dict(niter=200, stepsize=0.01, nsteps=1e7, nburnin=1e3)
-proteomes = ['Humannozf', 'Human', 'Malaria']
+fit_params = dict(niter=200, stepsize=0.01, nsteps=1e7, nburnin=1e3, nsample=10)
+proteomes = ['Humannozf', 'Human', 'Mouse', 'Chicken', 'Zebrafish', 'Malaria', 'Tuberculosis', 'Listeria', 'StrepA']
 
 rule all:
     input:
-        expand('plots/{proteome}_{model}_k{k}_observables.png',
-               proteome=proteomes,
+        expand('plots/Humannozf_{model}_k{k}_observables.png',
                model=['train', 'independent', 'ncov', 'nskew', 'nskewfcov'],
                k=ks),
-        expand('plots/{proteome}_k{k}_dos.png',
-               proteome=proteomes,
+        expand('plots/Humannozf_k{k}_dos.png',
                k=ks),
-        expand('plots/{proteome}_k{k}_entropies.png',
-               proteome=proteomes,
+        expand('plots/Humannozf_k{k}_entropies.png',
                k=ks),
-        'plots/maxent.svg'
+        'plots/maxent.svg',
+        expand('plots/{proteome}_{model}_k9_observables.png',
+               proteome=proteomes,
+               model=['train', 'independent', 'ncov', 'nskew', 'nskewfcov']),
+        expand('plots/{proteome}_k9_dos.png',
+               proteome=proteomes),
+        expand('plots/{proteome}_k9_entropies.png',
+               proteome=proteomes),
 
 rule train_test:
     output:
@@ -50,6 +54,8 @@ rule fit_nskew:
     output:
         'data/{proteome}_nskew_k{k}_matrix.csv.gz',
         'data/{proteome}_nskew_k{k}_params.npz',
+    params:
+        fit=fit_params
     script:
         'fit_nskew.py'
 
@@ -60,6 +66,8 @@ rule fit_nskewfcov:
     output:
         'data/{proteome}_nskewfcov_k{k}_matrix.csv.gz',
         'data/{proteome}_nskewfcov_k{k}_params.npz',
+    params:
+        fit=fit_params
     script:
         'fit_nskewfcov.py'
 
@@ -99,7 +107,7 @@ rule observables_plot:
 
 rule dos_plot:
     input:
-        expand('data/{proteome}_{model}_k{{k}}_energies.npz',
+        expand('data/{{proteome}}_{model}_k{{k}}_energies.npz',
             model = ['test', 'independent', 'ncov', 'nskew', 'nskewfcov']),
     output:
         'plots/{proteome}_k{k}_dos.png'
@@ -108,7 +116,7 @@ rule dos_plot:
 
 rule entropies_plot:
     input:
-        expand('data/{proteome}_{model}_k{{k}}_entropy.csv',
+        expand('data/{{proteome}}_{model}_k{{k}}_entropy.csv',
             model = ['independent', 'ncov', 'nskew', 'nskewfcov']),
     output:
         'plots/{proteome}_k{k}_entropies.png'
@@ -121,6 +129,8 @@ rule maintext_plot:
         'data/Human_nskewfcov_k9_observables.npz',
         expand('data/Human_{model}_k9_energies.npz',
             model = ['test', 'independent', 'ncov', 'nskew', 'nskewfcov']),
+        expand('data/Human_{model}_k9_entropy.csv',
+            model = ['independent', 'ncov', 'nskew', 'nskewfcov']),
     output:
         'plots/maxent.svg'
     script:

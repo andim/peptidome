@@ -10,6 +10,7 @@ from lib import *
 plt.style.use('../peptidome.mplstyle')
 
 k = int(snakemake.wildcards.k)
+proteome = snakemake.wildcards.proteome
 
 fig, axes = plt.subplots(figsize=(4.5, 1.75), ncols=2)
 
@@ -17,7 +18,7 @@ energies = {}
 models = ['test', 'independent', 'ncov', 'nskew', 'nskewfcov']
 for model in models:
     print(model)
-    energies[model] = np.load('data/Human_{model}_k{k}_energies.npz'.format(model=model, k=k))['energies']
+    energies[model] = np.load('data/{proteome}_{model}_k{k}_energies.npz'.format(proteome=proteome, model=model, k=k))['energies']
 
 xmax = max([max(energies[model]) for model in models])+0.1
 xmin = min([min(energies[model]) for model in models])-0.1

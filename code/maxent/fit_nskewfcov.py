@@ -11,15 +11,16 @@ from lib.maxent import *
 from numba import njit
 
 k = int(snakemake.wildcards.k)
-nsample = k
 output = True
-q = naminoacids
 pseudocount = 1.0
-niter = 200
-stepsize = 0.01 
-nsteps = 1e7
-nburnin = 1e3
+params = snakemake.params.fit
+niter = params['niter']
+stepsize = params['stepsize']
+nsteps = params['nsteps']
+nburnin = params['nburnin']
+nsample = params['nsample']
 
+q = naminoacids
 prng = np.random
 
 matrix = load_matrix(snakemake.input[0])

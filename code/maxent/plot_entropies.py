@@ -12,6 +12,7 @@ from lib import *
 plt.style.use('../peptidome.mplstyle')
 
 k = int(snakemake.wildcards.k)
+proteome = snakemake.wildcards.proteome
 
 models = ['uniform', 'independent', 'ncov', 'nskew', 'nskewfcov']
 entropies = np.zeros(len(models))
@@ -19,7 +20,7 @@ for i, model in enumerate(models):
     if model == 'uniform':
         S = k*np.log(20)
     else:
-        S = np.float(pd.read_csv('data/Human_{model}_k{k}_entropy.csv'.format(model=model, k=k),
+        S = np.float(pd.read_csv('data/{proteome}_{model}_k{k}_entropy.csv'.format(proteome=proteome, model=model, k=k),
                         header=None, index_col=0).loc['S'])
     entropies[i] = S
 data = np.exp(entropies)
