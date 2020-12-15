@@ -1,10 +1,10 @@
 shortname,fullname,iedbname,speciesid,proteomeid,type,comment
 Human,Homo sapiens,Homo sapiens,9606,UP000005640,vertebrate,
 Mouse,Mus Musculus,Mus Musculus,10090,UP000000589,vertebrate,
+Chicken,Gallus gallus,Gallus gallus,9031,UP000000539,vertebrate,
+Zebrafish,Danio rerio,Danrio rerio,7955,UP000000437,vertebrate
 Yeast,Saccharomyces cerevisiae,,,UP000002311,fungus,
 Cockroach,Blattella germanica,Blattella germanica,6973,UP000245037,invertebrate,
-Cattle,Bos taurus,Bos taurus,9913,UP000009136,vertebrate,
-Chicken,Gallus gallus,Gallus gallus,9031,UP000000539,vertebrate,
 Wheat,Triticum aestivum,Triticum aestivum,4565,UP000019116,plant,
 Soybean,Glycine max,Glycine max,3847,UP000008827,plant,
 Vaccinia,Vaccinia virus,Vaccinia virus,,UP000000344,virus,
