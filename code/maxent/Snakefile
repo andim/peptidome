@@ -1,6 +1,6 @@
 ks = list(range(3, 12, 1))
 fit_params = dict(niter=200, stepsize=0.01, nsteps=1e7, nburnin=1e3, nsample=10)
-proteomes = ['Humannozf', 'Human', 'Mouse', 'Chicken', 'Zebrafish', 'Malaria', 'Tuberculosis', 'Listeria', 'StrepA']
+proteomes = ['Humannozf', 'Human', 'Mouse', 'Chicken', 'Zebrafish', 'Malaria', 'Tuberculosis', 'Listeria', 'StrepA', 'Humanviruses']
 
 rule all:
     input:
@@ -22,6 +22,11 @@ rule all:
         expand('data/{proteome}_{model}_k9_dkl.csv',
                proteome=proteomes[2:],
                model=['ncov', 'nskew', 'nskewfcov']),
+
+rule traintest:
+    input:
+        expand('plots/{proteome}_train_k9_observables.png',
+               proteome=proteomes)
 
 rule train_test:
     output:
@@ -114,7 +119,7 @@ rule evaluate_dkls:
     script:
         'evaluate_dkls.py'
 
-rule observables_plot:
+rule plot_observables:
     input:
         'data/{proteome}_test_k{k}_observables.npz',
         'data/{proteome}_{model}_k{k}_observables.npz'
@@ -123,7 +128,7 @@ rule observables_plot:
     script:
         'plot_observables.py'
 
-rule dos_plot:
+rule plot_dos:
     input:
         expand('data/{{proteome}}_{model}_k{{k}}_energies.npz',
             model = ['test', 'independent', 'ncov', 'nskew', 'nskewfcov']),
@@ -132,7 +137,7 @@ rule dos_plot:
     script:
         'plot_dos.py'
 
-rule entropies_plot:
+rule plot_entropy:
     input:
         expand('data/{{proteome}}_{model}_k{{k}}_entropy.csv',
             model = ['independent', 'ncov', 'nskew', 'nskewfcov']),
@@ -141,7 +146,7 @@ rule entropies_plot:
     script:
         'plot_entropies.py'
 
-rule maintext_plot:
+rule plot_maintext:
     input:
         'data/Human_test_k9_observables.npz',
         'data/Human_nskewfcov_k9_observables.npz',
