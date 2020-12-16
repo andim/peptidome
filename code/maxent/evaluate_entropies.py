@@ -29,6 +29,7 @@ def entropy_thermodynamic_integration(model_params,
         model = 'ncov'
         h = params['h']
         J = params['J']
+
         @njit
         def energy(x):
             return energy_ncov(x, h, J)
@@ -43,6 +44,7 @@ def entropy_thermodynamic_integration(model_params,
         h = params['h']
         J = params['J']
         J2 = params['J2']
+
         @njit
         def energy(x):
             return energy_nskew(x, h, J, J2)
@@ -59,6 +61,7 @@ def entropy_thermodynamic_integration(model_params,
         J = params['J']
         J2 = params['J2']
         Jij = params['Jij']
+
         @njit
         def energy(x):
             return energy_nskewfcov(x, h, J, J2, hi, Jij)

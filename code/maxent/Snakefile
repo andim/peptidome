@@ -19,6 +19,9 @@ rule all:
                proteome=proteomes),
         expand('plots/{proteome}_k9_entropies.png',
                proteome=proteomes),
+        expand('data/{proteome}_{model}_k9_dkl.csv',
+               proteome=proteomes[2:],
+               model=['ncov', 'nskew', 'nskewfcov']),
 
 rule train_test:
     output:
@@ -95,6 +98,21 @@ rule evaluate_entropies:
         'data/{proteome}_{model}_k{k}_entropy.csv'
     script:
         'evaluate_entropies.py'
+
+rule evaluate_dkls:
+    input:
+        'data/{proteome}_{model}_k{k}_params.npz',
+        'data/{proteome}_{model}_k{k}_entropy.csv',
+        'data/{proteome}_{model}_k{k}_matrix.csv.gz',
+        'data/Human_{model}_k{k}_params.npz',
+        'data/Human_{model}_k{k}_entropy.csv',
+        'data/Human_{model}_k{k}_matrix.csv.gz',
+    output:
+        'data/{proteome}_{model}_k{k}_dkl.csv'
+    params:
+        reference='Human'
+    script:
+        'evaluate_dkls.py'
 
 rule observables_plot:
     input:

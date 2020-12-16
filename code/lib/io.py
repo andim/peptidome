@@ -6,7 +6,10 @@ import os.path
 from itertools import groupby
 import numpy as np
 import pandas as pd
+
 from Bio import SeqIO
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
 
 from .main import *
 
@@ -14,6 +17,15 @@ from .main import *
 repopath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
 datadir = os.path.join(repopath, 'data/')
 figuredir = os.path.join(repopath,  'figures/raw/')
+
+def write_fasta(df, path, seqcolumn=None, idcolumn=None, descriptioncolumn=None):
+    records = []
+    for i, row in df.iterrows():
+        record = SeqRecord(seq=Seq(row[seqcolumn]),
+                           id=row[idcolumn] if idcolumn else '',
+                           description=row[descriptioncolumn] if descriptioncolumn else '')
+        records.append(record)
+    SeqIO.write(records, path, format='fasta')
 
 def make_path(row):
     "Return path based on a row from the proteome file"
@@ -96,10 +108,23 @@ def load_proteome_as_df_path(path):
     df = pd.DataFrame(dict(Gene=genes, Accession=accessions, Sequence=seqs))
     return df
 
-
 def load_proteome_as_df(name):
     "Return proteome as dataframe given its name"
     return load_proteome_as_df_path(proteome_path(name))
+
+def load_unirefproteome_as_df_path(path):
+    "Return uniref proteome as dataframe given its name"
+    headers, seqs = list(zip(*[(h, seq) for h, seq in fasta_iter(path,
+        returndescription=True, returnheader=False)]))
+    taxids = []
+    for h in headers:
+        m = re.search('(?<=TaxID\=)[^\s]+', h)
+        if m:
+             taxids.append(m.group(0))
+        else:
+             taxids.append('')
+    df = pd.DataFrame(dict(header=headers, TaxID=taxids, Sequence=seqs))
+    return df
 
 def load_matrix(path):
     return np.array(pd.read_csv(path, sep=' ', header=None))

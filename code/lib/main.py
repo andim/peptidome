@@ -124,6 +124,14 @@ def to_kmers(seqs, k, return_index=False):
                 if isvalidaa(s):
                     yield s
 
+
+def filter_unique(seqs, k, filterlength):
+    """
+    Returns all possible kmers (k < filterlength) from a set of sequences
+    after filtering for uniqueness at length "filterlength"
+    """
+    return [s[:k] for s in set(to_kmers(seqs, filterlength))]
+
 _aatonumber = {c: i for i, c in enumerate(aminoacids)}
 _numbertoaa = {i: c for i, c in enumerate(aminoacids)}
 
