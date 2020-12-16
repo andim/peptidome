@@ -60,7 +60,7 @@ energy = make_energy(params)
 energy_reference = make_energy(params_reference)
 energies = np.array([energy(x) for x in matrix])
 energies_reference = np.array([energy_reference(x) for x in matrix])
-DKL = entropy.loc['F'] - np.mean(energies) + np.mean(energies_reference) - entropy_reference.loc['F']
+DKL = float(entropy.loc['F']) - np.mean(energies) + np.mean(energies_reference) - float(entropy_reference.loc['F'])
 
 series = pd.Series(data=[reference, DKL], index=['reference', 'DKL'])
 series.to_csv(snakemake.output[0])
