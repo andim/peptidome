@@ -21,7 +21,7 @@ rule all:
                proteome=proteomes),
         expand('data/{proteome}_{model}_k9_dkl.csv',
                proteome=proteomes[2:],
-               model=['ncov', 'nskew', 'nskewfcov']),
+               model=['independent', 'ncov', 'nskew', 'nskewfcov']),
 
 rule traintest:
     input:

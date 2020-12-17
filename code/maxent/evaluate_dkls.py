@@ -56,11 +56,14 @@ def make_energy(params):
             return energy_nskewfcov(x, h, J, J2, hi, Jij)
     return energy
 
-energy = make_energy(params)
-energy_reference = make_energy(params_reference)
-energies = np.array([energy(x) for x in matrix])
-energies_reference = np.array([energy_reference(x) for x in matrix])
-DKL = float(entropy.loc['F']) - np.mean(energies) + np.mean(energies_reference) - float(entropy_reference.loc['F'])
+if model = 'independent':
+    DKL = scipy.stats.entropy(params['f'], qk=params_reference['f'])
+else:
+    energy = make_energy(params)
+    energy_reference = make_energy(params_reference)
+    energies = np.array([energy(x) for x in matrix])
+    energies_reference = np.array([energy_reference(x) for x in matrix])
+    DKL = float(entropy.loc['F']) - np.mean(energies) + np.mean(energies_reference) - float(entropy_reference.loc['F'])
 
 series = pd.Series(data=[reference, DKL], index=['reference', 'DKL'])
 series.to_csv(snakemake.output[0])
