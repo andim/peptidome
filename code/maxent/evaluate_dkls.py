@@ -56,8 +56,8 @@ def make_energy(params):
             return energy_nskewfcov(x, h, J, J2, hi, Jij)
     return energy
 
-if model = 'independent':
-    DKL = scipy.stats.entropy(params['f'], qk=params_reference['f'])
+if model == 'independent':
+    DKL = k*scipy.stats.entropy(params['f'], qk=params_reference['f'])
 else:
     energy = make_energy(params)
     energy_reference = make_energy(params_reference)
