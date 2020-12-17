@@ -1,0 +1,10 @@
+rule all:
+    input:
+        'patricbrc_meta.tsv.gz'
+
+rule download:
+    output:
+        'patricbrc_meta.tsv.gz'
+    run:
+        shell('wget ftp://ftp.patricbrc.org/RELEASE_NOTES/genome_metadata -O patricbrc_meta.tsv'),
+        shell('gzip patricbrc_meta.tsv')
