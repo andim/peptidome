@@ -19,6 +19,8 @@ stepsize = params['stepsize']
 nsteps = params['nsteps']
 nburnin = params['nburnin']
 nsample = params['nsample']
+# take extra long steps to allow decorrelation for the model matrix
+nsweeps_generate = 10
 
 q = naminoacids
 prng = np.random
@@ -42,8 +44,8 @@ def jump(x):
 def energy(x):
     return energy_nskewfcov(x, h, J, J2, hi, Jij)
 x0 = prng.randint(q, size=k)
-nsteps_generate = int(matrix.shape[0]*nsample)
+nsteps_generate = int(matrix.shape[0]*nsample*nsweeps_generate)
 model_matrix = mcmcsampler(x0, energy, jump, nsteps=nsteps_generate,
-                           nsample=nsample, nburnin=nburnin)
+                           nsample=nsample*nsweeps_generate, nburnin=nburnin)
 np.savetxt(snakemake.output[0], model_matrix, fmt='%i')
 np.savez(snakemake.output[1], h=h, J=J, J2=J2, hi=hi, Jij=Jij)

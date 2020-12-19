@@ -37,6 +37,8 @@ path_urls = [
         ('human-viruses-swissprot.fasta', r'https://www.uniprot.org/uniprot/?query=host:9606&fil=reviewed%3Ayes&format=fasta&include=no'),
         ('human-viruses-uniref90.fasta', 
          r"https://www.uniprot.org/uniref/?query=uniprot%3A(host%3A%22Homo+sapiens+(Human)+[9606]%22)+AND+identity%3A0.9&sort=score&format=fasta"),
+        ('chicken-viruses-uniref90.fasta', 
+        r"https://www.uniprot.org/uniref/?query=uniprot:(host%3A%22Gallus+gallus+%28Chicken%29+%5B9031%5D%22)+AND+identity:0.9&sort=score&format=fasta"),
         ('human-viruses-uniref50.fasta', 
          r"https://www.uniprot.org/uniref/?query=uniprot%3A(host%3A%22Homo+sapiens+(Human)+[9606]%22)+AND+identity%3A0.5&sort=score&format=fasta")
         ]
