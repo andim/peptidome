@@ -23,39 +23,6 @@ params_reference = np.load('data/{proteome}_{model}_k{k}_params.npz'.format(prot
 
 matrix = load_matrix('data/{proteome}_{model}_k{k}_matrix.csv.gz'.format(proteome=proteome, model=model, k=k))
 
-def make_energy(params):
-    if params.files == ['f']:
-        raise NotImplementedError('independent model dkl not implemented')
-    elif params.files == ['h', 'J']:
-        model = 'ncov'
-        h = params['h']
-        J = params['J']
-
-        @njit
-        def energy(x):
-            return energy_ncov(x, h, J)
-    elif params.files == ['h', 'J', 'J2']:
-        model = 'nskew'
-        h = params['h']
-        J = params['J']
-        J2 = params['J2']
-
-        @njit
-        def energy(x):
-            return energy_nskew(x, h, J, J2)
-    elif params.files == ['h', 'J', 'J2', 'hi', 'Jij']:
-        model = 'nskewfcov'
-        h = params['h']
-        hi = params['hi']
-        J = params['J']
-        J2 = params['J2']
-        Jij = params['Jij']
-
-        @njit
-        def energy(x):
-            return energy_nskewfcov(x, h, J, J2, hi, Jij)
-    return energy
-
 if model == 'independent':
     DKL = k*scipy.stats.entropy(params['f'], qk=params_reference['f'])
 else:

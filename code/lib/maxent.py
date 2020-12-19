@@ -859,3 +859,38 @@ def Fcov_thermodynamic_integration(h, J, L, integration_intervals=1, mcmc_kwargs
     Fint = scipy.integrate.simps(Fprimes, xs)
     F0 = -L*np.log(np.sum(np.exp(h)))
     return F0 + Fint
+
+def make_energy(params):
+    if params.files == ['f']:
+        raise NotImplementedError('independent model dkl not implemented')
+    elif params.files == ['h', 'J']:
+        model = 'ncov'
+        h = params['h']
+        J = params['J']
+
+        @njit
+        def energy(x):
+            return energy_ncov(x, h, J)
+    elif params.files == ['h', 'J', 'J2']:
+        model = 'nskew'
+        h = params['h']
+        J = params['J']
+        J2 = params['J2']
+
+        @njit
+        def energy(x):
+            return energy_nskew(x, h, J, J2)
+    elif params.files == ['h', 'J', 'J2', 'hi', 'Jij']:
+        model = 'nskewfcov'
+        h = params['h']
+        hi = params['hi']
+        J = params['J']
+        J2 = params['J2']
+        Jij = params['Jij']
+
+        @njit
+        def energy(x):
+            return energy_nskewfcov(x, h, J, J2, hi, Jij)
+    return energy
+
+
