@@ -4,7 +4,15 @@ title: Notes
 order: 3
 ---
 
-# Take homes October 29
+# Notes on bioinformatics
+
+To normalize taxon ids to the species level we can download taxonomy information from ncbi and then manipulate resulting json file to find species taxon id.
+"efetch -db taxonomy -id "11697"  -format native -mode xml -json"
+
+We can cluster proteome data similarly to the uniref 90 clustering in the following manner. See https://github.com/soedinglab/MMseqs2
+`mmseqs easy-cluster ../UP000005640Human.fasta.gz UP000005640Human tmp --min-seq-id 0.9 -c 0.8 --cov-mode 1`
+
+# Take home messages (skype with Ben) October 29
 
 - non-self closer to self than what you might think
 - little room for a generic classifier, so you have to overfit
