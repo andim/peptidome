@@ -43,7 +43,7 @@ def jump(x):
 def energy(x):
     return energy_nskew(x, h, J, J2)
 x0 = prng.randint(q, size=k)
-nsteps_generate = int(matrix.shape[0]*nsample)
+nsteps_generate = int(matrix.shape[0]*nsample*nsweeps_generate)
 model_matrix = mcmcsampler(x0, energy, jump, nsteps=nsteps_generate,
                            nsample=nsample*nsweeps_generate, nburnin=nburnin)
 np.savetxt(snakemake.output[0], model_matrix, fmt='%i')
