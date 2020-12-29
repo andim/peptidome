@@ -189,6 +189,22 @@ def kmers_to_matrix(kmers):
     matrix = map_matrix(matrix_str)
     return matrix
 
+def matrix_to_kmers(matrix):
+    """"
+    Map a list of str kmers to an integer numpy array.
+
+    Parameters
+    ----------
+    matrix: np.array
+        Array to be converted
+    Returns
+    -------
+    iterable of strings
+        kmers
+    """
+    char_matrix = map_numbertoaa(matrix)
+    kmers = [''.join(row) for row in char_matrix]
+    return kmers
 
 class Counter(defaultdict):
 
