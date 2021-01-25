@@ -4,6 +4,16 @@ title: Notes
 order: 3
 ---
 
+# Call with Bill December 22
+
+Further questions to be explored:
+- The DKL analysis shows there is little generic discriminability. Is there a subset of peptides which allows discrimination?
+- Calculate coincidence probability from models -- it is interesting that small changes in entropy mask big differences in coincidence probability
+- What is the distribution of holes? Distribution of substitutions of sequences distance n away?
+- What does this imply for immune strategies? very sophisticated: adjust receptor 'receptive fields' to be broader in regions that are less dense. More realistically: optimize distribution given a constraint on discrimination power (bounded change in response of T cell for a single amino acid change)
+- plot viruses on top of distance plot
+
+
 # Notes on bioinformatics
 
 To normalize taxon ids to the species level we can download taxonomy information from ncbi and then manipulate resulting json file to find species taxon id.
