@@ -105,6 +105,17 @@ rule evaluate_entropies:
     script:
         'evaluate_entropies.py'
 
+rule evaluate_coincidences:
+    input:
+        expand('data/{{proteome}}_{model}_k{{k}}_energies.npz',
+               models = ['independent', 'ncov', 'nskew', 'nskewfcov', 'train']),
+        expand('data/{{proteome}}_{model}_k{{k}}_entropy.csv',
+               models = ['independent', 'ncov', 'nskew', 'nskewfcov', 'train']),
+    output:
+        'data/{proteome}_k{k}_coincidences.csv'
+    script:
+        'evaluate_coincidences.py'
+
 rule evaluate_dkls:
     input:
         'data/{proteome}_{model}_k{k}_params.npz',
@@ -155,6 +166,7 @@ rule plot_maintext:
             model = ['test', 'independent', 'ncov', 'nskew', 'nskewfcov']),
         expand('data/Human_{model}_k9_entropy.csv',
             model = ['independent', 'ncov', 'nskew', 'nskewfcov']),
+        'data/Human_k9_coincidences.csv',
     output:
         'plots/maxent.svg'
     script:

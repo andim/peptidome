@@ -862,7 +862,17 @@ def Fcov_thermodynamic_integration(h, J, L, integration_intervals=1, mcmc_kwargs
 
 def make_energy(params):
     if params.files == ['f']:
-        raise NotImplementedError('independent model dkl not implemented')
+        f = params['f']
+        h = np.log(f)
+        h -= np.mean(h)
+
+        @njit
+        def energy(x):
+            e = 0
+            for xi in x:
+                e -= h[xi]
+            return e
+
     elif params.files == ['h', 'J']:
         model = 'ncov'
         h = params['h']
