@@ -1,16 +1,17 @@
 ks = list(range(3, 12, 1))
 fit_params = dict(niter=200, stepsize=0.01, nsteps=1e7, nburnin=1e3, nsample=10)
-proteomes = ['Humannozf', 'Human', 'Mouse', 'Chicken', 'Zebrafish', 'Malaria', 'Tuberculosis', 'Listeria', 'StrepA', 'Humanviruses']
+proteomes = [#'Humannozf',
+             'Human', 'Mouse', 'Chicken', 'Zebrafish', 'Malaria', 'Tuberculosis', 'Listeria', 'StrepA', 'Humanviruses']
 
 rule all:
     input:
-        expand('plots/Humannozf_{model}_k{k}_observables.png',
-               model=['train', 'independent', 'ncov', 'nskew', 'nskewfcov'],
-               k=ks),
-        expand('plots/Humannozf_k{k}_dos.png',
-               k=ks),
-        expand('plots/Humannozf_k{k}_entropies.png',
-               k=ks),
+#        expand('plots/Humannozf_{model}_k{k}_observables.png',
+#               model=['train', 'independent', 'ncov', 'nskew', 'nskewfcov'],
+#               k=ks),
+#        expand('plots/Humannozf_k{k}_dos.png',
+#               k=ks),
+#        expand('plots/Humannozf_k{k}_entropies.png',
+#               k=ks),
         'plots/maxent.svg',
         expand('plots/{proteome}_{model}_k9_observables.png',
                proteome=proteomes,
