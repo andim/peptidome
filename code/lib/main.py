@@ -206,6 +206,13 @@ def matrix_to_kmers(matrix):
     kmers = [''.join(row) for row in char_matrix]
     return kmers
 
+def calc_coincidence_prob(matrix):
+    """
+    Given a matrix of observations calculate the empirical coincidence probability.
+    """
+    _, counts = np.unique(matrix, return_counts=True, axis=0)
+    return 2*np.sum(scipy.special.binom(counts[counts>1], 2))/(matrix.shape[0])**2
+
 class Counter(defaultdict):
 
     def __init__(self, iterable, k, gap=0, **kwargs):
