@@ -19,6 +19,9 @@ datadir = os.path.join(repopath, 'data/')
 figuredir = os.path.join(repopath,  'figures/raw/')
 
 def write_fasta(df, path, seqcolumn=None, idcolumn=None, descriptioncolumn=None):
+    """
+    Write pandas DataFrame to fasta
+    """
     records = []
     for i, row in df.iterrows():
         record = SeqRecord(seq=Seq(row[seqcolumn]),
@@ -93,20 +96,24 @@ def count_kmers_proteome(proteome, k, **kwargs):
 #        else:
 #            yield seq
 
-def load_proteome_as_df_path(path):
+def load_proteome_as_df_path(path, parse_genes=True, parse_accessions=True):
     "Return proteome as dataframe given its name"
     headers, seqs = list(zip(*[(h, seq) for h, seq in fasta_iter(path,
         returndescription=True, returnheader=False)]))
-    genes = []
-    for h in headers:
-        m = re.search('(?<=GN\=)[^\s]+', h)
-        if m:
-             genes.append(m.group(0))
-        else:
-             genes.append('')
-    accessions = [h.split('|')[1] for h in headers] 
-    df = pd.DataFrame(dict(Gene=genes, Accession=accessions, Sequence=seqs))
-    return df
+    data = dict(Sequence=seqs)
+    if parse_genes:
+        genes = []
+        for h in headers:
+            m = re.search('(?<=GN\=)[^\s]+', h)
+            if m:
+                 genes.append(m.group(0))
+            else:
+                 genes.append('')
+        data['Gene'] = genes
+    if parse_accessions:
+        accessions = [h.split('|')[1] for h in headers] 
+        data['Accession'] = accessions
+    return pd.DataFrame(data)
 
 def load_proteome_as_df(name):
     "Return proteome as dataframe given its name"
