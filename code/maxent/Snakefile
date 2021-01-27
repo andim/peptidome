@@ -88,15 +88,6 @@ rule evaluate_observables:
     script:
         'evaluate_observables.py'
 
-rule evaluate_energies:
-    input:
-        'data/{proteome}_{model}_k{k}_matrix.csv.gz',
-        'data/{proteome}_nskewfcov_k{k}_params.npz'
-    output:
-        'data/{proteome}_{model}_k{k}_energies.npz'
-    script:
-        'evaluate_energies.py'
-
 rule evaluate_entropies:
     input:
         'data/{proteome}_{model}_k{k}_params.npz'
@@ -104,6 +95,16 @@ rule evaluate_entropies:
         'data/{proteome}_{model}_k{k}_entropy.csv'
     script:
         'evaluate_entropies.py'
+
+rule evaluate_energies:
+    input:
+        'data/{proteome}_{model}_k{k}_matrix.csv.gz',
+        'data/{proteome}_nskewfcov_k{k}_params.npz',
+        'data/{proteome}_nskewfcov_k{k}_entropy.csv'
+    output:
+        'data/{proteome}_{model}_k{k}_energies.npz'
+    script:
+        'evaluate_energies.py'
 
 rule evaluate_coincidences:
     input:
