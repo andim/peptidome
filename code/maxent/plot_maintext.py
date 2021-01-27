@@ -11,7 +11,7 @@ plt.style.use('../peptidome.mplstyle')
 from common import labels
 
 k = 9
-fig, axes = plt.subplots(figsize=(7.2, 5.0), ncols=3, nrows=2)
+fig, axes = plt.subplots(figsize=(7.2, 4.0), ncols=4, nrows=2)
 
 ## observables
 observables = ['fi', 'cij', 'cijk']
@@ -97,7 +97,23 @@ for rect, toplabel in zip(rects[1:], reduction):
 
 ax.set_ylabel('Effective Diversity\n$\exp(S)/20^k$')
 
-label_axes(fig, labelstyle='%s', xy=(-0.25, 1.0))
+
+ax = axes[1, 3]
+coincidence_probs = pd.read_csv('data/Human_k9_coincidences.csv', index_col=0, squeeze=True)
+coincidence_probs['uniform'] = 1/20**k
+coincidence_probs.sort_values(inplace=True)
+labels = {'uniform' : 'uniform',
+          'independent' : '1st moment',
+          'ncov' : '2nd moment',
+          'nskew' : '3rd moment',
+          'nskewfcov' : '2-point',
+          'train' : 'data'
+         }
+coincidence_probs.index = coincidence_probs.index.map(labels)
+coincidence_probs.plot(kind='bar', log=True, ax=ax)
+ax.set_ylabel('Coincidence probability')
+
+label_axes(fig, labelstyle='%s', xy=(-0.35, 1.0))
 fig.tight_layout()
 
 fig.savefig(snakemake.output[0])

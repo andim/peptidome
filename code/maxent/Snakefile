@@ -108,9 +108,9 @@ rule evaluate_entropies:
 rule evaluate_coincidences:
     input:
         expand('data/{{proteome}}_{model}_k{{k}}_energies.npz',
-               models = ['independent', 'ncov', 'nskew', 'nskewfcov', 'train']),
+               model = ['independent', 'ncov', 'nskew', 'nskewfcov']),
         expand('data/{{proteome}}_{model}_k{{k}}_entropy.csv',
-               models = ['independent', 'ncov', 'nskew', 'nskewfcov', 'train']),
+               model = ['independent', 'ncov', 'nskew', 'nskewfcov']),
     output:
         'data/{proteome}_k{k}_coincidences.csv'
     script:
