@@ -20,18 +20,24 @@ for model in models:
     print(model)
     energies[model] = np.load('data/{proteome}_{model}_k{k}_energies.npz'.format(proteome=proteome, model=model, k=k))['energies']
 
-xmax = max([max(energies[model]) for model in models])+0.1
-xmin = min([min(energies[model]) for model in models])-0.1
+xmax = max([max(energies[model]) for model in models])+0.05
+xmin = min([min(energies[model]) for model in models])-0.05
 nbins = 100
+scaley = nbins/(xmax-xmin)
+bins = np.logspace(-xmax, -xmin, num=nbins+1, base=np.exp(1))
 for ax in axes:
-    plot_histograms([energies[model] for model in models],
-                    models,
-                    step=True, nbins=nbins, xmin=xmin, xmax=xmax, lw=0.5, ax=ax, scaley=nbins/(xmax-xmin))
-    ax.set_xlabel('Energy')
-    ax.set_ylabel('Density')
+    kwargs = dict(lw=0.5)
+    for model in models:
+        values = np.exp(-energies[model])
+        counts, bins = np.histogram(values, bins=bins)
+        counts = counts/np.sum(counts)
+        ax.step(bins[:-1], counts*scaley, label=model, where='mid', **kwargs)
+    ax.set_xscale('log')
+    ax.set_xlabel(r'$P(\sigma)$')
+    ax.set_xlim(min(bins), max(bins))
+axes[0].set_ylabel('Probability Density')
 axes[0].set_ylim(0.0)
-axes[0].legend(loc='upper left')
-axes[1].get_legend().remove()
+axes[0].legend(loc='upper right')
 axes[1].set_yscale('log')
 fig.tight_layout()
 fig.savefig(snakemake.output[0])

@@ -557,3 +557,10 @@ def pairwise_distances_jit(data, N=100, data2=None, normalize=False):
     if normalize:
         hist /= len(data)*len(data2)
     return hist
+
+def to_kmers_nonoverlapping(seqs, k):
+    for seq in seqs:
+        for i in range((len(seq)-k+1)//k):
+            s = seq[k*i:k*(i+1)]
+            if isvalidaa(s):
+                yield s
