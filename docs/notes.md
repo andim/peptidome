@@ -4,6 +4,19 @@ title: Notes
 order: 3
 ---
 
+# Progress on open questions Jan 28
+
+- Calculate coincidence probability from models -- it is interesting that small changes in entropy mask big differences in coincidence probability
+-> while the entropy of the distributions decreases only little there are order of magnitude differences in the coincidence probability due to the tail of more probable kmers
+
+- The DKL analysis shows there is little generic discriminability. How well one can discriminate when not looking at the average peptide but at the subset of peptides that is most discriminable?
+-> here again the higher order models make a larger difference, because they change the tails
+
+Both results together provide an illustration of what is gained by considering models going beyond the independent site description
+
+
+
+
 # Call with Bill December 22
 
 Further questions to be explored:
@@ -20,7 +33,9 @@ To normalize taxon ids to the species level we can download taxonomy information
 "efetch -db taxonomy -id "11697"  -format native -mode xml -json"
 
 We can cluster proteome data similarly to the uniref 90 clustering in the following manner. See https://github.com/soedinglab/MMseqs2
-`mmseqs easy-cluster ../UP000005640Human.fasta.gz UP000005640Human tmp --min-seq-id 0.9 -c 0.8 --cov-mode 1`
+`mmseqs easy-cluster ../UP000005640Human.fasta.gz UP000005640Human tmp --min-seq-id 0.9 -c 0.8 --cov-mode 0`
+cov-mode 0: bidirectional overlap (relative to max of query and target sequence)
+c 0.8: at least 80% overlap (documentation mentions that this is a good threshold to perserve multi domain structure of proteins)
 
 # Take home messages (skype with Ben) October 29
 
