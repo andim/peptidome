@@ -20,7 +20,6 @@ entropy_reference = pd.read_csv('data/{proteome}_{model}_k{k}_entropy.csv'.forma
 params = np.load('data/{proteome}_{model}_k{k}_params.npz'.format(proteome=proteome, model=model, k=k))
 params_reference = np.load('data/{proteome}_{model}_k{k}_params.npz'.format(proteome=reference, model=model, k=k))
 
-
 matrix = load_matrix('data/{proteome}_{model}_k{k}_matrix.csv.gz'.format(proteome=proteome, model=model, k=k))
 
 if model == 'independent':

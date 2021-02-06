@@ -1,0 +1,22 @@
+ks = [9]
+proteomes = ['Humanviruses', 'Malaria']
+models = ['independent', 'ncov', 'nskew', 'nskewfcov']
+
+rule all:
+    input:
+        expand('{proteome}.svg', proteome=proteomes)
+
+rule evaluate_likelihoods:
+    output:
+        'data/{proteome}_{model}_k{k}_likelihoods.npz'
+    script:
+        'run_maxent.py'
+
+rule plot:
+    input:
+        expand('data/{proteome}_{model}_k{k}_likelihoods.npz',
+               proteome=proteomes, model=models, k=ks) 
+    output:
+        '{proteome}.svg'
+    script:
+        'plot.py'

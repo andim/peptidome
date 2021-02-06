@@ -4,6 +4,22 @@ import matplotlib
 import matplotlib.pyplot as plt
 import statsmodels.stats.proportion
 
+model_labels = {
+          'train': 'training set',
+          'model': '2-point',
+          'model_ncov':'2nd moment',
+          'model_nskew': '3rd moment',
+          'model_nskewdiag': '3rd moment diag',
+          'model_nskewfcov' : '3rd moment, 2-point',
+          'uniform' : 'uniform',
+          'test': 'test set',
+          'independent': '1st moment',
+          'ncov' : '2nd moment',
+          'nskew' : '3rd moment',
+          'nskewfcov' : '2-point'
+          }
+
+
 def label_axes(fig_or_axes, labels=string.ascii_uppercase,
                labelstyle=r'%s',
                xy=(-0.1, 0.95), xycoords='axes fraction', **kwargs):
