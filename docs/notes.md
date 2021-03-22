@@ -4,6 +4,31 @@ title: Notes
 order: 3
 ---
 
+# Paper from Arup's group
+
+Gao et al. Learning from HIV-1 to predict the immunogenicity of T cell epitopes in SARS-COV-2
+https://github.com/andy90/immunogenicity_predictor
+
+Use approach inspired by Luksza et al. to predict immunogenicity of T cell epitopes.
+
+# Software package for probabilistic graphical models
+
+Jerome Tubiana has a general package for building various kinds of probabilistic graphical models (code documentation quality varies, but abstractions seem useful):
+https://github.com/jertubiana/PGM
+
+# New immunogenicity prediction paper - Gfeller et al. Cell Reports Medicine 2021
+
+Curated dataset with immunogenicity results from various papers:
+https://www.cell.com/cms/10.1016/j.xcrm.2021.100194/attachment/48c7a879-c9e3-42fc-9a47-53971d5a5ebf/mmc2
+
+# Reading on statistics
+
+A few references:
+- Cover, Thomas: Chapter 11
+- https://en.wikipedia.org/wiki/Error_exponents_in_hypothesis_testing
+- https://en.wikipedia.org/wiki/Neyman%E2%80%93Pearson_lemma
+
+
 # Progress on open questions Jan 28
 
 - Calculate coincidence probability from models -- it is interesting that small changes in entropy mask big differences in coincidence probability
@@ -13,8 +38,6 @@ order: 3
 -> here again the higher order models make a larger difference, because they change the tails
 
 Both results together provide an illustration of what is gained by considering models going beyond the independent site description
-
-
 
 
 # Call with Bill December 22
