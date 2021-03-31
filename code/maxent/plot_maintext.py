@@ -52,20 +52,25 @@ models = ['test', 'independent', 'ncov', 'nskew', 'nskewfcov']
 for model in models:
     energies[model] = np.load('data/Human_{model}_k{k}_energies.npz'.format(model=model, k=k))['energies']
 
-xmax = max([max(energies[model]) for model in models])+0.1
-xmin = min([min(energies[model]) for model in models])-0.1
+xmax = max([max(energies[model]) for model in models])+0.05
+xmin = min([min(energies[model]) for model in models])-0.05
 nbins = 100
+scaley = nbins/(xmax-xmin)
+bins = np.logspace(-xmax, -xmin, num=nbins+1, base=np.exp(1))
 for ax in axes[1,:2]:
-    plot_histograms([energies[model] for model in models],
-                    [labels[model] for model in models],
-                    step=True, nbins=nbins, xmin=xmin, xmax=xmax, lw=0.5, ax=ax, scaley=nbins/(xmax-xmin))
-    ax.set_xlabel('Energy')
-    ax.set_ylabel('Density')
+    kwargs = dict(lw=0.5)
+    for model in models:
+        values = np.exp(-energies[model])
+        counts, bins = np.histogram(values, bins=bins)
+        counts = counts/np.sum(counts)
+        ax.step(bins[:-1], counts*scaley, label=model, where='mid', **kwargs)
+    ax.set_xscale('log')
+    ax.set_xlabel(r'$P(\sigma)$')
+    ax.set_xlim(min(bins), max(bins))
+axes[1, 0].set_ylabel('Probability Density')
 axes[1, 0].set_ylim(0.0)
-axes[1, 0].legend(loc='upper left')
-axes[1, 1].get_legend().remove()
+axes[1, 0].legend(loc='upper right')
 axes[1, 1].set_yscale('log')
-
 
 ax = axes[1, 2]
 models = ['uniform', 'independent', 'ncov', 'nskew', 'nskewfcov']
