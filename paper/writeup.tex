@@ -78,7 +78,7 @@ The question of through what lens the immune system "sees" the world has renewed
     }
 \end{figure}
 
-The adaptive immune system of vertebrates discriminates between different peptides, in particular those from the host and pathogen proteomes. Here, using a combination of theoretical and statistical analyses we aim to understand how the biophysics of protein statistics might have shaped the evolution of adaptive immune recognition (Fig.~\ref{figclassifier}). Classification between two sets of sequences can be achieved in a statistical way based on statistical features that differ between the sets of sequences. Such a type of classification underlies all machine learning classification algorithms: Given a training set with items of each class the algorithms aim at generalizing by inferring statistical features that allow discrimination. Instead of learning sequence features discrimination can also be achieved by rote memorization, if the set of sequences is finite and sparsely covers the space of all possible sequences. It is clear that to a certain extent the immune system employs a combination of both strategies. The immune system memorize peptides from the host proteome that should be ignored by a combination of negative selection of specific cells and the induction of regulatory cells. 
+The adaptive immune system of vertebrates discriminates between different peptides, in particular those from the host and pathogen proteomes. Here, using a combination of theoretical and statistical analyses we aim to understand how the biophysics of protein statistics might have shaped the evolution of adaptive immune recognition (Fig.~\ref{figclassifier}). Classification between two sets of sequences can be achieved in a statistical way based on differences in sequence features. Such a type of classification underlies all machine learning classification algorithms: Given a training set with items of each class the algorithms aim at generalizing by inferring statistical features that allow discrimination. Alternatively, if the set of sequences is finite and sparsely covers the space of all possible sequences, discrimination can also be achieved by memorization. The adaptive immune system employs a combination of both strategies: The immune system memorizes peptides from the host proteome that should be ignored by a combination of negative selection and induction of regulatory cells. 
 
 To anchor our further explorations we here analyze the ability of both strategies to classify peptides of a given length drawn at random either from a pathogen proteome or the host proteome.
 
@@ -104,36 +104,37 @@ A number of questions remain open in our analyses so far, which we will address 
     }
 \end{figure*}
 
-We propose to use a maximum entropy framework as a principled way to include increasingly detailed statistical structure into a series nested models of peptide statistics. Using this approach we constrain a set of statistical observables $\langle f_\mu(\boldsymbol \sigma)\rangle$ for $\mu$ from 1 to $K$ to be equal to their empirical values $\bar{f_\mu}$, while otherwise keeping the probability distribution as random as possible. In mathematical terms this means that we are choosing the probability distribution that maximizizes the Shannon entropy
+We propose to use a maximum entropy framework as a principled way to include increasingly detailed statistical structure into a series nested models of peptide statistics. Using this approach we constrain a set of statistical observables $\langle f_\mu(\boldsymbol \sigma)\rangle$ to equal their empirical values $\bar{f_\mu}$, while otherwise keeping the probability distribution as random as possible. Mathematically, this means choosing the probability distribution to maximize the Shannon entropy
 \begin{equation}
     S[P(\B \sigma)] = - \sum_{\B \sigma} P(\B \sigma) \log P(\B \sigma),
 \end{equation}
-subject to a normalization constraint and constraints that enforce the equality of modelled and empirical marginals
+subject to the normalization constraint $\sum_{\B \sigma} P(\B \sigma) = 1$, and constraints that enforce the equality of modelled and empirical observables
 \begin{equation}
-    \langle f_\mu(\boldsymbol \sigma)\rangle = \sum_{\boldsymbol \sigma} P(\boldsymbol \sigma) f_\mu(\boldsymbol \sigma) = \bar{f_\mu}
+    \langle f_\mu(\boldsymbol \sigma)\rangle = \sum_{\boldsymbol \sigma} P(\boldsymbol \sigma) f_\mu(\boldsymbol \sigma) = \bar{f_\mu}.
 \end{equation}
-for each observable.
-The optimization with respect to the normalization constraint yields a Boltzmann distribution of the form,
+Optimizing with respect to the normalization constraint yields a Boltzmann distribution of the form,
 \begin{equation}
-    P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ -E(\B \sigma) \right].
+    P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ -E(\B \sigma) \right],
 \end{equation}
-Here,
+where
 \begin{equation}
  E(\B \sigma) = \sum_{\mu=1}^K \lambda_\mu f_\mu(\boldsymbol \sigma),
 \end{equation}
-is a sum of terms related to the imposed constraints, which is called the energy in statistical mechanics, and 
+is a sum of terms involving each constraint, which is called the energy in statistical mechanics, and 
 \begin{equation}
     Z = \sum_{\B \sigma} \exp \left[ - E(\B \sigma) \right]
 \end{equation}
 is a normalization factor, called the partition function in statistical mechanics.
 
-We fit the parameters $\lambda_\mu$ to the data using Boltzmann machine learning \cite{Ackley1985}. In short, we estimate $\langle f_\mu(\B \sigma)\rangle$ using Monte Carlo sampling for a given set of model parameters and then update the parameters by iterative scaling (Materials and Methods). To assess potential overfitting we split the dataset into a training and a test set of equal size. We calculate the average of observables used in the fitting on the training set, but compare model predictions against the test set. We can construct a hierarchy of such models including different constraints. We have found that for our purposes a satisfactory model of 9mers drawn from the human proteome is provided by fitting the moments of the amino acid composition of peptides up to third-order. Additionally we fit distance-dependent, but translation invariant 2-point couplings. Taken together these constraints produce a model that recapitulates key statistical features of the data (Fig.~\ref{figmaxent}). In particular, the model reproduces the average frequencies $f_i(\alpha)$ of finding amino acid $\alpha$ at position $i$ (Fig.~\ref{figmaxent}A), as well as the connected two point correlation function $C_{ij}(\alpha, \beta) = f_{ij}(\alpha, \beta) - f_i(\alpha) f_j(\beta)$ (Fig.~\ref{figmaxent}B), and connected three point correlation function $C_{ijk}(\alpha, \beta, \gamma) = f_{ijk}(\alpha, \beta, \gamma) - f_{ij}(\alpha, \beta) f_k(\gamma) - f_{ik}(\alpha, \gamma) f_j(\beta) - f_{jk}(\beta, \gamma) f_i(\alpha) + 2 f_i(\alpha) f_j(\beta) f_k(\gamma)$ (Fig.~\ref{figmaxent}C). The modelled density of states is consistent between the model and the data with a similar number of high probability sequences in the test set and the full model (Fig.~\ref{figmaxent}D,E).
-We note that our model does not include any position dependence, as the data is by construction translation-invariant except for edge effects arising from both ends of the protein. 
+We fit the parameters $\lambda_\mu$ to the data using Boltzmann machine learning \cite{Ackley1985}. In short, we iteratively estimate $\langle f_\mu(\B \sigma)\rangle$ using Monte Carlo sampling for a given set of model parameters and then update parameters based on the discrepancy between estimated and empirical observables (Materials and Methods).
+%To assess potential overfitting we split the dataset into a training and a test set of equal size. We calculate the average of observables used in the fitting on the training set, but compare model predictions against the test set.
+We construct a hierarchy of such models to assess the significance of different constraints. We have found that for our purposes a satisfactory model of 9mers drawn from the human proteome is provided by fitting the moments of the amino acid composition of peptides up to third-order. Additionally we fit distance-dependent, but translation invariant 2-point couplings. Taken together, these constraints produce a model that recapitulates key statistical features of the data (Fig.~\ref{figmaxent}). By construction, the fitted model reproduces the average frequencies $f_i(\alpha)$ of finding amino acid $\alpha$ at position $i$ (Fig.~\ref{figmaxent}A), as well as the connected two point correlation function $C_{ij}(\alpha, \beta) = f_{ij}(\alpha, \beta) - f_i(\alpha) f_j(\beta)$ (Fig.~\ref{figmaxent}B). Additionaly, the model reproduces the connected three point correlation function $C_{ijk}(\alpha, \beta, \gamma) = f_{ijk}(\alpha, \beta, \gamma) - f_{ij}(\alpha, \beta) f_k(\gamma) - f_{ik}(\alpha, \gamma) f_j(\beta) - f_{jk}(\beta, \gamma) f_i(\alpha) + 2 f_i(\alpha) f_j(\beta) f_k(\gamma)$ (Fig.~\ref{figmaxent}C) and produces a self-consistent density of states between model and data (Fig.~\ref{figmaxent}E,F).
+We note that the model does not include any position dependence, as the data is by construction translation-invariant except for edge effects arising from both ends of the protein. 
 
-The importance of higher-order constraints is shown by both the existence of reproducible 2nd and 3rd order connected correlation functions (Fig.~\ref{figmaxent}B,C), as well as an overrepresentation of highly probable sequences relative to predictions of a model only based on the amino acid composition (Fig.~\ref{figmaxent}E,F). To quantify the contribution of different constraints to the reduction of the effective diversity of the ensemble of peptides, we calculate the entropies of the modelled distributions using thermodynamic integration (Material and Methods). We find that the largest reduction of diversity relative to a uniform distribution over all peptides is induced by the biased amino acid usage. The constraints beyond the 1st moment further reduce diversity of the 9mer distribution by 19 percent (Fig.~\ref{figmaxent}G). While the reductions in entropy are modest, the probability with which two randomly drawn kmers coincide is increased by orders of magnitude when including the additional constraints (Fig.~\ref{figmaxent}H)
+To quantify how different constraints reduce the diversity of the ensemble of peptides, we calculate the entropies of the modelled distributions using thermodynamic integration (Material and Methods). Defining diversity as an effective number of equally likely peptides (i.e. as the exponential of the entropy), we find that global amino acid usage biases reduce diversity by 60\%, while further constraints collectively reduce diversity by an additional 19 percent (Fig.~\ref{figmaxent}G). While this reduction in diversity might seem modest, the probability with which two randomly drawn peptides coincide increases by orders of magnitude when including the additional constraints (Fig.~\ref{figmaxent}H)
+The importance of higher-order constraints is also shown by the overrepresentation of highly probable sequences relative to predictions of a model only based on the amino acid composition (Fig.~\ref{figmaxent}E,F).
 
 \subsection{Quantifying differences between host and pathogen proteomes}
-
 
 \begin{figure}
     \includegraphics{dkls}
@@ -153,11 +154,11 @@ Analyzing the divergences across the model hierarchy we find that constraints be
     \includegraphics{humanviruses}
     \end{center}
     \caption{Performance of the models as classifiers. (A) Distributions of likelihood ratios for peptides from host and virus proteins. (B) Sensitivity-specificity tradeoff curve for various models. (C) Precision-recall characteristics at a 10-fold excess of self-peptides.
-    \label{figclassifier}
+    \label{figmodelclassifier}
     }
 \end{figure*}
 
-Given the small Kullback-Leibler divergence we expect a modest performance of using these models as classifiers. Indeed, we find that the distribution of likelihood ratios overlap significantly (Fig.~\ref{figclassifier}A), which leads to a modest average classification performance as assessed by the area under the receiver operating curve (Fig.~\ref{figclassifier}B). However, similarly to how the small reduction in entropy went along with a large increase in coincidence probability, discriminability in the tails is also more substantial: for example when focusing discrimination on the top 1\% of most distinguishable viral peptides the precision is roughly four-fold higher using the higher order models than expected by chance, when host peptides are in 10-fold excess. Viral proteome sizes are in the $10^3-10^4$ amino acid range (higher for DNA then RNA viruses). If roughly 10\% of peptides can be presented, the top 1\% corresponds to the top 1 to top 10 peptides.
+Given the small Kullback-Leibler divergence we expect a modest performance of using these models as classifiers. Indeed, we find that the distribution of likelihood ratios overlap significantly (Fig.~\ref{figmodelclassifier}A), which leads to a modest average classification performance as assessed by the area under the receiver operating curve (Fig.~\ref{figmodelclassifier}B). However, similarly to how the small reduction in entropy went along with a large increase in coincidence probability, discriminability in the tails is also more substantial: for example when focusing discrimination on the top 1\% of most distinguishable viral peptides the precision is roughly four-fold higher using the higher order models than expected by chance, when host peptides are in 10-fold excess. Viral proteome sizes are in the $10^3-10^4$ amino acid range (higher for DNA then RNA viruses). If roughly 10\% of peptides can be presented, the top 1\% corresponds to the top 1 to top 10 peptides.
 
 
 
