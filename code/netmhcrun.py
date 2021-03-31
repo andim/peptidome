@@ -7,7 +7,7 @@ from multiprocessing import Pool
 import pandas as pd
 
 from lib import *
-from netmhcrunutils import *
+from lib.netmhcrunutils import *
 
 #number of parallel python processes
 n_proc = 1
