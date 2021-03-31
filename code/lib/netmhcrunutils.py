@@ -4,6 +4,9 @@ import pandas as pd
 
 FNULL = open(os.devnull, 'w') # Mute the subprocess (prevents shell cluttering)
 
+repopath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+netmhcpath = os.path.join(repopath, 'dependencies/netMHC-4.0/netMHC')
+
 def run_netMHC(fastapath, outname, hla, binder_only=True):
     """run netMHC on a fasta file
 
@@ -15,7 +18,7 @@ def run_netMHC(fastapath, outname, hla, binder_only=True):
     if not os.path.exists(fullout):
         #netMHC -f fasta -xls -xlsfile out.csv -a HLA-A0101
         print("netMHC -f {fastapath} -xls -xlsfile {fullout} -a {hla}".format(fastapath=fastapath, fullout=fullout, hla=hla))
-        subprocess.run(['netMHC', '-f', fastapath,
+        subprocess.run([netmhcpath, '-f', fastapath,
                         '-xls',
                         '-xlsfile %s' % fullout,
                         '-a %s'%hla],
