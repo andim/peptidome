@@ -94,12 +94,12 @@ To illustrate statistical discriminability we describe the statistics of each pr
 A number of questions remain open in our analyses so far, which we will address in turn in the following. First, is there higher order statistical structure in peptide space that might increase discriminability? Second, to the extent that there are statistical differences, do they generalize across pathogens? Third, what are the implications of the statistics for the evolution of immune recognition?
 
 
-\subsection{A mathematical framework to model peptide statistics} 
+\subsection{A statistical physics framework to quantify peptide statistics} 
 
 
 \begin{figure*}
     \includegraphics{maxent}
-        \caption{{\bf Maximum entropy models of peptide statistics.} A maximum entropy model with third order compositional constraints and second order pairwise constraints on amino acid covariations captures the statistics of the human proteome. (A-C) Comparison of connected correlation functions in the test set with model predictions. (D,E) Density of states relative to the full energy function of models with different types of constraints. (H) Reduction in effective diversity of the peptide distribution resulting from imposing different constraints. The cumulative percentage reduction of effective diversity relative to the first moment model is indicated for each of the nested models.
+        \caption{{\bf Maximum entropy models of peptide statistics.} A maximum entropy model with third order compositional constraints and second order pairwise constraints on amino acid covariations captures the statistics of the human proteome. (A-C) Comparison of connected correlation functions in the test set with model predictions. (D,E) Density of states relative to the full energy function of models with different types of constraints. (G) Reduction in effective diversity of the peptide distribution resulting from imposing different constraints. The cumulative percentage reduction of effective diversity relative to the first moment model is indicated for each of the nested models. (H) Probability of coincidences in the different models, $\sum_{\B \sigma} P(\B \sigma)^2$.
     \label{figmaxent}
     }
 \end{figure*}
@@ -131,10 +131,9 @@ We fit the parameters $\lambda_\mu$ to the data using Boltzmann machine learning
 We construct a hierarchy of such models to assess the significance of different constraints. We have found that for our purposes a satisfactory model of 9mers drawn from the human proteome is provided by fitting the moments of the amino acid composition of peptides up to third-order. Additionally we fit distance-dependent, but translation invariant 2-point couplings. Taken together, these constraints produce a model that recapitulates key statistical features of the data (Fig.~\ref{figmaxent}). By construction, the fitted model reproduces the average frequencies $f_i(\alpha)$ of finding amino acid $\alpha$ at position $i$ (Fig.~\ref{figmaxent}A), as well as the connected two point correlation function $C_{ij}(\alpha, \beta) = f_{ij}(\alpha, \beta) - f_i(\alpha) f_j(\beta)$ (Fig.~\ref{figmaxent}B). Additionaly, the model reproduces the connected three point correlation function $C_{ijk}(\alpha, \beta, \gamma) = f_{ijk}(\alpha, \beta, \gamma) - f_{ij}(\alpha, \beta) f_k(\gamma) - f_{ik}(\alpha, \gamma) f_j(\beta) - f_{jk}(\beta, \gamma) f_i(\alpha) + 2 f_i(\alpha) f_j(\beta) f_k(\gamma)$ (Fig.~\ref{figmaxent}C) and produces a self-consistent density of states between model and data (Fig.~\ref{figmaxent}E,F).
 We note that the model does not include any position dependence, as the data is by construction translation-invariant except for edge effects arising from both ends of the protein. 
 
-To quantify how different constraints reduce the diversity of the ensemble of peptides, we calculate the entropies of the modelled distributions using thermodynamic integration (Material and Methods). Defining diversity as an effective number of equally likely peptides (i.e. as the exponential of the entropy), we find that global amino acid usage biases reduce diversity by 60\%, while further constraints collectively reduce diversity by an additional 19 percent (Fig.~\ref{figmaxent}G). While this reduction in diversity might seem modest, the probability with which two randomly drawn peptides coincide increases by orders of magnitude when including the additional constraints (Fig.~\ref{figmaxent}H)
-The importance of higher-order constraints is also shown by the overrepresentation of highly probable sequences relative to predictions of a model only based on the amino acid composition (Fig.~\ref{figmaxent}E,F).
+To quantify how different constraints reduce the diversity of the ensemble of peptides, we calculate the entropies $S[P(\B \sigma)]$ of the modelled distributions using thermodynamic integration (Material and Methods). Defining diversity as an effective number of equally likely peptides (i.e. as the exponential of the entropy), we find that global amino acid usage biases reduce diversity by 60\%, while further constraints collectively reduce diversity by an additional 19 percent (Fig.~\ref{figmaxent}G). While this reduction in diversity might seem modest, the probability with which two randomly drawn peptides coincide increases by orders of magnitude when including the additional constraints (Fig.~\ref{figmaxent}H). Note that the probability of a coincidence is equal to $\sum_{\B \sigma} P(\B \sigma)^2$, and thus puts larger weight than the entropy on the upper tail of probabilities. The increase of coincidences thus is linked to the tail of more probable sequences predicted by the higher-order models (Fig.~\ref{figmaxent}E,F).
 
-\subsection{Quantifying differences between host and pathogen proteomes}
+\subsection{Statistical structure of host and pathogen proteomes}
 
 \begin{figure}
     \includegraphics{dkls}
@@ -145,9 +144,15 @@ The importance of higher-order constraints is also shown by the overrepresentati
 
 We compare here a set of proteomes from model organisms across different branches of jawed vertebrates: Human and Mouse as two examples of animals, Chicken as an example of a bird, and Zebrafish as an example of a jawed fish. We also compare them against a set of pathogen proteomes: A collection of human viruses (individual viral proteomes are to small for reliable statistical analyses), a number of bacterial species, as well as parasites (Plasmodium falciparum causing Malaria). For each of these proteomes we fit the same series of maximum entropy models to capture its statistical structure in increasing detail. We then use thermodynamic integration to quantify the statistical distinguishability of each proteome relative to the human proteome in terms of a Kullback-Leibler divergence. The Kullback-Leibler divergence is exactly the expected log-likelihood ratio drawing a peptide from the pathogen distribution versus the human distribution. 
 
-We find that these divergence are small with some notable exceptions (Fig.~\ref{figdkls}). In particular, different vertebrates have very similar statistical structure. Peptides from human viruses are remarkably close in statistical distance to the human proteome. Bacterial peptides differ more substantially, but the divergence is still smaller than 1 nat. However, the bacterial proteomes differ more substantially, in particular Tuberculosis. The largest divergence is determined for the parasite Plasmodium falciparum, which might be a result of the known AT bias of its genome \cite{Hamilton2017}. We also show the divergences with respect to a uniform distribution for reference. We find that natural peptides are generally largely easier to differentiate from random peptides than from peptides from a different proteome. This points towards underlying shared biases in amino acid usage among the different proteomes.
+We find that these divergence are small with some notable exceptions (Fig.~\ref{figdkls}). In particular, different vertebrates have very similar statistical structure. Peptides from human viruses are remarkably close in statistical distance to the human proteome. Bacterial peptides differ more substantially, but the divergence is still smaller than 1 nat. However, the bacterial proteomes differ more substantially, in particular Tuberculosis. The largest divergence is determined for the parasite Plasmodium falciparum, which might be a result of the known AT bias of its genome \cite{Hamilton2017}.
+
+We also show the divergences with respect to a uniform distribution. We find that natural peptides are generally largely easier to differentiate from random peptides than from peptides from a different proteome. This points towards underlying shared biases in amino acid usage among the different proteomes.
 
 Analyzing the divergences across the model hierarchy we find that constraints beyond amino acid usage only modestly increase the statistical distance with respect to the human host. In most cases the inclusion of additional constraints increases the distance from random peptides more than from human peptides, again pointing at a large degree of conservation of these constraints across proteomes.
+
+
+
+\subsection{Implications for classification}
 
 \begin{figure*}
     \begin{center}
@@ -158,10 +163,19 @@ Analyzing the divergences across the model hierarchy we find that constraints be
     }
 \end{figure*}
 
-Given the small Kullback-Leibler divergence we expect a modest performance of using these models as classifiers. Indeed, we find that the distribution of likelihood ratios overlap significantly (Fig.~\ref{figmodelclassifier}A), which leads to a modest average classification performance as assessed by the area under the receiver operating curve (Fig.~\ref{figmodelclassifier}B). However, similarly to how the small reduction in entropy went along with a large increase in coincidence probability, discriminability in the tails is also more substantial: for example when focusing discrimination on the top 1\% of most distinguishable viral peptides the precision is roughly four-fold higher using the higher order models than expected by chance, when host peptides are in 10-fold excess. Viral proteome sizes are in the $10^3-10^4$ amino acid range (higher for DNA then RNA viruses). If roughly 10\% of peptides can be presented, the top 1\% corresponds to the top 1 to top 10 peptides.
+Given the small Kullback-Leibler divergence we expect only modest performance of using these models as classifiers. Indeed, we find that the distribution of likelihood ratios overlap significantly (Fig.~\ref{figmodelclassifier}A), which leads to a modest average classification performance as assessed by the area under the receiver operating curve (Fig.~\ref{figmodelclassifier}B). However, similarly to how the small reduction in entropy went along with a large increase in coincidence probability, discriminability in the tails is more substantial: for example when focusing discrimination on the top 1\% of most distinguishable viral peptides the precision is roughly four-fold higher using the higher order models than expected by chance, when host peptides are in 10-fold excess. Viral proteome sizes are in the $10^3-10^4$ amino acid range (higher for DNA then RNA viruses). If roughly 10\% of peptides can be presented, the top 1\% corresponds to the top 1 to top 10 peptides.
 
 
+We can also use our theory to quantify under which conditions a quorum sensing strategy can work, i.e. a decision-making strategy relying not on the presence of a single peptide, but $k$ different peptides, simultaneously present on a cell or in a tissue site. While in practice there are likely constraints on how reliably different cells can communicate their assessment and coordinate their decision, here we neglect these constraints to put a theoretical upper bound on the performance of such a quorum sensing mechanism on a purely statistical basis. To do so we calculate the distribution of cumulative likelihood ratios of $k$ randomly sampled peptides from either the pathogen or host proteome. We then determine the achievable false negative rate by a decision rule that maintains a given low false positive rate. We find that more than a hundred peptides are needed for reliable detection of an infected cell (Fig.~\ref{figquorum}). However, this large number can be greatly reduced when all responses are focused on a subset of most discriminable peptides: if only the top 10\% of peptides are detected than the number of peptides drops substantially to $~30$. 
 
+\begin{figure}
+    \begin{center}
+    \includegraphics{quorum_requirement}
+    \end{center}
+    \caption{How many peptides would need to be considered for reliable quorum sensing? Achievable false negative rates at a fixed false positive rate $=10^{-3}$ depend on the number of independent samples and which peptides the decision are based on (recall). Focusing on the top discriminable peptides decreases numbers needed substantially, but of course also lowers the number of peptides available for classification substantially.
+    \label{figquorum}
+    }
+\end{figure}
 
 
 %Interestingly, the parasite Plasmodium falciparum has the largest observed divergence from the human amino acid usage, . Vaccinia is higher than other viruses, which might attributable to it replicating outside the nucleus of the host cell using its own set of proteins for DNA replication and gene transcription \cite{Tolonen2001}. Mostly the Kullback-Leibler divergences between the doublet distributions are about twice the single site divergences. Notable exceptions are some of the viral proteomes, but this might be due to finite sampling effects biasing the entropy estimates for these small proteomes.
@@ -179,6 +193,15 @@ Given the small Kullback-Leibler divergence we expect a modest performance of us
 
 
 \subsection{Features of immune epitopes}
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{netmhc_correlations}
+    \caption{How does MHC presentation reshape the peptidome? Every plot shows a histogram of rank correlation coefficients between peptide likelihoods and netMHC predicted binding affinities across all MHC-I types. Binding energy is positively correlated with peptide likelihood under both the human and viral statistics, but negatively correlated with the likelihood ratio of viral to human statistics. Thus MHC-binding focuses responses on viral peptides. 
+    \label{fignetmhc}
+    }
+\end{figure}
+
+
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{likelihoodprofile-iedb-tcell}
