@@ -45,6 +45,18 @@ def dist2(x, reference):
                         return True
     return False
 
+def distance_distribution(sample, reference):
+    """Return the distribution of Hamming distances for all sequences in a sample relative to a reference set."""
+    reference = set(reference)
+    d0 = np.array([x in reference for x in sample])
+    count0 = np.sum(d0)
+    d1 = np.array([dist1(x, reference) for x in sample]) & (~d0)
+    count1 = np.sum(d1)
+    d2 = np.array([dist2(x, reference) for x in sample]) & (~d1) & (~d0)
+    count2 = np.sum(d2)
+    ns = np.array([count0, count1, count2, len(sample)-count0-count1-count2])
+    return ns
+
 def number_hamming_neighbors(distance, length, q):
     return (q-1)**distance * falling_factorial(length, distance)
 
