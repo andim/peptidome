@@ -4,6 +4,15 @@ title: Notes
 order: 3
 ---
 
+# Skype w/ Ben G 21/05/05
+
+Take home messages
+- method development: ensemble statistics for protein primary sequences
+- ensemble statistics predict that recognized antigens are closer to self than random peptides
+- higher order statistics make coincidences and near-coincidences much more likely between host and pathogen peptides
+- recast the role of positive selection as active training beyond HLA restriction
+- prediction of immunodominance at ~ 10 epitopes 
+
 # Paper from Arup's group
 
 Gao et al. Learning from HIV-1 to predict the immunogenicity of T cell epitopes in SARS-COV-2

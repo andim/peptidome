@@ -166,13 +166,13 @@ Analyzing the divergences across the model hierarchy we find that constraints be
 Given the small Kullback-Leibler divergence we expect only modest performance of using these models as classifiers. Indeed, we find that the distribution of likelihood ratios overlap significantly (Fig.~\ref{figmodelclassifier}A), which leads to a modest average classification performance as assessed by the area under the receiver operating curve (Fig.~\ref{figmodelclassifier}B). However, similarly to how the small reduction in entropy went along with a large increase in coincidence probability, discriminability in the tails is more substantial: for example when focusing discrimination on the top 1\% of most distinguishable viral peptides the precision is roughly four-fold higher using the higher order models than expected by chance, when host peptides are in 10-fold excess. Viral proteome sizes are in the $10^3-10^4$ amino acid range (higher for DNA then RNA viruses). If roughly 10\% of peptides can be presented, the top 1\% corresponds to the top 1 to top 10 peptides.
 
 
-We can also use our theory to quantify under which conditions a quorum sensing strategy can work, i.e. a decision-making strategy relying not on the presence of a single peptide, but $k$ different peptides, simultaneously present on a cell or in a tissue site. While in practice there are likely constraints on how reliably different cells can communicate their assessment and coordinate their decision, here we neglect these constraints to put a theoretical upper bound on the performance of such a quorum sensing mechanism on a purely statistical basis. To do so we calculate the distribution of cumulative likelihood ratios of $k$ randomly sampled peptides from either the pathogen or host proteome. We then determine the achievable false negative rate by a decision rule that maintains a given low false positive rate. We find that more than a hundred peptides are needed for reliable detection of an infected cell (Fig.~\ref{figquorum}). However, this large number can be greatly reduced when all responses are focused on a subset of most discriminable peptides: if only the top 10\% of peptides are detected than the number of peptides drops substantially to $~30$. 
+We can also use our theory to quantify under which conditions a quorum sensing strategy can work, i.e. a decision-making strategy relying not on the presence of a single peptide, but $k$ different peptides, simultaneously present on a cell or in a tissue site. While in practice there are likely constraints on how reliably different cells can communicate their assessment and coordinate their decision, here we neglect these constraints to put a theoretical upper bound on the performance of such a quorum sensing mechanism on a purely statistical basis. To do so we calculate the distribution of cumulative likelihood ratios of $k$ randomly sampled peptides from either the pathogen or host proteome. We then determine the achievable false negative rate by a decision rule that maintains a given low false positive rate. We find that more than a hundred peptides are needed for reliable discrimination (Fig.~\ref{figquorum}). However, most of the statistical power stems from a much smaller subset of peptides: if, for example, only the top 1\% of peptides with the largest likelihood ratios are considered the number of peptides needed for reliable responses drops substantially to $\sim 10$. 
 
 \begin{figure}
     \begin{center}
     \includegraphics{quorum_requirement}
     \end{center}
-    \caption{How many peptides would need to be considered for reliable quorum sensing? Achievable false negative rates at a fixed false positive rate $=10^{-3}$ depend on the number of independent samples and which peptides the decision are based on (recall). Focusing on the top discriminable peptides decreases numbers needed substantially, but of course also lowers the number of peptides available for classification substantially.
+    \caption{How many peptides allow reliable quorum sensing? Achievable false negative rates at a fixed false positive rate $=10^{-3}$ as a function of the number of peptides. Most of the discrimination ability is driven by a smaller subset of most discriminable peptides. The shaded lines show a 1/$x$ scaling for reference. 
     \label{figquorum}
     }
 \end{figure}
@@ -196,23 +196,14 @@ We can also use our theory to quantify under which conditions a quorum sensing s
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{netmhc_correlations}
-    \caption{How does MHC presentation reshape the peptidome? Every plot shows a histogram of rank correlation coefficients between peptide likelihoods and netMHC predicted binding affinities across all MHC-I types. Binding energy is positively correlated with peptide likelihood under both the human and viral statistics, but negatively correlated with the likelihood ratio of viral to human statistics. Thus MHC-binding focuses responses on viral peptides. 
+    \caption{How does MHC presentation reshape the peptidome? Every plot shows a histogram of rank correlation coefficients between peptide likelihoods and netMHC predicted binding affinities across all MHC-I types. Binding energy is positively correlated with peptide likelihood under both the human and viral statistics for a majority of MHC-I types, but negatively correlated with the likelihood ratio of viral to human statistics. Thus MHC-binding focuses responses on viral peptides. for a majority of MHC-I types 
     \label{fignetmhc}
     }
 \end{figure}
 
 
 
-\begin{figure}
-    \includegraphics[width=\columnwidth]{likelihoodprofile-iedb-tcell}
-    \caption{Likelihood of IEDB T cell epitopes given a triplet model based on the human proteome statistics compared to random self peptides. The three distributions are largely indistinguishable except for a slight depletion of epitopes at the highest likelihoods.
-    \label{figtcelliedb}
-    }
-\end{figure}
 
-Which of the possible peptides do eventually get recognized by the immune system? To answer this question we score known immune epitopes from the Immune Epitope Database (IEDB) against a model for the likeliehood of self peptides (Fig.~\ref{figtcelliedb}). There are few epitopes that are very likely under the self statistics, but overall the distributions are largely indistinguishable. There are also no statistical differences between IEDB entries with positive vs. negative assays.
-
-We can zoom into epitopes from particular pathogens to see whether this finding is due to the similarity of the pathogen proteomes or to immune selection.
 
 \section{Discussion}
 
@@ -444,5 +435,16 @@ OnchocercaVolvulus&0.03&0.069\\
 \end{table}
 
 
+\section{IEDB epitopes}
+
+Which of the possible peptides do eventually get recognized by the immune system? To answer this question we score known immune epitopes from the Immune Epitope Database (IEDB) against a model for the likelihood of self peptides (Fig.~\ref{figtcelliedb}). There are few epitopes that are very likely under the self statistics, but overall the distributions are largely indistinguishable. There are also no statistical differences between IEDB entries with positive vs. negative assays.
+We can zoom into epitopes from particular pathogens to see whether this finding is due to the similarity of the pathogen proteomes or to immune selection.
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{likelihoodprofile-iedb-tcell}
+    \caption{Likelihood of IEDB T cell epitopes given a triplet model based on the human proteome statistics compared to random self peptides. The three distributions are largely indistinguishable except for a slight depletion of epitopes at the highest likelihoods.
+    \label{figtcelliedb}
+    }
+\end{figure}
 
 \end{document}
