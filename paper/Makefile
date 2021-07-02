@@ -43,8 +43,8 @@ s%: %.pdf
 	@# output pdflatex output if there are undefined references
 	@egrep -c $(RERUN) $(basename $<).log > $(OUT) && (echo "Problem with references";pdflatex $< -file-line-error); true
 
-library.bib: $(SHAREDREFDIR)/library.bib
-	grep -Ev 'abstract =|issn =|isbn =|pmid =|keywords =|file =|doi =|url =|archivePrefix =|eprint =|arxivId =' $(SHAREDREFDIR)/library.bib >library.bib
+#library.bib: $(SHAREDREFDIR)/library.bib
+#	grep -Ev 'abstract =|issn =|isbn =|pmid =|keywords =|file =|doi =|url =|archivePrefix =|eprint =|arxivId =' $(SHAREDREFDIR)/library.bib >library.bib
 
 clean:
 	$(RM) $(TEMPFILES)
