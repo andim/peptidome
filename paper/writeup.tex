@@ -209,16 +209,16 @@ An important consequence of the shared sequence biases between self and non-self
 To exploit these strongly conserved biases between host and pathogen, immune recognition might focus on generically more common peptides. This could imply that some peptides that are close to self are actually more likely to be recognized than peptides that are very dissimilar. While validation data on immunogenicity remains quite sparse, we can begin to test this assertion using data from the Immune Epitope Database (IEDB). Here we define immunogenicity of an epitope as being associated with a positive assay on immune response. We then calculate the fraction of epitopes at different distances to self that are immunogenic. While epitopes identical to peptides found in the human proteome are somewhat less immunogenic, as expected due to tolerance mechanisms, remarkably, there are many epitopes that differ from self by a single amino acid which are immunogenic. Indeed, the greatest number of immunogenic peptides are only one amino acid away. Moreover, the most dissimilar peptides (distance 3+) are actually recognized with the lowest probability,  implying the immune system preferentially focuses on peptides closer to self, even though farther peptides may be available.
 
 
-\subsubsection{Reshaping of the distribution by the presentation pathway}
-
-\begin{figure}
-    \includegraphics[width=\columnwidth]{netmhc_correlations}
-    \caption{How does MHC presentation reshape the peptidome? Every plot shows a histogram of rank correlation coefficients between peptide likelihoods and netMHC predicted binding affinities across all MHC-I types. Binding energy is positively correlated with peptide likelihood under both the human and viral statistics for a majority of MHC-I types, but negatively correlated with the likelihood ratio of viral to human statistics. Thus MHC-binding focuses responses on viral peptides. for a majority of MHC-I types 
-    \label{fignetmhc}
-    }
-\end{figure}
-
-We use neural networks models trained on measured peptide binding to different human MHC molecules to ask how the presentation probability relates to the peptide likelihoods under both the self and foreign statistics. We find that the predicted binding energy is positively correlated with peptide likelihoods under both models for the majority of alleles (Fig.~\ref{fignetmhc}A). Interestingly, sequences that are more likely under the viral than the human statistics are presented more readily (Fig.~\ref{fignetmhc}B).
+%\subsubsection{Reshaping of the distribution by the presentation pathway}
+%
+%\begin{figure}
+%    \includegraphics[width=\columnwidth]{netmhc_correlations}
+%    \caption{How does MHC presentation reshape the peptidome? Every plot shows a histogram of rank correlation coefficients between peptide likelihoods and netMHC predicted binding affinities across all MHC-I types. Binding energy is positively correlated with peptide likelihood under both the human and viral statistics for a majority of MHC-I types, but negatively correlated with the likelihood ratio of viral to human statistics. Thus MHC-binding focuses responses on viral peptides. for a majority of MHC-I types 
+%    \label{fignetmhc}
+%    }
+%\end{figure}
+%
+%We use neural networks models trained on measured peptide binding to different human MHC molecules to ask how the presentation probability relates to the peptide likelihoods under both the self and foreign statistics. We find that the predicted binding energy is positively correlated with peptide likelihoods under both models for the majority of alleles (Fig.~\ref{fignetmhc}A). Interestingly, sequences that are more likely under the viral than the human statistics are presented more readily (Fig.~\ref{fignetmhc}B).
 
 \section{Discussion}
 
@@ -312,14 +312,6 @@ How likely is it that a peptide will be close enough to a self-peptide to be tol
 
 Consider that there is a number $N_T$ neighboring peptides that if they are in the self-peptidome would lead to tolerance, and a number $N_D > N_T$ of neighboring peptides that would lead to positive selection on TCRs recognizing the peptide and are thus needed for detectability. The probability of a peptide of probability $p$ being tolerized is $P_T \sim 1-(1-N_T p)^N$ assuming the $N$ possible self-peptides are sampled statistically independently from the peptidome distribution. As $N_T p \ll 1$ we can approximate $P_T \sim 1-e^{-N_T p N}$. Similarly, the probability of being detectable is $P_D \sim 1-(1-N_D p)^N \approx 1-e^{-N_D p N}$. Setting $N_T$ to the number of first neighbors (171 for 9mers), and $N_D$ to the number of second neighbors (25992 for 9mers) and assuming that $N$ is equal to the total possible number of kmers that can be generated from the full human proteome ($\sim 2 \cdot 10^7$), we can plot how $P_T$ and $P_D$ depends on $p$ (Fig.~\ref{figshelltheory}).
 
-
-
-\begin{figure}
-    \includegraphics{entropyaa}
-    \caption{Entropy of the single site distribution of amino acids used in different positions along proteins in the human proteome. In an overwhelming majority of cases the first amino acid in a protein is a Methionine, because this amino acid is encoded by the start codon AUG. There is a slightly lower entropy o amino acids also in the following few amino acids, which might similarly be explained by known mRNA biases around the initiation codon (rf. Kozak consensus sequence). 
-    \label{figentropyaa}
-    }
-\end{figure}
 
 
 \section{Probability of random sequence matches}
