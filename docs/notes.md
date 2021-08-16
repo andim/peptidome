@@ -4,6 +4,13 @@ title: Notes
 order: 3
 ---
 
+# Work 21/08/10
+
+A consequence of the modeled distributions is that viral peptides are more likely to coincide with self-peptides or to be very similar to them. I worked on a better illustration of this phenomenon and on an assessment of whether these overlaps are further increased empirically due to mimicry not captured in the marginal statistics on which the models are based. To do so I calculate the distance to the nearest self peptide for randomly chosen peptides from the human virome. I compared the distribution of these distances with those for peptides drawn from different models. Interestingly, the full model largely reproduces the observed increases in (near-)coincidences.
+
+I also reworked the analysis of how the likelihood of positive T cell responses depends on distance to the nearest self. I found that different assays differ markedly in the average fraction of positive responses. For example, tetramer assays are always almost positive in IEDB. To make things more comparable I focused the analysis only on those assays within IEDB that used the ELISPOT assay (which is the most common). This significantly lowers the fraction of positive assays overall, but most specifically it lowers the value at distance zero to close to zero and thus more in line with theoretical expectations.
+
+
 # Skype w/ Ben G 21/05/05
 
 Take home messages

@@ -191,7 +191,7 @@ def kmers_to_matrix(kmers):
 
 def matrix_to_kmers(matrix):
     """"
-    Map a list of str kmers to an integer numpy array.
+    Map an integer numpy array to a list of str kmers.
 
     Parameters
     ----------

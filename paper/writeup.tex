@@ -191,8 +191,8 @@ We can also use our theory to quantify under which conditions a quorum sensing s
 \subsubsection{Shared sequence biases imply immune epitopes are close to self}
 
 \begin{figure}
-    \includegraphics[width=\columnwidth]{neighbors}
-    \caption{Distribution of nearest self neighbor distances. For self the distance is calculated to the nearest neighboring peptide, thus excluding any precise alignments.
+    \includegraphics{neighbors}
+    \caption{Distribution of distances to the nearest self peptide for peptides from human viruses (red line) and different modelled distributions; a uniform distribution over all $20^9$ kmers (blue line), an independent model of viral peptides based on their amino acid composition (orange line), and a full model of viral peptides including higher order constraints (green line).
     \label{figneighbors}
     }
 \end{figure}
@@ -200,8 +200,8 @@ We can also use our theory to quantify under which conditions a quorum sensing s
 An important consequence of the shared sequence biases between self and non-self is to make (near-)coincidences between peptides much more likely. To quantify this effect we calculate the distance to the nearest self peptide for a collection of immune epitopes from IEDB (for 9mers). While the reduction in peptide diversity is on the order of tens of a percent, we find the probability of precise coincidences is increased by more than two orders of magnitude compared to the expectation under a uniform model, and near-coincidences differing by a single amino acid are also heavily enriched (Fig.~\ref{figneighbors} red line vs blue line).
 
 \begin{figure}
-    \includegraphics[width=\columnwidth]{iedbposvsdist}
-    \caption{Fraction of positive IEDB assay for foreign epitopes as a function of their distance to nearest self peptide.
+    \includegraphics{iedbposvsdist}
+    \caption{Response likelihood to foreign epitopes as a function of their distance to the nearest self peptide. Data: All 9mers from IEDB using ELISPOT assay.
     \label{figiedbposvsdist}
     }
 \end{figure}
