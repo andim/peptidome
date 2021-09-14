@@ -68,6 +68,18 @@ Given that it is possible at all to evolve a system to discriminate small differ
 
 \section{Results}
 
+\subsection{Immune recognition does not focus on highly dissimilar peptides}
+
+\begin{figure}
+    \includegraphics{iedbposvsdist}
+    \caption{Response likelihood to foreign epitopes as a function of their distance to the nearest self peptide. Data: All 9mers from IEDB using ELISPOT assay.
+    \label{figiedbposvsdist}
+    }
+\end{figure}
+
+To exploit these strongly conserved biases between host and pathogen, immune recognition might focus on generically more common peptides. This could imply that some peptides that are close to self are actually more likely to be recognized than peptides that are very dissimilar. While validation data on immunogenicity remains quite sparse, we can begin to test this assertion using data from the Immune Epitope Database (IEDB). Here we define immunogenicity of an epitope as being associated with a positive assay on immune response. We then calculate the fraction of epitopes at different distances to self that are immunogenic. While epitopes identical to peptides found in the human proteome are less immunogenic, as expected due to tolerance mechanisms, remarkably, there are many epitopes that differ from self by a single amino acid which are immunogenic. Moreover, the most dissimilar peptides (distance 3+) are actually recognized with a lower probability, implying the immune system preferentially focuses on peptides closer to self, even though farther peptides may be available.
+
+
 \subsection{Discriminability of host and pathogen peptides}
 
 
@@ -199,14 +211,27 @@ We can also use our theory to quantify under which conditions a quorum sensing s
 
 An important consequence of the shared sequence biases between self and non-self is to make (near-)coincidences between peptides much more likely. To quantify this effect we calculate the distance to the nearest self peptide for a collection of immune epitopes from IEDB (for 9mers). While the reduction in peptide diversity is on the order of tens of a percent, we find the probability of precise coincidences is increased by more than two orders of magnitude compared to the expectation under a uniform model, and near-coincidences differing by a single amino acid are also heavily enriched (Fig.~\ref{figneighbors} red line vs blue line).
 
+\section{A shell theory of immunogenicity?}
+
 \begin{figure}
-    \includegraphics{iedbposvsdist}
-    \caption{Response likelihood to foreign epitopes as a function of their distance to the nearest self peptide. Data: All 9mers from IEDB using ELISPOT assay.
-    \label{figiedbposvsdist}
+    \includegraphics{shelltheorysketch}
+    \caption{Sketch of the shell theory of immunogenicity: To be immunogenic an antigen needs to fall outside the tolerance region (orange), but within one of the detectable regions surrounding a self-antigen (blue).
+    \label{figshelltheorysketch}
     }
 \end{figure}
 
-To exploit these strongly conserved biases between host and pathogen, immune recognition might focus on generically more common peptides. This could imply that some peptides that are close to self are actually more likely to be recognized than peptides that are very dissimilar. While validation data on immunogenicity remains quite sparse, we can begin to test this assertion using data from the Immune Epitope Database (IEDB). Here we define immunogenicity of an epitope as being associated with a positive assay on immune response. We then calculate the fraction of epitopes at different distances to self that are immunogenic. While epitopes identical to peptides found in the human proteome are somewhat less immunogenic, as expected due to tolerance mechanisms, remarkably, there are many epitopes that differ from self by a single amino acid which are immunogenic. Indeed, the greatest number of immunogenic peptides are only one amino acid away. Moreover, the most dissimilar peptides (distance 3+) are actually recognized with the lowest probability,  implying the immune system preferentially focuses on peptides closer to self, even though farther peptides may be available.
+\begin{figure}
+    \includegraphics[width=\columnwidth]{shelltheory}
+    \caption{Immunogenicity as a function of the likelihood a peptide in the shell model. The probability of a peptide being immunogenic is defined as the probability of being detectable, but not tolerated. The probability of immunogenicity times the probability of peptides within the pathogen proteome (assumed to be lognormal with $mu = -1.25 k$ and $\sigma = 0.3 k$ with $k=9$) gives a hypothetical expected distribution for the epitopes, which is clipped at both ends.  
+    \label{figshelltheory}
+    }
+\end{figure}
+
+How likely is it that a peptide will be close enough to a self-peptide to be tolerized? How likely to be close enough such that there has been positive selection? To a first approximation neighboring peptides will have similar probabilities. Therefore the probabilities of a peptide relate to the local density and thus to the average distance to the nearest neighbor.
+
+Consider that there is a number $N_T$ neighboring peptides that if they are in the self-peptidome would lead to tolerance, and a number $N_D > N_T$ of neighboring peptides that would lead to positive selection on TCRs recognizing the peptide and are thus needed for detectability. The probability of a peptide of probability $p$ being tolerized is $P_T \sim 1-(1-N_T p)^N$ assuming the $N$ possible self-peptides are sampled statistically independently from the peptidome distribution. As $N_T p \ll 1$ we can approximate $P_T \sim 1-e^{-N_T p N}$. Similarly, the probability of being detectable is $P_D \sim 1-(1-N_D p)^N \approx 1-e^{-N_D p N}$. Setting $N_T$ to the number of first neighbors (171 for 9mers), and $N_D$ to the number of second neighbors (25992 for 9mers) and assuming that $N$ is equal to the total possible number of kmers that can be generated from the full human proteome ($\sim 2 \cdot 10^7$), we can plot how $P_T$ and $P_D$ depends on $p$ (Fig.~\ref{figshelltheory}).
+
+
 
 
 %\subsubsection{Reshaping of the distribution by the presentation pathway}
@@ -290,27 +315,6 @@ which allows us to approximate the integrand by Monte Carlo simulations. We nume
 \bibliographystyle{apsrev}
 \bibliography{library}
 
-
-
-\section{A shell theory of immunogenicity?}
-
-\begin{figure}
-    \includegraphics{shelltheorysketch}
-    \caption{Sketch of the shell theory of immunogenicity: To be immunogenic an antigen needs to fall outside the tolerance region (orange), but within one of the detectable regions surrounding a self-antigen (blue).
-    \label{figshelltheorysketch}
-    }
-\end{figure}
-
-\begin{figure}
-    \includegraphics[width=\columnwidth]{shelltheory}
-    \caption{Immunogenicity as a function of the likelihood a peptide in the shell model. The probability of a peptide being immunogenic is defined as the probability of being detectable, but not tolerated. The probability of immunogenicity times the probability of peptides within the pathogen proteome (assumed to be lognormal with $mu = -1.25 k$ and $\sigma = 0.3 k$ with $k=9$) gives a hypothetical expected distribution for the epitopes, which is clipped at both ends.  
-    \label{figshelltheory}
-    }
-\end{figure}
-
-How likely is it that a peptide will be close enough to a self-peptide to be tolerized? How likely to be close enough such that there has been positive selection? To a first approximation neighboring peptides will have similar probabilities. Therefore the probabilities of a peptide relate to the local density and thus to the average distance to the nearest neighbor.
-
-Consider that there is a number $N_T$ neighboring peptides that if they are in the self-peptidome would lead to tolerance, and a number $N_D > N_T$ of neighboring peptides that would lead to positive selection on TCRs recognizing the peptide and are thus needed for detectability. The probability of a peptide of probability $p$ being tolerized is $P_T \sim 1-(1-N_T p)^N$ assuming the $N$ possible self-peptides are sampled statistically independently from the peptidome distribution. As $N_T p \ll 1$ we can approximate $P_T \sim 1-e^{-N_T p N}$. Similarly, the probability of being detectable is $P_D \sim 1-(1-N_D p)^N \approx 1-e^{-N_D p N}$. Setting $N_T$ to the number of first neighbors (171 for 9mers), and $N_D$ to the number of second neighbors (25992 for 9mers) and assuming that $N$ is equal to the total possible number of kmers that can be generated from the full human proteome ($\sim 2 \cdot 10^7$), we can plot how $P_T$ and $P_D$ depends on $p$ (Fig.~\ref{figshelltheory}).
 
 
 

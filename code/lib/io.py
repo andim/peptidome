@@ -142,7 +142,6 @@ human = proteome_path('Human')
 # code modified from OpenVax/pepdata project
 # see https://github.com/openvax/pepdata/blob/master/pepdata/iedb/tcell.py
 def load_iedb_tcellepitopes(
-        mhc_class=None,  # 1, 2, or None for neither
         hla=None,
         exclude_hla=None,
         human_only=False,
@@ -156,8 +155,6 @@ def load_iedb_tcellepitopes(
     Load IEDB T-cell data without aggregating multiple entries for same epitope
     Parameters
     ----------
-    mhc_class: {None, 1, 2}
-        Restrict to MHC Class I or Class II (or None for neither)
     hla: regex pattern, optional
         Restrict results to specific HLA type used in assay
     exclude_hla: regex pattern, optional
@@ -194,6 +191,7 @@ def load_iedb_tcellepitopes(
     # To deal with this, drop any columns which are all NaN
     df = df.dropna(axis=1, how="all")
 
+
     n = len(df)
     epitope_column_key = ("Epitope", "Description")
     mhc_allele_column_key = ("MHC", "Allele Name")
@@ -201,6 +199,11 @@ def load_iedb_tcellepitopes(
     assay_method_column_key = ("Assay", "Method/Technique")
 
     epitopes = df[epitope_column_key].str.upper()
+
+    # define all non-negative assays as positive (subsuming positive, pos-low, pos-high)
+    df['Assay', 'Positive'] = ~(df['Assay', 'Qualitative Measure']=='Negative')
+    # Calculate length of the epitopes
+    df['Epitope', 'Length'] = df[epitope_column_key].apply(len)
 
     null_epitope_seq = epitopes.isnull()
     mask = ~null_epitope_seq
@@ -225,23 +228,6 @@ def load_iedb_tcellepitopes(
     #  or
     #  "Class I,allele undetermined"
     mhc = df[mhc_allele_column_key]
-
-    if mhc_class is not None:
-        # since MHC classes can be specified as either strings ("I") or integers
-        # standard them to be strings
-        if mhc_class == 1:
-            mhc_class = "I"
-        elif mhc_class == 2:
-            mhc_class = "II"
-        if mhc_class not in {"I", "II"}:
-            raise ValueError("Invalid MHC class: %s" % mhc_class)
-        allele_dict = load_alleles_dict()
-        mhc_class_mask = [False] * len(df)
-        for i, allele_name in enumerate(mhc):
-            allele_object = allele_dict.get(allele_name)
-            if allele_object and allele_object.mhc_class == mhc_class:
-                mhc_class_mask[i] = True
-        mask &= np.array(mhc_class_mask)
 
     if hla:
         mask &= df[mhc_allele_column_key].str.contains(hla, na=False)
