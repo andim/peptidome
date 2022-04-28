@@ -16,6 +16,7 @@ from numba import jit, njit
 
 
 from . import nsb
+from .io import *
 
 aminoacids = 'ACDEFGHIKLMNPQRSTVWY'
 aminoacids_set = set(aminoacids)
@@ -266,6 +267,9 @@ def count_kmers_iterable(iterable, k, clean=False, **kwargs):
     if clean:
         counter = {k:counter[k] for k in counter.keys() if isvalidaa(k)}
     return counter
+
+def count_kmers_proteome(proteome, k, **kwargs):
+    return count_kmers_iterable(fasta_iter(proteome, returnheader=False), k, **kwargs)
 
 def calc_tripletmodelparams(proteome):
     df = Counter(proteome, 1).to_df(norm=True)

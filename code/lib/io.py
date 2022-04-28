@@ -11,7 +11,7 @@ from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
-from .main import *
+#from .main import *
 
 # Define path variables
 repopath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
@@ -53,6 +53,8 @@ def proteome_path(name):
         return datadir + 'ufos/ufo.fasta'
     if name == 'ext':
         return datadir + 'ufos/ext.fasta'
+    if name == 'Humanviruses':
+        return datadir+'human-viruses-uniref90-filtered.fasta'
     proteomes = load_proteomes()
     return datadir + proteomes.loc[name]['path']
 
@@ -76,8 +78,6 @@ def fasta_iter(fasta_name, returnheader=True, returndescription=False):
             else:
                 yield str(fasta.seq)
 
-def count_kmers_proteome(proteome, k, **kwargs):
-    return count_kmers_iterable(fasta_iter(proteome, returnheader=False), k, **kwargs)
 
 # Alternative code that does not rely on Biopython
 #def fasta_iter(fasta_name, returnheader=True):
