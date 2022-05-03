@@ -11,7 +11,7 @@ from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
-#from .main import *
+from pyrepseq import isvalidaa
 
 # Define path variables
 repopath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))

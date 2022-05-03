@@ -14,6 +14,7 @@ from Bio import SeqIO
 
 from numba import jit, njit
 
+from pyrepseq import isvalidaa
 
 from . import nsb
 from .io import *
@@ -341,10 +342,6 @@ def normalize(counter):
     arr = np.array(list(counter.values()), dtype=np.float)
     arr /= np.sum(arr)
     return arr
-
-def isvalidaa(string):
-    "returns true if string is composed only of characters from the standard amino acid alphabet"
-    return all(c in aminoacids_set for c in string)
 
 def counter_to_df(counter, norm=True, clean=True):
     """Convert a (kmer, count) dict to a pandas DataFrame

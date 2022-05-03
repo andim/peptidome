@@ -1,0 +1,6 @@
+Figure 1:
+A - code/nndist/response_vs_distance.ipynb
+B - code/theory_sketches/plot.py
+C - code/aafreqcomp/plot-aacomparisons-viruses.py
+D - code/kmerentropy/plot.py
+E - code/pfam/plot_loglog.py

@@ -10,11 +10,11 @@ ks = np.arange(1, 6)
 
 proteomes = load_proteomes()
 dfdict = {'k' : ks}
-for name in ['Human', 'Yeast', 'Ecoli']:
+for name in ['Human', 'Yeast', 'Ecoli', 'Viruses']:
     if name == 'Viruses':
         proteome = datadir+'human-viruses-uniref90_nohiv.fasta'
     else:
-        proteome = datadir + proteomes.ix[name]['path']
+        proteome = datadir + proteomes.loc[name]['path']
     entropies = []
     for k in ks:
         df = counter_to_df(count_kmers_proteome(proteome, k=k), norm=False)
