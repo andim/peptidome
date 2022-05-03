@@ -8,7 +8,7 @@ import sys
 sys.path.append('..')
 from lib import *
 plt.style.use('../peptidome.mplstyle')
-from common import labels
+from lib.plotting import model_labels as labels
 
 k = 9
 fig, axes = plt.subplots(figsize=(7.2, 4.0), ncols=4, nrows=2)
