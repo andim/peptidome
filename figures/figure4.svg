@@ -30,9 +30,9 @@
      inkscape:window-height="1816"
      id="namedview533"
      showgrid="false"
-     inkscape:zoom="2.1003248"
-     inkscape:cx="213.21036"
-     inkscape:cy="100.18577"
+     inkscape:zoom="2.2491514"
+     inkscape:cx="189.51334"
+     inkscape:cy="98.60476"
      inkscape:window-x="116"
      inkscape:window-y="54"
      inkscape:window-maximized="1"
@@ -54,7 +54,7 @@
             <dc:title>Matplotlib v3.3.2, https://matplotlib.org/</dc:title>
           </cc:Agent>
         </dc:creator>
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -13583,13 +13583,13 @@
   <text
      xml:space="preserve"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.75000006;stroke-linecap:butt;stroke-linejoin:round"
-     x="141.59369"
+     x="150.59369"
      y="8.6582031"
      id="text53443-2"><tspan
        sodipodi:role="line"
        id="tspan53441-7"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Bold';stroke-width:0.75000006;stroke-linecap:butt;stroke-linejoin:round"
-       x="141.59369"
+       x="150.59369"
        y="8.6582031">B</tspan></text>
   <text
      xml:space="preserve"
@@ -13603,7 +13603,7 @@
        x="300.46115"
        y="8.7802734">C</tspan></text>
   <g
-     transform="translate(-7.2,3.782921)"
+     transform="translate(146.52465,3.1160028)"
      id="axes_1"
      style="stroke-linecap:butt;stroke-linejoin:round">
     <g
@@ -14532,7 +14532,7 @@
     </g>
   </g>
   <g
-     transform="translate(145.91022,2.406552)"
+     transform="translate(-5.1467548,5.9073066)"
      id="axes_1-9"
      style="stroke-linecap:butt;stroke-linejoin:round">
     <g
