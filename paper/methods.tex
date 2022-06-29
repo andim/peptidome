@@ -1,0 +1,134 @@
+\documentclass[superscriptaddress,onecolumn,pre]{revtex4}
+
+\usepackage{ifthen}
+\newboolean{pnas}
+\setboolean{pnas}{false}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\graphicspath{{images/}}
+\usepackage{color}
+\usepackage[pdfstartview=FitH,
+            breaklinks=true,
+            bookmarksopen=false,
+            bookmarksnumbered=true,
+            colorlinks=true,
+            linkcolor=black,
+            citecolor=black,
+            urlcolor=black,
+            pdftitle={Peptidome},
+            pdfauthor={Andreas Mayer},
+            pdfsubject={}
+            ]{hyperref}
+\newcommand{\B}{\boldsymbol}
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\<}{\langle}
+\renewcommand{\>}{\rangle}
+
+\def\(({\left(}
+\def\)){\right)}                       
+\def\[[{\left[}
+\def\]]{\right]}
+
+\newcommand{\AM}[1]{{\color{blue}#1}}
+
+\begin{document}
+
+\title{Supplementary Methods}
+%\author{Andreas Mayer}
+%\author{Quentin Marcou}
+%\author{Warren James}
+%\author{Christopher Russo}
+%\author{William Bialek*}
+%\author{Benjamin D Greenbaum*}
+\date{\today}
+
+\maketitle
+
+We propose to use a maximum entropy framework as a principled way to include increasingly detailed statistical structure into a series nested models of peptide statistics. Using this approach we constrain a set of statistical observables $\langle f_\mu(\boldsymbol \sigma)\rangle$ to equal their empirical values $\bar{f_\mu}$, while otherwise keeping the probability distribution as random as possible. Mathematically, this means choosing the probability distribution to maximize the Shannon entropy
+\begin{equation}
+    S[P(\B \sigma)] = - \sum_{\B \sigma} P(\B \sigma) \log P(\B \sigma),
+\end{equation}
+subject to the normalization constraint $\sum_{\B \sigma} P(\B \sigma) = 1$, and constraints that enforce the equality of modelled and empirical observables
+\begin{equation}
+    \langle f_\mu(\boldsymbol \sigma)\rangle = \sum_{\boldsymbol \sigma} P(\boldsymbol \sigma) f_\mu(\boldsymbol \sigma) = \bar{f_\mu}.
+\end{equation}
+Optimizing with respect to the normalization constraint yields a Boltzmann distribution of the form,
+\begin{equation}
+    P(\boldsymbol \sigma) = \frac{1}{Z} \exp\left[ -E(\B \sigma) \right],
+\end{equation}
+where
+\begin{equation}
+ E(\B \sigma) = \sum_{\mu=1}^K \lambda_\mu f_\mu(\boldsymbol \sigma),
+\end{equation}
+is a sum of terms involving each constraint, which is called the energy in statistical mechanics, and 
+\begin{equation}
+    Z = \sum_{\B \sigma} \exp \left[ - E(\B \sigma) \right]
+\end{equation}
+is a normalization factor, called the partition function.
+
+We fit the parameters $\lambda_\mu$ to the data using Boltzmann machine learning \cite{Ackley1985}. In short, we iteratively estimate $\langle f_\mu(\B \sigma)\rangle$ using Monte Carlo sampling for a given set of model parameters and then update parameters to minimize the discrepancy between estimated and empirical observables.
+
+A common choice for observables is to constrain the one and two-point frequencies
+\begin{align}
+    f_i^\alpha(\B \sigma) &= \sigma_i^\alpha, \\
+    f_{ij}^{\alpha\beta}(\B \sigma) &= \sigma_i^\alpha \sigma_j^\beta,
+\end{align}
+where $\sigma_i^\alpha = 1$ if the amino acid at site i is of type $\alpha$ and zero otherwise.
+This leads to a maximum entropy probability distribution that takes the form of a disordered Potts model,
+\begin{equation}
+    E(\boldsymbol \sigma) = - \sum_{i=1}^L \sum_{\alpha = 1}^{20} h_i^\alpha \sigma_i^\alpha - \sum_{i<j}^L \sum_{\alpha,\beta = 1}^{20} J_{ij}^{\alpha \beta}  \sigma_i^\alpha \sigma_j^\beta.
+\end{equation}
+
+Given that many biases are compositional in nature we can also consider a simpler model that only involves a global constraint on the covariation of the total count of amino acids of different types:
+\begin{align}
+    n^\alpha(\B \sigma) &= \sum_i \sigma_i^\alpha, \\
+    n^{\alpha\beta}(\B \sigma) &= n^\alpha(\B \sigma) n^\beta(\B\sigma) = \left(\sum_{i=1}^L \sigma_i^\alpha\right) \left(\sum_{j=1}^L \sigma_j^\beta\right).
+\end{align}
+This leads to a maximum entropy probability distribution that takes the form
+\begin{equation}
+    E(\boldsymbol \sigma) = - \sum_{\alpha=1}^{20} h^\alpha n^\alpha -  \sum_{\alpha,\beta = 1}^{20} J^{\alpha \beta} n^\alpha n^\beta,
+\end{equation}
+i.e. a model that only involves global couplings between amino acids independent of their distance.
+
+
+The parameters are updated by iterative scaling,
+\begin{equation}
+    \lambda_\mu^{t+1} = \lambda_\mu^t + \epsilon_\mu^t \log \left( \frac{\langle f_\mu \rangle}{\bar{f_\mu}} \right),
+\end{equation}
+where $\epsilon_\mu^t$ represents a learning rate (which generally can be coordinate dependent and time-varying).
+%The parameters are updated by gradient ascent,
+%\begin{equation}
+%    \lambda_\mu^{t+1} = \lambda_\mu^t + \epsilon_\mu^t \left(\langle f_\mu \rangle  - \bar{f_\mu}\right),
+%\end{equation}
+%where $\epsilon_\mu^t$ represents a learning rate (which generally can be coordinate dependent and time-varying).
+
+Once we have fitted the model parameters we can calculate the entropy of the distribution $P(\B \sigma)$. To do so we use the identity
+\begin{align}
+    S &= - \sum_{\B \sigma}  P(\B \sigma) \log P(\B \sigma),  \\
+      &= \langle E(\B \sigma) \rangle - F, \quad F = - \log Z.
+\end{align}
+The mean energy can be calculated directly from Monte Carlo samples. To calculate the free energy we use thermodynamic integration as follows \cite{Marchi2019b}: We express the energy with respect to a reference energy $E_{ref}(\B \sigma)$ as $E(\B \sigma) = E_{ref}(\B \sigma) + \Delta E(\B\sigma)$, where the reference energy is choosen such that $F_{ref}$ can be calculated analytically. We define the perturbed energy function
+\begin{equation}
+    E_\alpha(\B \sigma) = E_{ref}(\B \sigma) + \alpha \Delta E(\B\sigma),
+\end{equation}
+which scales the contribution of the energy beyond the reference model.
+To obtain the free energy we use the identity
+\begin{equation}
+    F(1) = F_{ref} + \int_0^1 \ud \alpha F'(\alpha).
+\end{equation}
+Note that
+\begin{equation}
+    F'(\alpha) = - \langle \Delta E(\B \sigma) \rangle_{\alpha},
+\end{equation}
+which allows us to approximate the integrand by Monte Carlo simulations. We numerically evaluate $F'(\alpha)$ for evenly spaced $\alpha \in [0, 1]$ and calculate the integral by Simpson's rule. Calculating the entropy in this way allows us to determine the reduction in the effective diversity in sequences implied by including different constraints (Fig.~\ref{figmaxent}F). 
+
+\bibliographystyle{apsrev}
+\bibliography{library}
+
+\end{document}
