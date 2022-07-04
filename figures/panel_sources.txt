@@ -1,9 +1,10 @@
 Figure 1:
-A - code/nndist/response_vs_distance.ipynb
+A - code/theory_sketches/plot.py
 B - code/theory_sketches/plot.py
-C - code/aafreqcomp/plot-aacomparisons-viruses.py
-D - code/kmerentropy/plot.py
-E - code/pfam/plot_loglog.py
+C - code/nndist/response_vs_distance.ipynb
+D - code/aafreqcomp/plot-aacomparisons-viruses.py
+E - code/kmerentropy/plot.py
+F - code/pfam/plot_loglog.py
 
 Figure 2:
 code/maxent/plot_maintext.py
@@ -12,6 +13,12 @@ Figure 3:
 A - code/maxent/
 
 Figure 4
-A - code/theory_sketches/shell.py
+A - code/maxent/distribution_haming_nn.ipynb
 B - code/maxent/distribution_haming_nn.ipynb
-C - code/classifier/sprt_wald.ipynb
+C - code/theory_sketches/shell.py
+
+Figure S1:
+code/nndist/assays.ipynb
+
+Figure S2:
+code/classifier/sprt_wald.ipynb
