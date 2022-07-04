@@ -52,11 +52,11 @@ models = ['test', 'independent', 'ncov', 'nskew', 'nskewfcov']
 for model in models:
     energies[model] = np.load('data/Human_{model}_k{k}_energies.npz'.format(model=model, k=k))['energies']
 
-xmax = max([max(energies[model]) for model in models])+0.05
-xmin = min([min(energies[model]) for model in models])-0.05
+xmax = np.log10(np.exp(max([max(energies[model]) for model in models])+0.05))
+xmin = np.log10(np.exp(min([min(energies[model]) for model in models])-0.05))
 nbins = 100
 scaley = nbins/(xmax-xmin)
-bins = np.logspace(-xmax, -xmin, num=nbins+1, base=np.exp(1))
+bins = np.linspace(-xmax, -xmin, num=nbins+1)
 for ax in axes[1,:2]:
     kwargs = dict(lw=0.5)
     for model in models:
@@ -65,9 +65,9 @@ for ax in axes[1,:2]:
         counts = counts/np.sum(counts)
         ax.step(bins[:-1], counts*scaley, label=model, where='mid', **kwargs)
     ax.set_xscale('log')
-    ax.set_xlabel(r'$P(\sigma)$')
+    ax.set_xlabel(r'$\log_{10} P(\sigma)$')
     ax.set_xlim(min(bins), max(bins))
-axes[1, 0].set_ylabel('Probability Density')
+axes[1, 0].set_ylabel('Frequency')
 axes[1, 0].set_ylim(0.0)
 axes[1, 0].legend(loc='upper right')
 axes[1, 1].set_yscale('log')
@@ -90,7 +90,6 @@ x = np.arange(len(labels))  # the label locations
 rects = ax.bar(x, data[1:]/data[0], width)
 ax.set_xticks(x)
 ax.set_xticklabels(labels, rotation=90)
-#ax.axhline(data[1]/data[0], ls='--')
 
 reduction = np.abs((data[2:]-data[1])/data[1])
 for rect, toplabel in zip(rects[1:], reduction):
