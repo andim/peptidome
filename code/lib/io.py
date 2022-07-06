@@ -183,7 +183,6 @@ def load_iedb_tcellepitopes(
             nrows=nrows,
             low_memory=False,
             na_values=['unidentified'],
-            error_bad_lines=False,
             encoding="latin-1")
 
     # Sometimes the IEDB seems to put in an extra comma in the
@@ -219,7 +218,7 @@ def load_iedb_tcellepitopes(
     if positive_only:
         # there are several types of positive assays (Positive, Positive-High etc.)
         # we thus invert from the negative ones
-        mask &= ~(df['Assay', 'Qualitative Measure'] == 'Negative')
+        mask &= df['Assay', 'Positive']
 
     # Match known alleles such as "HLA-A*02:01",
     # broader groupings such as "HLA-A2"
@@ -263,7 +262,6 @@ def load_iedb_bcellepitopes(human_only=False, only_standard_amino_acids=True):
             header=[0, 1],
             skipinitialspace=True,
             low_memory=False,
-            error_bad_lines=False,
             encoding="latin-1")
 
     epitope_column_key = 'Epitope', 'Description'

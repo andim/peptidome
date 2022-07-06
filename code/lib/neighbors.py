@@ -45,6 +45,26 @@ def dist2(x, reference):
                         return True
     return False
 
+def dist3(x, reference):
+    """ Is the string x a Hamming distance 3 away from any of the kmers in the reference set"""
+    for i in range(len(x)):
+        for j in range(i+1, len(x)):
+            for k in range(j+1, len(x)):
+                for aai in aminoacids:
+                    if aai == x[i]:
+                        continue
+                    si = x[:i]+aai+x[i+1:]
+                    for aaj in aminoacids:
+                        if aaj == x[j]:
+                            continue
+                        sij = si[:j]+aaj+si[j+1:] 
+                        for aak in aminoacids:
+                            if aak == x[k]:
+                                continue
+                            if sij[:k]+aak+sij[k+1:] in reference:
+                                return True
+    return False
+
 def distance_distribution(sample, reference):
     """Return the distribution of Hamming distances for all sequences in a sample relative to a reference set."""
     reference = set(reference)
