@@ -170,5 +170,5 @@ rule plot_maintext:
         'data/Human_k9_coincidences.csv',
     output:
         'plots/maxent.svg'
-    script:
-        'plot_maintext.py'
+    notebook:
+        'plot_maintext.ipynb'
