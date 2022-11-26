@@ -4,6 +4,13 @@ title: Notes
 order: 3
 ---
 
+# References from the Immrep meeting 22/07/13
+
+IEDB has a companion database with cancer-associated epitopes and neoepitopes. The database is available at https://cedar.iedb.org/ and currently in beta stage.
+
+Mandl et al. Immunity 2012: foreign binding generically correlates with self binding, but they have argued that this effect is independent of antigen. We might still want to reference this study in the discussion.
+
+
 # Work 21/08/10
 
 A consequence of the modeled distributions is that viral peptides are more likely to coincide with self-peptides or to be very similar to them. I worked on a better illustration of this phenomenon and on an assessment of whether these overlaps are further increased empirically due to mimicry not captured in the marginal statistics on which the models are based. To do so I calculate the distance to the nearest self peptide for randomly chosen peptides from the human virome. I compared the distribution of these distances with those for peptides drawn from different models. Interestingly, the full model largely reproduces the observed increases in (near-)coincidences.
