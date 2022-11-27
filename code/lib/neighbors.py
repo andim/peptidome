@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.neighbors import BallTree
+import pyrepseq as prs
 
 from .main import *
 
@@ -23,3 +24,6 @@ class BallTreeDist:
 def number_hamming_neighbors(distance, length, q):
     return (q-1)**distance * falling_factorial(length, distance)
 
+def nndist_hamming_distribution(seqs, reference, maxdist=3):
+    dists = [prs.nndist_hamming(s, reference, maxdist=maxdist) for s in seqs]
+    return np.bincount(dists)
