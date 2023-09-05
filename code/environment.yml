@@ -1,20 +1,23 @@
-name: py3
+name: peptidome
 channels:
     - conda-forge
     - bioconda
 dependencies:
     - pip
-    - numpy
-    - scipy
-    - pandas
-    - matplotlib
-    - seaborn
-    - biopython
+    - numpy==1.16.4
+    - scipy==1.2.1
+    - pandas==0.24.2
+    - matplotlib==3.0.3
+    - seaborn==0.9.0
+    - biopython==1.72
     - numba
-    - mpmath
-    - scikit-learn
-    - statsmodels
+    - mpmath==1.1.0
+    - scikit-learn==0.20.0
+    - statsmodels==0.12.0
     - jupyter
+    - Levenshtein
+    - joblib
     - bioconda::snakemake
     - pip:
         - palettable
+        - pyrepseq
