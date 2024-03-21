@@ -13,9 +13,6 @@ pseudocount = 1.0
 
 matrix = load_matrix(snakemake.input[0])
 
-#flat = np.random.choice(np.arange(0, len(aminoacids), 1), size=matrix.shape)
-#np.savetxt('data/flat_matrix_L%i.csv.gz'%L, flat, fmt='%i')
-
 fi = frequencies(matrix, num_symbols=q, pseudocount=pseudocount)
 f = fi.mean(axis=0)
 model_matrix = np.random.choice(np.arange(0, q, 1), size=matrix.shape, p=f)

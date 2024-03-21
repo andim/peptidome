@@ -7,7 +7,8 @@ from matplotlib import colors
 import sys
 sys.path.append('..')
 from lib import *
-plt.style.use('../peptidome.mplstyle')
+from pathlib import Path
+plt.style.use(Path('../peptidome.mplstyle'))
 
 k = int(snakemake.wildcards.k)
 
