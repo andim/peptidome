@@ -10,7 +10,7 @@ netmhcpath = os.path.join(repopath, 'dependencies/netMHC-4.0/netMHC')
 def run_netMHC(inputpath, outname, hla, binder_only=True):
     """run netMHC on a fasta file
 
-    binder_only: filter to only keep high binders < 500nM
+    binder_only: filter to only keep strong binders < %rank<0.5
 
     """
     inputpath = os.path.abspath(inputpath)
@@ -18,8 +18,7 @@ def run_netMHC(inputpath, outname, hla, binder_only=True):
     fullout = os.path.abspath('%s-%s.csv' % (outname, hla))
     if not os.path.exists(fullout):
         #netMHC -f fasta -xls -xlsfile out.csv -a HLA-A0101
-        print("{netmhcpath} -f {inputpath} -xls -xlsfile {fullout} -a {hla}".format(netmhcpath=netmhcpath,
-              inputpath=inputpath, fullout=fullout, hla=hla))
+        print(f"{netmhcpath} -f {inputpath} -xls -xlsfile {fullout} -a {hla}")
         if peptides:
             subprocess.run([netmhcpath, '-f', inputpath,
                             '-xls',
@@ -37,5 +36,5 @@ def run_netMHC(inputpath, outname, hla, binder_only=True):
                             stdout=FNULL, stderr=subprocess.STDOUT)
         if binder_only:
             df = pd.read_csv(fullout, sep='\t', skiprows=1)
-            dfbinders = df[df['nM']<500]
+            dfbinders = df[df['Rank']<0.5]
             dfbinders.to_csv(fullout)

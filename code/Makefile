@@ -5,7 +5,7 @@ all: netmhc
 download:
 	python download.py
 
-netmhc: download
+netmhc: 
 	python netmhcrun.py
 
 clean:

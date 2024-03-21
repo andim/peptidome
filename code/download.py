@@ -11,10 +11,11 @@ proteomes = load_proteomes()
 for ind, row in proteomes.iterrows():
     if not os.path.exists(datadir+row['path']):
         if row['speciesid']:
-            url = r"ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/%s_%s.fasta.gz"%(row['proteomeid'], row['speciesid'])
+            url = r"https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/%s/%s_%s.fasta.gz"%(row['proteomeid'], row['proteomeid'], row['speciesid'])
         else:
-            # excluding isoforms (include=no)
-            url = r"http://www.uniprot.org/uniprot/?query=proteome%3A"+row['proteomeid']+r"&format=fasta&include=no"
+            # excluding isoforms
+            url = r"http://rest.uniprot.org/uniprotkb/stream?query=proteome%3A"+row['proteomeid']+r"&format=fasta&includeIsoform=false"
+        print(url)
         urllib.request.urlretrieve(url, datadir+row['path'])
 
 # download protein domain data from Pfam
@@ -36,7 +37,7 @@ for ind, row in proteomes.iterrows():
 path_urls = [
         ('human-viruses-swissprot.fasta', r'https://www.uniprot.org/uniprot/?query=host:9606&fil=reviewed%3Ayes&format=fasta&include=no'),
         ('human-viruses-uniref90.fasta', 
-         r"https://www.uniprot.org/uniref/?query=uniprot%3A(host%3A%22Homo+sapiens+(Human)+[9606]%22)+AND+identity%3A0.9&sort=score&format=fasta"),
+         r"https://rest.uniprot.org/uniref/?query=uniprot%3A(host%3A%22Homo+sapiens+(Human)+[9606]%22)+AND+identity%3A0.9&sort=score&format=fasta"),
         ('chicken-viruses-uniref90.fasta', 
         r"https://www.uniprot.org/uniref/?query=uniprot:(host%3A%22Gallus+gallus+%28Chicken%29+%5B9031%5D%22)+AND+identity:0.9&sort=score&format=fasta"),
         ('human-viruses-uniref50.fasta', 
@@ -44,6 +45,7 @@ path_urls = [
         ]
 for path, url in path_urls:
     if not os.path.exists(datadir+path):
+        print(url)
         try:
             urllib.request.urlretrieve(url, datadir+path)
         except:

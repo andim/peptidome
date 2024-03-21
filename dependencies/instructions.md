@@ -4,4 +4,7 @@
 wget http://www.cbs.dtu.dk/services/NetMHC-4.0/data.tar.gz
 extract data to folder and move it into netMHC-4.0 directory
 
+new folder:
+wget https://services.healthtech.dtu.dk/services/NetMHC-4.0/data.tar.gz
+
 if needed, change folder for temporary data (e.g. to /tmp)
