@@ -1,0 +1,13 @@
+,distance_bin,source,value,distance
+0,0,Malaria Peptidome,0.00325,0
+1,1,Malaria Peptidome,0.02236,1
+2,2,Malaria Peptidome,0.37932,2
+3,3,Malaria Peptidome,0.59507,3+
+4,0,Malaria Epitopes (-),0.0,0
+5,1,Malaria Epitopes (-),0.07142857142857142,1
+6,2,Malaria Epitopes (-),0.2857142857142857,2
+7,3,Malaria Epitopes (-),0.6428571428571429,3+
+8,0,Malaria Epitopes (+),0.0,0
+9,1,Malaria Epitopes (+),0.05084745762711865,1
+10,2,Malaria Epitopes (+),0.4745762711864407,2
+11,3,Malaria Epitopes (+),0.4745762711864407,3+
