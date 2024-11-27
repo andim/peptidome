@@ -1,0 +1,10 @@
+Humanviruses_independent
+Humanviruses_nskewfcov
+Humanviruses_train
+Malaria_independent
+Malaria_ncov
+Malaria_nskew
+Malaria_nskewfcov
+Malaria_train
+Malaria_test
+Mouse_train
