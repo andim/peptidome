@@ -8,3 +8,5 @@ Malaria_nskewfcov
 Malaria_train
 Malaria_test
 Mouse_train
+Humanviruses_ncov
+Humanviruses_nskew

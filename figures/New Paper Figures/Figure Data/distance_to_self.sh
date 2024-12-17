@@ -4,7 +4,7 @@
 #BSUB -o /home/levinej4/tmp/bsub_logs/distance_to_self_%J_%I.out
 #BSUB -R "rusage[mem=32] span[hosts=1]"
 #BSUB -q cpuqueue
-#BSUB -J "[1-10]"
+#BSUB -J "[11-12]"
 
 j=$LSB_JOBINDEX
 key=$(cat distance_to_self.txt | awk -v ln=$j "NR==ln")
