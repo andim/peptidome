@@ -22,4 +22,7 @@ This contains the majority of the code used to explore the topics at hand. Thoug
 2) nndist - this directory contains the code for running distance distribution analyses, including distance to nearest self-peptide for pathogen peptides
 3) lib - misc. code for modeling, plotting, and handling input data
 4) netmhc - code for running and analyzing predictions made by netMHC for peptide presentation
-5) data and maxent/data - contains a lot of the formatted input data used in the paper. Also see [dropbox](https://www.dropbox.com/scl/fo/h63nuakv9r1nkop3g1vnk/AG2xJv8Sh1pkQ7zj7lfMKNo?rlkey=nucxeb7h7yh72yjhjpbm33lnd&e=3&st=w2ssb90r&dl=0)
+5) maxent/data - contains a lot of the simulated data used in the paper. 
+
+### data
+contains some of the input data used in the paper. Also see [dropbox](https://www.dropbox.com/scl/fo/h63nuakv9r1nkop3g1vnk/AG2xJv8Sh1pkQ7zj7lfMKNo?rlkey=nucxeb7h7yh72yjhjpbm33lnd&e=3&st=w2ssb90r&dl=0)
