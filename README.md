@@ -10,6 +10,6 @@ We are sharing our full set of analyses here following the open science ethos. N
 
 Feedback very welcome!
 
-As in our previous work (see e.g. [Gaimann et al](https://github.com/andim/paper-tcellimprint)) we will make stand-alone code, allowing direct reproduction of figures from the manuscript available once we have revised the manuscript in response to reviewer comments. 
+As in our previous work (see e.g. [Gaimann et al](https://github.com/andim/paper-tcellimprint)) we have stand-alone code located at [our paper's repo](https://github.com/jonlevi/self_not_self), allowing direct reproduction of figures from the manuscript. 
 
 All rights reserved until publication of the corresponding manuscript.
